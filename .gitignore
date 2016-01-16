@@ -140,7 +140,7 @@ publish/
 # Ignore NuGet Packages
 *.nupkg
 # NuGet Packages Directory
-**/packages/*
+**/packages/
 !**/packages/build/
 ## TODO: If the tool you use requires repositories.config
 ## uncomment the next line

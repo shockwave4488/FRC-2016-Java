@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WPILib;
 using WPILib.SmartDashboard;
+using CSharpRoboticsLib.Drive;
+using _2015_Pre_build_week_project.Team_Code.Drive_Code;
 
 namespace Robot2016
 {
@@ -13,12 +15,16 @@ namespace Robot2016
     /// </summary>
     public class Robot2016 : IterativeRobot
     {
+        private Drive drive;
+        private DriveHelper driveHelper;
         /// <summary>
         /// This function is run when the robot is first started up and should be
         /// used for any initialization code.
         /// </summary>
         public override void RobotInit()
         {
+            drive = new Drive();
+            driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
         }
 
         
@@ -41,7 +47,7 @@ namespace Robot2016
         /// </summary>
         public override void TeleopPeriodic()
         {
-
+            driveHelper.Drive(,,true,);
         }
 
         /// <summary>
