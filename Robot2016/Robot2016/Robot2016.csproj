@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Intake.cs" />
     <Compile Include="Drive.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Robot2016.cs" />

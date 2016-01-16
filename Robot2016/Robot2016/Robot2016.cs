@@ -17,12 +17,14 @@ namespace Robot2016
     {
         private Drive drive;
         private DriveHelper driveHelper;
+        private Intake intake;
         /// <summary>
         /// This function is run when the robot is first started up and should be
         /// used for any initialization code.
         /// </summary>
         public override void RobotInit()
         {
+            intake = new Intake();
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
         }
@@ -47,6 +49,7 @@ namespace Robot2016
         /// </summary>
         public override void TeleopPeriodic()
         {
+            intake.SetPosition(false, false);
             driveHelper.Drive(,,true,);
         }
 
