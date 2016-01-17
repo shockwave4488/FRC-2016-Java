@@ -17,9 +17,7 @@ namespace Robot2016
     {
         private Drive drive;
         private DriveHelper driveHelper;
-        private Shooter shooter;
         private Manipulator m_manipulator;
-
         /// <summary>
         /// This function is run when the robot is first started up and should be
         /// used for any initialization code.
@@ -28,7 +26,6 @@ namespace Robot2016
         {
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
-            shooter = new Shooter();
         }
 
         
@@ -51,10 +48,8 @@ namespace Robot2016
         /// </summary>
         public override void TeleopPeriodic()
         {
-            driveHelper.Drive(1,1,true,false);
-            shooter.Spin();
-            shooter.Shoot();
-            m_manipulator.Update(); 
+            driveHelper.Drive(,,true,);
+            m_manipulator.Update();
         }
 
         /// <summary>
