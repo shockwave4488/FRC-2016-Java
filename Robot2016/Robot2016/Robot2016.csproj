@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Intake.cs" />
     <Compile Include="Drive.cs" />
+    <Compile Include="Manipulator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Robot2016.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
