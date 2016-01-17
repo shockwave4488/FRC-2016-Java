@@ -18,12 +18,15 @@ namespace Robot2016
         private Drive drive;
         private DriveHelper driveHelper;
         private Shooter shooter;
+        private Intake intake;
+
         /// <summary>
         /// This function is run when the robot is first started up and should be
         /// used for any initialization code.
         /// </summary>
         public override void RobotInit()
         {
+            intake = new Intake();
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
             shooter = new Shooter();
@@ -52,6 +55,7 @@ namespace Robot2016
             driveHelper.Drive(1,1,true,false);
             shooter.Spin();
             shooter.Shoot();
+            intake.SetPosition(false, false);
         }
 
         /// <summary>
