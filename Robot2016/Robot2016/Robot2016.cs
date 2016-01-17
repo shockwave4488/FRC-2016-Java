@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WPILib;
-using WPILib.SmartDashboard;
+using WPILib.Extras;
 using CSharpRoboticsLib.Drive;
 using _2015_Pre_build_week_project.Team_Code.Drive_Code;
 
@@ -16,11 +16,16 @@ namespace Robot2016
     public class Robot2016 : IterativeRobot
     {
         private Drive drive;
+
+        /*
         private DriveHelper driveHelper;
         private FieldCentricDrive centricDrive;
         private Shooter shooter;
         private Intake intake;
         private Manipulator m_manipulator;
+        */
+
+        private XboxController j;
 
         /// <summary>
         /// This function is run when the robot is first started up and should be
@@ -28,10 +33,11 @@ namespace Robot2016
         /// </summary>
         public override void RobotInit()
         {
-            intake = new Intake();
+            //intake = new Intake();
             drive = new Drive();
-            driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
-            centricDrive = new FieldCentricDrive(drive);
+            //driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
+           // centricDrive = new FieldCentricDrive(drive);
+            j = new XboxController(0);
         }
 
         
@@ -54,11 +60,12 @@ namespace Robot2016
         /// </summary>
         public override void TeleopPeriodic()
         {
-            driveHelper.Drive(1,1,true,false);
-            shooter.Spin();
-            shooter.Shoot();
-            intake.SetPosition(false, false);
-            m_manipulator.Update();
+           // driveHelper.Drive(1,1,true,false);
+            //shooter.Spin();
+            //shooter.Shoot();
+            //intake.SetPosition(false, false);
+            //m_manipulator.Update();
+            drive.SetPowers(-j.GetLeftYAxis(), -j.GetLeftYAxis());
         }
 
         /// <summary>
