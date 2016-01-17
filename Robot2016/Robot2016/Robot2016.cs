@@ -17,6 +17,7 @@ namespace Robot2016
     {
         private Drive drive;
         private DriveHelper driveHelper;
+        private FieldCentricDrive centricDrive;
         private Shooter shooter;
         private Intake intake;
         private Manipulator m_manipulator;
@@ -30,6 +31,7 @@ namespace Robot2016
             intake = new Intake();
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
+            centricDrive = new FieldCentricDrive(drive);
         }
 
         

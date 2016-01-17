@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using WPILib;
 namespace Robot2016
 {
+    /// <summary>
+    /// Intake hardware and control
+    /// </summary>
     class Intake
     {
         private bool m_locked;
@@ -14,6 +17,9 @@ namespace Robot2016
         private DigitalInput m_ballSensor;
         private DigitalInput m_shooterSensor;
 
+        /// <summary>
+        /// starts motors and sensors on the intake
+        /// </summary>
         public Intake()
         {
             m_talon = new Talon(1);
@@ -21,6 +27,11 @@ namespace Robot2016
             m_shooterSensor = new DigitalInput(0);
         }
         
+        /// <summary>
+        /// Sets intake state
+        /// </summary>
+        /// <param name="argument">true: intaking false: idle</param>
+        /// <param name="Override">overrides the lock</param>
         public void SetPosition(bool argument, bool Override)
         {
             if (argument && !m_locked)
@@ -43,10 +54,7 @@ namespace Robot2016
             {
                 m_locked = false;
             }
-            
-            
         }
-
     }
 }
 
