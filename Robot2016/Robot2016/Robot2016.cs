@@ -19,6 +19,7 @@ namespace Robot2016
         private DriveHelper driveHelper;
         private Shooter shooter;
         private Intake intake;
+        private Manipulator m_manipulator;
 
         /// <summary>
         /// This function is run when the robot is first started up and should be
@@ -29,7 +30,6 @@ namespace Robot2016
             intake = new Intake();
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
-            shooter = new Shooter();
         }
 
         
@@ -56,6 +56,7 @@ namespace Robot2016
             shooter.Spin();
             shooter.Shoot();
             intake.SetPosition(false, false);
+            m_manipulator.Update();
         }
 
         /// <summary>
