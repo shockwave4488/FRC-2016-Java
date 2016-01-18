@@ -15,9 +15,11 @@ namespace Robot2016
     /// </summary>
     public class Robot2016 : IterativeRobot
     {
+        private Controllers c;
         private Drive drive;
         private DriveHelper driveHelper;
         private Shooter shooter;
+
         /// <summary>
         /// This function is run when the robot is first started up and should be
         /// used for any initialization code.
@@ -27,6 +29,7 @@ namespace Robot2016
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
             shooter = new Shooter();
+            drive.SetPowers(c.GetSpeed, c.GetSpeed);
         }
 
         
@@ -49,7 +52,7 @@ namespace Robot2016
         /// </summary>
         public override void TeleopPeriodic()
         {
-            driveHelper.Drive(1,1,true,false);
+            driveHelper.Drive(c.GetSpeed,c.GetTurn,true,false);
             shooter.Spin();
             shooter.Shoot();
         }
