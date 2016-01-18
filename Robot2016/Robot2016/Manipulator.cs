@@ -22,6 +22,11 @@ namespace Robot2016
             Mid,
             Manual,
         }
+        
+
+        private Talon ManipulatorMotor;
+        private Encoder ManipulatorEncoder;
+        private SimplePID ManipulatorPID;
 
         private Talon ManipulatorMotor;
         private Encoder ManipulatorEncoder;
@@ -58,6 +63,7 @@ namespace Robot2016
             ManipulatorEncoder = new Encoder(0,1);
             ManipulatorEncoder.DistancePerPulse = 1.0/64.0;
         }
+
         /// <summary>
         /// This funtion represents the different stages of the state machine and their operation.
         /// </summary>
@@ -71,7 +77,7 @@ namespace Robot2016
                     {
                             
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                     
+                        
                     }
                     InPosition = true;
                     break;
@@ -82,6 +88,7 @@ namespace Robot2016
                     {
                             
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
+                        
                     }
                     InPosition = true;
                     break;
@@ -94,6 +101,9 @@ namespace Robot2016
                             
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
 
+                            
+                            ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
+                        
                     }
                     InPosition = true;
                     break;
@@ -103,6 +113,7 @@ namespace Robot2016
                     if (!InPosition)
                     {
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
+                        
                     }
                     InPosition = true;
                     break;
