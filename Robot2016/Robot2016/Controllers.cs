@@ -10,9 +10,18 @@ namespace Robot2016
 {
     class Controllers
     {
+        /// <summary>
+        /// Primary controller.
+        /// </summary>
         XboxController primary;
 
+        /// <summary>
+        /// Grabs speed for primary controller drive.
+        /// </summary>
         public double GetSpeed => primary.GetLeftYAxis();
+        /// <summary>
+        /// Grabs turn for primary controller drive.
+        /// </summary>
         public double GetTurn => primary.GetRightXAxis();
     }
 }
