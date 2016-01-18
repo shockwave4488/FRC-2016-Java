@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="FieldCentricDrive.cs" />
     <Compile Include="Intake.cs" />
+    <Compile Include="Controllers.cs" />
     <Compile Include="Drive.cs" />
     <Compile Include="Manipulator.cs" />
     <Compile Include="Program.cs" />

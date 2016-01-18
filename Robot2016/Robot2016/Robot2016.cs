@@ -15,6 +15,7 @@ namespace Robot2016
     /// </summary>
     public class Robot2016 : IterativeRobot
     {
+        private Controllers c;
         private Drive drive;
         private DriveHelper driveHelper;
         private FieldCentricDrive centricDrive;
@@ -32,6 +33,8 @@ namespace Robot2016
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
             centricDrive = new FieldCentricDrive(drive);
+            shooter = new Shooter();
+            drive.SetPowers(c.GetSpeed, c.GetSpeed);
         }
 
         
@@ -54,7 +57,7 @@ namespace Robot2016
         /// </summary>
         public override void TeleopPeriodic()
         {
-            driveHelper.Drive(1,1,true,false);
+            driveHelper.Drive(c.GetSpeed,c.GetTurn,true,false);
             shooter.Spin();
             shooter.Shoot();
             intake.SetPosition(false, false);
