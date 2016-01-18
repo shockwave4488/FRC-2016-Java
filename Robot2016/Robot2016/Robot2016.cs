@@ -17,6 +17,7 @@ namespace Robot2016
     {
         private Drive drive;
         private DriveHelper driveHelper;
+        private Manipulator m_manipulator;
         /// <summary>
         /// This function is run when the robot is first started up and should be
         /// used for any initialization code.
@@ -48,6 +49,7 @@ namespace Robot2016
         public override void TeleopPeriodic()
         {
             driveHelper.Drive(,,true,);
+            m_manipulator.Update();
         }
 
         /// <summary>
