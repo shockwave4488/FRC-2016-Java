@@ -8,6 +8,9 @@ using WPILib;
 
 namespace Robot2016
 {
+    /// <summary>
+    /// A class for robot controllers.
+    /// </summary>
     class Controllers
     {
         /// <summary>
