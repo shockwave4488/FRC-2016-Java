@@ -12,6 +12,9 @@ namespace Robot2016
 {
     class Manipulator
     {
+        /// <summary>
+        /// These are the different "states" to out state machine. 
+        /// </summary>
         public enum State
         {
             Low,
@@ -19,23 +22,40 @@ namespace Robot2016
             Mid,
             Manual,
         }
+        
 
-        public Talon ManipulatorMotor;
-        public Encoder ManipulatorEncoder;
-        public SimplePID ManipulatorPID;
+        private Talon ManipulatorMotor;
+        private Encoder ManipulatorEncoder;
+        private SimplePID ManipulatorPID;
+
+        private Talon ManipulatorMotor;
+        private Encoder ManipulatorEncoder;
+        private SimplePID ManipulatorPID;
+
         private Boolean m_inPosition;
         private State m_state;
+        
+        /// <summary>
+        /// Represents the ArmState of the state machine for the manipulator and sets it to a value. 
+        /// </summary>
         public State ArmState
         {
             get { return m_state; }
             set { m_state = value; }
         }
 
+        /// <summary>
+        /// This boolean says to return the member variable "InPosition" and set it to a value.
+        /// </summary>
         public Boolean InPosition
         {
             get { return m_inPosition; }
             set { m_inPosition = value; }
         }
+
+        /// <summary>
+        /// Sets the manipulator parts equal to their function.
+        /// </summary>
         public Manipulator()
         {
             ManipulatorPID = new SimplePID(1,1,1);
@@ -44,7 +64,9 @@ namespace Robot2016
             ManipulatorEncoder.DistancePerPulse = 1.0/64.0;
         }
 
-
+        /// <summary>
+        /// This funtion represents the different stages of the state machine and their operation.
+        /// </summary>
         public void Update()
         {
             switch (ArmState)
@@ -53,11 +75,9 @@ namespace Robot2016
                     ManipulatorPID.SetPoint = 1;
                     if (!InPosition)
                     {
-                        while (!(ManipulatorEncoder.GetDistance() > (ManipulatorPID.SetPoint-0.1)&& ManipulatorEncoder.GetDistance() < (ManipulatorPID.SetPoint + 0.1)))
-                        {
                             
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                        }
+                        
                     }
                     InPosition = true;
                     break;
@@ -66,11 +86,9 @@ namespace Robot2016
                     ManipulatorPID.SetPoint = 0;
                     if (!InPosition)
                     {
-                        while (!(ManipulatorEncoder.GetDistance() > (ManipulatorPID.SetPoint - 0.1) && ManipulatorEncoder.GetDistance() < (ManipulatorPID.SetPoint + 0.1)))
-                        {
                             
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                        }
+                        
                     }
                     InPosition = true;
                     break;
@@ -79,11 +97,13 @@ namespace Robot2016
                     ManipulatorPID.SetPoint = 0.5;
                     if (!InPosition)
                     {
-                        while (!(ManipulatorEncoder.GetDistance() > (ManipulatorPID.SetPoint - 0.1) && ManipulatorEncoder.GetDistance() < (ManipulatorPID.SetPoint + 0.1)))
-                        {
+
                             
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                        }
+
+                            
+                            ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
+                        
                     }
                     InPosition = true;
                     break;
@@ -92,11 +112,8 @@ namespace Robot2016
                     ManipulatorPID.SetPoint = ManipulatorEncoder.GetDistance();
                     if (!InPosition)
                     {
-                        while (!(ManipulatorEncoder.GetDistance() > (ManipulatorPID.SetPoint - 0.1) && ManipulatorEncoder.GetDistance() < (ManipulatorPID.SetPoint + 0.1)))
-                        {
-                            
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                        }
+                        
                     }
                     InPosition = true;
                     break;
