@@ -13,13 +13,11 @@ namespace Robot2016
     class Shooter
     {
 
-        private Talon m_shooterWheel1;
-        private Talon m_shooterWheel2;
-        private Encoder m_shooterEncoder2;
-        private Encoder m_shooterEncoder1;
+        private ShooterWheel m_shooterWELeft;
+        private ShooterWheel m_shooterWERight;
         private DigitalInput m_ballSensor;
-        private Talon m_indexerWheel1;
-        private Talon m_indexerWheel2;
+        private Talon m_indexerWheelLeft;
+        private Talon m_indexerWheelRight;
 
         /// <summary>
         /// Target Rotations Per Minute for shooting.
@@ -31,13 +29,11 @@ namespace Robot2016
         /// </summary>
         public Shooter()
         {
-            m_shooterWheel1 = new Talon(4);
-            m_shooterWheel2 = new Talon(5);
-            m_shooterEncoder1 = new WPILib.Encoder(5, 6);
-            m_shooterEncoder2 = new WPILib.Encoder(7, 8);
+            m_shooterWELeft = new ShooterWheel(1, 3, 4);
+            m_shooterWERight = new ShooterWheel(2, 5, 6);
             m_ballSensor = new DigitalInput(3);
-            m_indexerWheel1 = new Talon(6);
-            m_indexerWheel2 = new Talon(7);
+            m_indexerWheelLeft = new Talon(6);
+            m_indexerWheelRight = new Talon(7);
         }
 
         /// <summary>
@@ -47,33 +43,33 @@ namespace Robot2016
         {
             if(SpinButton)
             {
-                m_shooterWheel1.Set(m_shooterEncoder1.GetRate() < Rpm  ? 1 : 0);
-                m_shooterWheel2.Set(m_shooterEncoder2.GetRate() < Rpm ? 1 : 0);
+                m_shooterWELeft.Spin();
+                m_shooterWERight.Spin();
 
             }
-            else { m_shooterWheel1.Set(0);
-                   m_shooterWheel2.Set(0);
+            else {
+                m_shooterWELeft.SetZero();
+                m_shooterWERight.SetZero();
             }
         }
 
         /// <summary>
-        /// Returns shoots true if the shooter is holding a ball, the shooter button is pressed,
+        /// Spins indexer wheels if the shooter is holding a ball, the shooter button is pressed,
         /// and shooter wheel speed is more than 95% RPM.
         /// </summary>
-        /// <returns>a boolean to shoot or not</returns>
         public void Shoot(bool ShootButton)
         {
             double tolerance = .95 * Rpm;
-            if (m_ballSensor.Get() && ShootButton && (m_shooterEncoder1.GetRate() > tolerance)&&(m_shooterEncoder2.GetRate() > tolerance))
+            if (m_ballSensor.Get() && ShootButton && (m_shooterWELeft.getCurrentRate() > tolerance)&&(m_shooterWERight.getCurrentRate() > tolerance))
             {
-                m_indexerWheel1.Set(1);
-                m_indexerWheel2.Set(1);
+                m_indexerWheelLeft.Set(1);
+                m_indexerWheelRight.Set(1);
 
             }
             else
             {
-                m_indexerWheel1.Set(0);
-                m_indexerWheel2.Set(0);
+                m_indexerWheelLeft.Set(0);
+                m_indexerWheelRight.Set(0);
             }
         }
 
