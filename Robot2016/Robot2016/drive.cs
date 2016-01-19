@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WPILib;
 using CSharpRoboticsLib.WPIExtensions;
@@ -25,14 +24,26 @@ namespace Robot2016
         /// </summary>
         private SpeedControllerGroup m_right;
 
+        ///<summary>
+        /// Right motor Encoder
+        ///</summary>
+        private Encoder m_rightEncoder;
+
+
+        ///<summary>
+        /// Left motor Encoder
+        ///</summary>
+        private Encoder m_leftEncoder;
+
         /// <summary>
-        /// Creates left and right motors
+        /// Creates left and right motors & encoders
         /// </summary>
         public Drive()
         {
-            m_left = new SpeedControllerGroup(typeof(Talon), 6, 8, 9);
-            m_right = new SpeedControllerGroup(typeof(Talon), 0, 1, 2);
-            m_right.Inverted = true;
+            m_left = new SpeedControllerGroup(typeof(Talon));
+            m_right = new SpeedControllerGroup(typeof(Talon));
+            m_leftEncoder = new Encoder(1,2);
+            m_rightEncoder = new Encoder(3,4);
         }
 
         /// <summary>
