@@ -35,6 +35,7 @@ namespace Robot2016
             centricDrive = new FieldCentricDrive(drive);
             shooter = new Shooter();
             drive.SetPowers(c.GetSpeed, c.GetSpeed);
+            c = new Controllers();
         }
 
         
@@ -58,8 +59,8 @@ namespace Robot2016
         public override void TeleopPeriodic()
         {
             driveHelper.Drive(c.GetSpeed,c.GetTurn,true,false);
-            shooter.Spin();
-            shooter.Shoot();
+            shooter.Spin(c.GetSpinButton);
+            shooter.Shoot(c.GetShootButton);
             intake.SetPosition(false, false);
             m_manipulator.Update();
         }

@@ -23,30 +23,19 @@ namespace Robot2016
         public double Rpm {get; set; }
 
         /// <summary>
-        /// Button to spin the shooter wheel.
-        /// </summary>
-        public bool SpinButton { get; set; }
-
-        /// <summary>
-        /// Button to shoot a ball.
-        /// </summary>
-        public bool ShootButton { get; set; }
-
-
-        /// <summary>
         /// Initializes Shooter member variables.
         /// </summary>
         public Shooter()
         {
             m_shooterWheel = new Talon(4);
-            m_shooterEncoder = new WPILib.Encoder(1, 2);
+            m_shooterEncoder = new WPILib.Encoder(5, 6);
             m_ballSensor = new DigitalInput(3);
         }
 
         /// <summary>
         /// Spins the shooter wheel if the spin button is pressed.
         /// </summary>
-        public void Spin()
+        public void Spin(bool SpinButton)
         {
             if(SpinButton == true)
             {
@@ -60,7 +49,7 @@ namespace Robot2016
         /// and shooter wheel speed is more than 95% RPM.
         /// </summary>
         /// <returns>a boolean to shoot or not</returns>
-        public bool Shoot()
+        public bool Shoot(bool ShootButton)
         {
             double tolerance = .95 * Rpm;
             if ((m_ballSensor.Get() == true) && (ShootButton == true) && (m_shooterEncoder.GetRate() > tolerance))
