@@ -13,9 +13,13 @@ namespace Robot2016
     class Shooter
     {
 
-        private Talon m_shooterWheel;
-        private Encoder m_shooterEncoder;
+        private Talon m_shooterWheel1;
+        private Talon m_shooterWheel2;
+        private Encoder m_shooterEncoder2;
+        private Encoder m_shooterEncoder1;
         private DigitalInput m_ballSensor;
+        private Talon m_indexerWheel1;
+        private Talon m_indexerWheel2;
 
         /// <summary>
         /// Target Rotations Per Minute for shooting.
@@ -27,9 +31,13 @@ namespace Robot2016
         /// </summary>
         public Shooter()
         {
-            m_shooterWheel = new Talon(4);
-            m_shooterEncoder = new WPILib.Encoder(5, 6);
+            m_shooterWheel1 = new Talon(4);
+            m_shooterWheel2 = new Talon(5);
+            m_shooterEncoder1 = new WPILib.Encoder(5, 6);
+            m_shooterEncoder2 = new WPILib.Encoder(7, 8);
             m_ballSensor = new DigitalInput(3);
+            m_indexerWheel1 = new Talon(6);
+            m_indexerWheel2 = new Talon(7);
         }
 
         /// <summary>
@@ -37,11 +45,15 @@ namespace Robot2016
         /// </summary>
         public void Spin(bool SpinButton)
         {
-            if(SpinButton == true)
+            if(SpinButton)
             {
-                m_shooterWheel.Set(m_shooterEncoder.GetRate() < Rpm  ? 1 : 0);
+                m_shooterWheel1.Set(m_shooterEncoder1.GetRate() < Rpm  ? 1 : 0);
+                m_shooterWheel2.Set(m_shooterEncoder2.GetRate() < Rpm ? 1 : 0);
+
             }
-            else { m_shooterWheel.Set(0); }
+            else { m_shooterWheel1.Set(0);
+                   m_shooterWheel2.Set(0);
+            }
         }
 
         /// <summary>
@@ -49,14 +61,20 @@ namespace Robot2016
         /// and shooter wheel speed is more than 95% RPM.
         /// </summary>
         /// <returns>a boolean to shoot or not</returns>
-        public bool Shoot(bool ShootButton)
+        public void Shoot(bool ShootButton)
         {
             double tolerance = .95 * Rpm;
-            if ((m_ballSensor.Get() == true) && (ShootButton == true) && (m_shooterEncoder.GetRate() > tolerance))
+            if (m_ballSensor.Get() && ShootButton && (m_shooterEncoder1.GetRate() > tolerance)&&(m_shooterEncoder2.GetRate() > tolerance))
             {
-                return true;
+                m_indexerWheel1.Set(1);
+                m_indexerWheel2.Set(1);
+
             }
-            else { return false; }
+            else
+            {
+                m_indexerWheel1.Set(0);
+                m_indexerWheel2.Set(0);
+            }
         }
 
     }
