@@ -52,6 +52,17 @@ namespace Robot2016
         {
             return m_shooterEncoder.GetRate();
         }
+        
+        /// <summary>
+        /// Checks if wheel rate is within tolerance of 95% of desired RPM
+        /// </summary>
+        /// <returns>True if within tolerance, false otherwise</returns>
+        public bool atRate()
+        {
+            double tolerance = Rpm * .95;
+            if(m_shooterEncoder.GetRate() > tolerance) { return true; }
+            else { return false; }
+        }
 
     }
 }
