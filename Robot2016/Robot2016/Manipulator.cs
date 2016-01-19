@@ -28,10 +28,6 @@ namespace Robot2016
         private Encoder ManipulatorEncoder;
         private SimplePID ManipulatorPID;
 
-        private Talon ManipulatorMotor;
-        private Encoder ManipulatorEncoder;
-        private SimplePID ManipulatorPID;
-
         private Boolean m_inPosition;
         private State m_state;
         
