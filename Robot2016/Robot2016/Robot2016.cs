@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WPILib;
-using WPILib.SmartDashboard;
+using WPILib.Extras;
 using CSharpRoboticsLib.Drive;
 using _2015_Pre_build_week_project.Team_Code.Drive_Code;
 
@@ -17,11 +17,16 @@ namespace Robot2016
     {
         private Controllers c;
         private Drive drive;
+
+        /*
         private DriveHelper driveHelper;
         private FieldCentricDrive centricDrive;
         private Shooter shooter;
         private Intake intake;
         private Manipulator m_manipulator;
+        */
+
+        private XboxController j;
 
         /// <summary>
         /// This function is run when the robot is first started up and should be
@@ -29,7 +34,7 @@ namespace Robot2016
         /// </summary>
         public override void RobotInit()
         {
-            intake = new Intake();
+            //intake = new Intake();
             drive = new Drive();
             driveHelper = new DriveHelper(drive,1,1,1,1,1,1);
             centricDrive = new FieldCentricDrive(drive);
