@@ -20,11 +20,6 @@ namespace Robot2016
         private Talon m_indexerWheelRight;
 
         /// <summary>
-        /// Target Rotations Per Minute for shooting.
-        /// </summary>
-        public double Rpm {get; set; }
-
-        /// <summary>
         /// Initializes Shooter member variables.
         /// </summary>
         public Shooter()
@@ -59,8 +54,7 @@ namespace Robot2016
         /// </summary>
         public void Shoot(bool ShootButton)
         {
-            double tolerance = .95 * Rpm;
-            if (m_ballSensor.Get() && ShootButton && (m_shooterWELeft.getCurrentRate() > tolerance)&&(m_shooterWERight.getCurrentRate() > tolerance))
+            if (m_ballSensor.Get() && ShootButton && m_shooterWELeft.atRate()&&m_shooterWERight.atRate())
             {
                 m_indexerWheelLeft.Set(1);
                 m_indexerWheelRight.Set(1);
