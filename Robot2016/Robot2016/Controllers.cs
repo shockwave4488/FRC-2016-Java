@@ -19,6 +19,11 @@ namespace Robot2016
         XboxController primary;
 
         /// <summary>
+        /// Secondary controller.
+        /// </summary>
+        XboxController secondary;
+
+        /// <summary>
         /// Grabs speed for primary controller drive.
         /// </summary>
         public double GetSpeed => primary.GetLeftYAxis();
@@ -34,6 +39,11 @@ namespace Robot2016
         /// Grabs state of B button to active shooting mechanism (can change if we choose to, which we probably will)
         /// </summary>
         public bool GetShootButton => primary.GetB();
+
+        /// <summary>
+        /// Grabs intake arm value for manual control
+        /// </summary>
+        public double GetIntakeArmManual => secondary.GetLeftYAxis();
 
         public Controllers()
         {
