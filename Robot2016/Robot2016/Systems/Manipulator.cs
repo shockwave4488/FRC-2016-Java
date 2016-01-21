@@ -34,17 +34,13 @@ namespace Robot2016.Systems
         private Talon ManipulatorMotor;
         private Encoder ManipulatorEncoder;
         private SimplePID ManipulatorPID;
-        private State m_state;
         private double m_tolerance = .05;
-        
+
         /// <summary>
         /// Represents the ArmState of the state machine for the manipulator and sets it to a value. 
         /// </summary>
-        public State ArmState
-        {
-            get { return m_state; }
-            set { m_state = value; }
-        }
+        public State ArmState { get; set; }
+       
 
         /// <summary>
         /// This boolean says to return the member variable "InPosition" and set it to a value.
@@ -79,7 +75,7 @@ namespace Robot2016.Systems
             if (m_ballSensor.Get())
             {
                 m_talon.Set(0);
-                ArmState = m_state;
+                ArmState = ArmState;
                 m_locked = true;
             }
             if (m_shooterSensor.Get() || Override)
