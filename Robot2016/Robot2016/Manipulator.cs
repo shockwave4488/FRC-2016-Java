@@ -12,8 +12,23 @@ namespace Robot2016
 {
     class Manipulator
     {
+        private bool m_locked;
+        private Talon m_talon;
+        private DigitalInput m_ballSensor;
+        private DigitalInput m_shooterSensor;
+
         /// <summary>
-        /// These are the different "states" to out state machine. 
+        /// starts motors and sensors on the intake
+        /// </summary>
+        public void Intake()
+        {
+            m_talon = new Talon(1);
+            m_ballSensor = new DigitalInput(0);
+            m_shooterSensor = new DigitalInput(0);
+        }
+
+        /// <summary>
+        /// The different "states" to the arm state machine. 
         /// </summary>
         public enum State
         {
@@ -22,14 +37,12 @@ namespace Robot2016
             Mid,
             Manual,
         }
-        
 
         private Talon ManipulatorMotor;
         private Encoder ManipulatorEncoder;
         private SimplePID ManipulatorPID;
-
-        private Boolean m_inPosition;
         private State m_state;
+        private double m_tolerance = .05;
         
         /// <summary>
         /// Represents the ArmState of the state machine for the manipulator and sets it to a value. 
@@ -43,10 +56,13 @@ namespace Robot2016
         /// <summary>
         /// This boolean says to return the member variable "InPosition" and set it to a value.
         /// </summary>
-        public Boolean InPosition
+        public bool InPosition
         {
-            get { return m_inPosition; }
-            set { m_inPosition = value; }
+            get
+            {
+                return (ManipulatorEncoder.Get() < ManipulatorPID.SetPoint + m_tolerance) &&
+                       (ManipulatorEncoder.Get() > ManipulatorPID.SetPoint - m_tolerance);
+            }
         }
 
         /// <summary>
@@ -61,9 +77,29 @@ namespace Robot2016
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Override">overrides the lock</param>
+        public void Intake(bool Override)
+        {
+
+            if (m_ballSensor.Get())
+            {
+                m_talon.Set(0);
+                ArmState = m_state;
+                m_locked = true;
+            }
+            if (m_shooterSensor.Get() || Override)
+            {
+                m_locked = false;
+            }
+        }
+
+        /// <summary>
         /// This funtion represents the different stages of the state machine and their operation.
         /// </summary>
-        public void Update()
+        /// <param name="argument">intake button</param>
+        public void Arm(bool argument)
         {
             switch (ArmState)
             {
@@ -75,18 +111,24 @@ namespace Robot2016
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
                         
                     }
-                    InPosition = true;
                     break;
 
                 case State.Low:
                     ManipulatorPID.SetPoint = 0;
-                    if (!InPosition)
+                    if (argument && !m_locked)
                     {
-                            
-                            ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                        
+                    m_talon.Set(1);
+                    ArmState = State.High;
                     }
-                    InPosition = true;
+                    else
+                    {
+                    m_talon.Set(0);
+                    ArmState = State.High;
+                    }
+            if (!InPosition)
+                    {
+                    ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
+                    }
                     break;
 
                 case State.Mid:
@@ -101,7 +143,6 @@ namespace Robot2016
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
                         
                     }
-                    InPosition = true;
                     break;
 
                 case State.Manual:
@@ -111,8 +152,9 @@ namespace Robot2016
                             ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
                         
                     }
-                    InPosition = true;
                     break;
+
+                    
             }
 
         }
