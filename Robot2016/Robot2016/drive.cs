@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WPILib;
 using CSharpRoboticsLib.WPIExtensions;
 using CSharpRoboticsLib.Drive.Interfaces;
+using WPILib.Extras.NavX;
 
 namespace Robot2016
 {
@@ -36,6 +37,20 @@ namespace Robot2016
         private Encoder m_leftEncoder;
 
         /// <summary>
+        /// The AHRS that is necessary for a NavX Gyro to be initialized in the code
+        /// </summary>
+        private AHRS m_robotGyro;
+
+        /// <summary>
+        /// Property used to access the current angular bearing of the AHRS
+        /// </summary>
+        public double getAngle {
+
+            get { return m_robotGyro.GetAngle(); }
+
+        }
+
+        /// <summary>
         /// Creates left and right motors & encoders
         /// </summary>
         public Drive()
@@ -44,6 +59,7 @@ namespace Robot2016
             m_right = new SpeedControllerGroup(typeof(Talon));
             m_leftEncoder = new Encoder(1,2);
             m_rightEncoder = new Encoder(3,4);
+            m_robotGyro = new AHRS(WPILib.SPI.Port.OnboardCS2,20);
         }
 
         /// <summary>
