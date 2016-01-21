@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WPILib;
+﻿using CSharpRoboticsLib.Drive.Interfaces;
 using CSharpRoboticsLib.WPIExtensions;
-using CSharpRoboticsLib.Drive.Interfaces;
+using WPILib;
 
-namespace Robot2016
+namespace Robot2016.Systems
 {
     /// <summary>
     /// Robot drive hardware

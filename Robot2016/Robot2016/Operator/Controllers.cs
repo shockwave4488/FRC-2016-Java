@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPILib.Extras;
-using WPILib;
+﻿using WPILib.Extras;
 
-namespace Robot2016
+namespace Robot2016.Operator
 {
     /// <summary>
     /// A class for robot controllers.

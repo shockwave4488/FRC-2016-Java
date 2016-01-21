@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Robot2016.Components;
 using WPILib;
-using CSharpRoboticsLib.WPIExtensions;
 
-namespace Robot2016
+namespace Robot2016.Systems
 {
 /// <summary>
 /// Ball shooter class.

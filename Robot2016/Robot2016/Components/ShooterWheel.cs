@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WPILib;
+﻿using WPILib;
 
-namespace Robot2016
+namespace Robot2016.Components
 { 
 /// <summary>
 /// Shooter Wheel class, consisting of one shooter wheel and accompanying encoder
