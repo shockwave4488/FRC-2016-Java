@@ -45,15 +45,8 @@ namespace Robot2016.Systems
         /// <summary>
         /// This boolean says to return the member variable "InPosition" and set it to a value.
         /// </summary>
-        public bool InPosition
-        {
-            get
-            {
-                return (ManipulatorEncoder.Get() < ManipulatorPID.SetPoint + m_tolerance) &&
-                       (ManipulatorEncoder.Get() > ManipulatorPID.SetPoint - m_tolerance);
-            }
-        }
-
+        public bool InPosition => (ManipulatorEncoder.Get() < ManipulatorPID.SetPoint + m_tolerance) && (ManipulatorEncoder.Get() > ManipulatorPID.SetPoint - m_tolerance);
+       
         /// <summary>
         /// Sets the manipulator parts equal to their function.
         /// </summary>
