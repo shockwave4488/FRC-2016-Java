@@ -44,10 +44,9 @@ namespace Robot2016
         /// <summary>
         /// Property used to access the current angular bearing of the AHRS
         /// </summary>
-        public double getAngle {
-
+        public double getAngle
+        {
             get { return m_robotGyro.GetAngle(); }
-
         }
 
         /// <summary>
