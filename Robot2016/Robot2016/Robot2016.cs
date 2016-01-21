@@ -4,6 +4,8 @@ using System.Linq;
 using WPILib;
 using WPILib.Extras;
 using CSharpRoboticsLib.Drive;
+using Robot2016.Operator;
+using Robot2016.Systems;
 
 namespace Robot2016
 {

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using WPILib;
-namespace Robot2016
+﻿using WPILib;
+
+namespace Robot2016.Systems
 {
     /// <summary>
     /// Intake hardware and control

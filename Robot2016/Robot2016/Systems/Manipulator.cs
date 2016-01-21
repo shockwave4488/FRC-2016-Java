@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CSharpRoboticsLib.ControlSystems;
+﻿using CSharpRoboticsLib.ControlSystems;
 using WPILib;
-using CSharpRoboticsLib.WPIExtensions;
-using HAL.Base;
 
-
-namespace Robot2016
+namespace Robot2016.Systems
 {
     class Manipulator
     {

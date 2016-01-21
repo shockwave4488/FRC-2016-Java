@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Robot2016.Components;
 using WPILib;
-using CSharpRoboticsLib.WPIExtensions;
 
-namespace Robot2016
+namespace Robot2016.Systems
 {
 /// <summary>
 /// Ball shooter class.
@@ -54,7 +50,7 @@ namespace Robot2016
         /// </summary>
         public void Shoot(bool ShootButton)
         {
-            if (m_ballSensor.Get() && ShootButton && m_shooterWELeft.atRate()&&m_shooterWERight.atRate())
+            if (m_ballSensor.Get() && ShootButton && m_shooterWELeft.atRate&&m_shooterWERight.atRate)
             {
                 m_indexerWheelLeft.Set(1);
                 m_indexerWheelRight.Set(1);

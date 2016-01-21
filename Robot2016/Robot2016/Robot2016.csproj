@@ -67,16 +67,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldCentricDrive.cs" />
-    <Compile Include="Intake.cs" />
-    <Compile Include="Controllers.cs" />
-    <Compile Include="Drive.cs" />
-    <Compile Include="Manipulator.cs" />
+    <Compile Include="Operator\FieldCentricDrive.cs" />
+    <Compile Include="Systems\Intake.cs" />
+    <Compile Include="Operator\Controllers.cs" />
+    <Compile Include="Systems\Drive.cs" />
+    <Compile Include="Systems\Manipulator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Robot2016.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shooter.cs" />
-    <Compile Include="ShooterWheel.cs" />
+    <Compile Include="Systems\Shooter.cs" />
+    <Compile Include="Components\ShooterWheel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

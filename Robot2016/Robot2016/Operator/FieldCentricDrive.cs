@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPILib.Extras.NavX;
 using CSharpRoboticsLib.ControlSystems;
+using Robot2016.Systems;
+using WPILib.Extras.NavX;
 
-namespace Robot2016
+namespace Robot2016.Operator
 {
     class FieldCentricDrive
     {
