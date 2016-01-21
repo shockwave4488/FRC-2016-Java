@@ -39,7 +39,13 @@ namespace Robot2016.Systems
             Mid,
             Manual,
         }
-     
+
+
+        private Talon ManipulatorMotor;
+        private Encoder ManipulatorEncoder;
+        private SimplePID ManipulatorPID;
+        private double m_tolerance = .05;
+
         /// <summary>
         /// A get, set for the arm state. 
         /// </summary>
@@ -66,12 +72,19 @@ namespace Robot2016.Systems
         {
 
             if (m_ballSensor.Get())
+
                 {                    
                     m_talon.Set(0);
                     //lift arm up
                     ArmState = m_state;
                     m_locked = true;
                 }
+
+            {
+                m_talon.Set(0);
+                ArmState = ArmState;
+                m_locked = true;
+            }
 
             if (m_shooterSensor.Get() || Override)
                 {
