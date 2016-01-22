@@ -12,7 +12,6 @@ namespace Robot2016.Systems
         private Talon m_manipulatorMotor;
         private Encoder m_positionEncoder;
         private SimplePID m_PID;
-        private State m_state;
         private double m_tolerance = .05;
     
         /// <summary>
@@ -43,41 +42,12 @@ namespace Robot2016.Systems
         }
 
 
-        private Talon ManipulatorMotor;
-        private Encoder ManipulatorEncoder;
-        private SimplePID ManipulatorPID;
-
         /// <summary>
         /// A get, set for the arm state. 
         /// </summary>
         public State ArmState { get; set; }
-
-        /// <summary>
-        /// This boolean says to return the member variable "InPosition" and set it to a value.
-        /// </summary>
-
-        public bool InPosition => (ManipulatorEncoder.Get() < ManipulatorPID.SetPoint + m_tolerance) && (ManipulatorEncoder.Get() > ManipulatorPID.SetPoint - m_tolerance);
        
-        /// <summary>
-        /// Sets the manipulator parts equal to their function.
-        /// </summary>
-        public Manipulator()
-        {
-            ManipulatorPID = new SimplePID(1,1,1);
-            ManipulatorMotor = new Talon(0);
-            ManipulatorEncoder = new Encoder(0,1);
-            ManipulatorEncoder.DistancePerPulse = 1.0/64.0;
-        }
-
-
-        public bool InPosition
-        {
-            get
-            {
-                return (m_positionEncoder.Get() < m_PID.SetPoint + m_tolerance) &&
-                       (m_positionEncoder.Get() > m_PID.SetPoint - m_tolerance);
-            }
-        }
+        public bool InPosition => (m_positionEncoder.Get() < m_PID.SetPoint + m_tolerance) && (m_positionEncoder.Get() > m_PID.SetPoint - m_tolerance);
         
 
         /// <summary>
@@ -91,9 +61,9 @@ namespace Robot2016.Systems
             if (m_ballSensor.Get())
 
                 {                    
-                    m_talon.Set(0);
+                    m_intakeMotor.Set(0);
                     //lift arm up
-                    ArmState = m_state;
+                    ArmState = ArmState;
                     m_locked = true;
                 }
 
@@ -110,12 +80,12 @@ namespace Robot2016.Systems
 
             if (button && !m_locked)
                 {
-                    m_talon.Set(1);
+                    m_intakeMotor.Set(1);
                     //set arm down
                 }
              else
                 {
-                    m_talon.Set(0);
+                    m_intakeMotor.Set(0);
                     //lift arm up
                 } 
 
@@ -142,23 +112,6 @@ namespace Robot2016.Systems
                     break;
 
                 case State.Low:
-
-                    ManipulatorPID.SetPoint = 0;
-                    if (argument && !m_locked)
-                    {
-                    m_intakeMotor.Set(1);
-                    ArmState = State.High;
-                    }
-                    else
-                    {
-                    m_intakeMotor.Set(0);
-                    ArmState = State.High;
-                    }
-            if (!InPosition)
-                    {
-                    ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
-                    }
-                    break;
                     m_PID.SetPoint = 0;
                         if (!InPosition)
                             {
