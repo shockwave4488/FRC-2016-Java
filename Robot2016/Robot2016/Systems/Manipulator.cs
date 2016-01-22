@@ -6,7 +6,7 @@ namespace Robot2016.Systems
     class Manipulator
     {
         private bool m_locked;
-        private Talon m_talon;
+        private Talon m_intakeMotor;
         private DigitalInput m_ballSensor;
         private DigitalInput m_shooterSensor;
 
@@ -15,7 +15,7 @@ namespace Robot2016.Systems
         /// </summary>
         public void Intake()
         {
-            m_talon = new Talon(1);
+            m_intakeMotor = new Talon(1);
             m_ballSensor = new DigitalInput(0);
             m_shooterSensor = new DigitalInput(0);
         }
@@ -67,7 +67,7 @@ namespace Robot2016.Systems
 
             if (m_ballSensor.Get())
             {
-                m_talon.Set(0);
+                m_intakeMotor.Set(0);
                 ArmState = ArmState;
                 m_locked = true;
             }
@@ -99,12 +99,12 @@ namespace Robot2016.Systems
                     ManipulatorPID.SetPoint = 0;
                     if (argument && !m_locked)
                     {
-                    m_talon.Set(1);
+                    m_intakeMotor.Set(1);
                     ArmState = State.High;
                     }
                     else
                     {
-                    m_talon.Set(0);
+                    m_intakeMotor.Set(0);
                     ArmState = State.High;
                     }
             if (!InPosition)
