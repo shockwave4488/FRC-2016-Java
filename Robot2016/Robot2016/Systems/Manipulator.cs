@@ -20,15 +20,13 @@ namespace Robot2016.Systems
         /// </summary>
         public Manipulator()
         {
-<<<<<<< HEAD
+
             m_intakeMotor = new Talon(1);
-=======
             m_PID = new SimplePID(1,1,1);
             m_manipulatorMotor = new Talon(0);
             m_positionEncoder = new Encoder(0,1);
             m_positionEncoder.DistancePerPulse = 1.0/64.0;
-            m_talon = new Talon(1);
->>>>>>> refs/remotes/shockwave4488/master
+            m_intakeMotor = new Talon(1);
             m_ballSensor = new DigitalInput(0);
             m_shooterSensor = new DigitalInput(0);
         }
@@ -48,7 +46,6 @@ namespace Robot2016.Systems
         private Talon ManipulatorMotor;
         private Encoder ManipulatorEncoder;
         private SimplePID ManipulatorPID;
-        private double m_tolerance = .05;
 
         /// <summary>
         /// A get, set for the arm state. 
@@ -58,7 +55,7 @@ namespace Robot2016.Systems
         /// <summary>
         /// This boolean says to return the member variable "InPosition" and set it to a value.
         /// </summary>
-<<<<<<< HEAD
+
         public bool InPosition => (ManipulatorEncoder.Get() < ManipulatorPID.SetPoint + m_tolerance) && (ManipulatorEncoder.Get() > ManipulatorPID.SetPoint - m_tolerance);
        
         /// <summary>
@@ -72,7 +69,7 @@ namespace Robot2016.Systems
             ManipulatorEncoder.DistancePerPulse = 1.0/64.0;
         }
 
-=======
+
         public bool InPosition
         {
             get
@@ -82,7 +79,7 @@ namespace Robot2016.Systems
             }
         }
         
->>>>>>> refs/remotes/shockwave4488/master
+
         /// <summary>
         /// Uses the override and intake buttons to lock and unlock the intake, and changes the arm state accordingly.
         /// </summary>
@@ -145,7 +142,7 @@ namespace Robot2016.Systems
                     break;
 
                 case State.Low:
-<<<<<<< HEAD
+
                     ManipulatorPID.SetPoint = 0;
                     if (argument && !m_locked)
                     {
@@ -162,14 +159,12 @@ namespace Robot2016.Systems
                     ManipulatorMotor.SetSpeed(ManipulatorPID.Get(ManipulatorEncoder.GetDistance()));
                     }
                     break;
-=======
                     m_PID.SetPoint = 0;
                         if (!InPosition)
                             {
                                 m_manipulatorMotor.SetSpeed(m_PID.Get(m_positionEncoder.GetDistance()));
                             }
                         break;
->>>>>>> refs/remotes/shockwave4488/master
 
                 case State.Mid:
                     m_PID.SetPoint = 0.5;
