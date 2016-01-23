@@ -66,7 +66,7 @@ namespace Robot2016
             shooter.Spin(c.GetSpinButton);
             shooter.Shoot(c.GetShootButton);
             intake.SetPosition(false, false);
-            m_manipulator.Update();
+            //m_manipulator.Update();
         }
 
         /// <summary>

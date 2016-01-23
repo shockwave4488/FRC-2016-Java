@@ -1,7 +1,6 @@
 ﻿using CSharpRoboticsLib.Drive.Interfaces;
 using CSharpRoboticsLib.WPIExtensions;
 using WPILib;
-using CSharpRoboticsLib.Drive.Interfaces;
 using WPILib.Extras.NavX;
 
 namespace Robot2016.Systems

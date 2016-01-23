@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Robot2016")]
+[assembly: AssemblyTitle("Simulator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Robot2016")]
+[assembly: AssemblyProduct("Simulator")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e8e9c898-ef20-4470-8369-d68f3ef4d93c")]
+[assembly: Guid("adfbbe3c-d3e9-45b3-9f96-95dab7cc7ef9")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,4 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("2016.0.0.55")]
 [assembly: AssemblyVersion("2016.0.0.55")]
 [assembly: AssemblyFileVersion("2016.0.0.55")]
-[assembly: InternalsVisibleTo("Robot2016.Tests")]

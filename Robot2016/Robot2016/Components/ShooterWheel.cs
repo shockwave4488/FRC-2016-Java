@@ -1,20 +1,21 @@
 ﻿using WPILib;
 
 namespace Robot2016.Components
-{ 
-/// <summary>
-/// Shooter Wheel class, consisting of one shooter wheel and accompanying encoder
-/// </summary>
+{
+    /// <summary>
+    /// Shooter Wheel class, consisting of one shooter wheel and accompanying encoder
+    /// </summary>
     class ShooterWheel
     {
         private Talon m_shooterWheel;
         private Encoder m_shooterEncoder;
-        public double tolerance => ShooterWheelRpm * .95;
+        public double tolerance => ShooterWheelRpm*.95;
+
         /// <summary>
         /// Target Rotations Per Minute for shooting.
         /// </summary>
         public double ShooterWheelRpm { get; set; }
-        
+
 
 
         /// <summary>
@@ -24,9 +25,9 @@ namespace Robot2016.Components
         {
             m_shooterWheel = new Talon(TalonChannel);
             m_shooterEncoder = new Encoder(EncoderChannel1, EncoderChannel2);
-           
+
         }
-        
+
         /// <summary>
         /// Spins shooter wheel
         /// </summary>
@@ -34,7 +35,7 @@ namespace Robot2016.Components
         {
             m_shooterWheel.Set(m_shooterEncoder.GetRate() < ShooterWheelRpm ? 1 : 0);
         }
-       
+
         /// <summary>
         /// Sets shooter wheel to zero
         /// </summary>
@@ -49,8 +50,8 @@ namespace Robot2016.Components
         /// </summary>
         /// <returns>True if within tolerance, false otherwise</returns>
         public bool atRate => (m_shooterEncoder.GetRate() > tolerance ? true : false);
-       
-        }
 
     }
+
 }
+
