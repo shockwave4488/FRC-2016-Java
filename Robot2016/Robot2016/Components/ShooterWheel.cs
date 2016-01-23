@@ -9,8 +9,7 @@ namespace Robot2016.Components
     {
         private Talon m_shooterWheel;
         private Encoder m_shooterEncoder;
-        private double tolerance; 
-        
+        public double tolerance => ShooterWheelRpm * .95;
         /// <summary>
         /// Target Rotations Per Minute for shooting.
         /// </summary>
@@ -25,7 +24,7 @@ namespace Robot2016.Components
         {
             m_shooterWheel = new Talon(TalonChannel);
             m_shooterEncoder = new Encoder(EncoderChannel1, EncoderChannel2);
-            tolerance = ShooterWheelRpm * .95;
+           
         }
         
         /// <summary>

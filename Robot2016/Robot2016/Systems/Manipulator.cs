@@ -6,13 +6,12 @@ namespace Robot2016.Systems
     class Manipulator
     {
         private bool m_locked;
-        private Talon m_talon;
+        private Talon m_intakeMotor;
         private DigitalInput m_ballSensor;
         private DigitalInput m_shooterSensor;
         private Talon m_manipulatorMotor;
         private Encoder m_positionEncoder;
         private SimplePID m_PID;
-        private State m_state;
         private double m_tolerance = .05;
     
         /// <summary>
@@ -20,11 +19,13 @@ namespace Robot2016.Systems
         /// </summary>
         public Manipulator()
         {
+
+            m_intakeMotor = new Talon(1);
             m_PID = new SimplePID(1,1,1);
             m_manipulatorMotor = new Talon(0);
             m_positionEncoder = new Encoder(0,1);
             m_positionEncoder.DistancePerPulse = 1.0/64.0;
-            m_talon = new Talon(1);
+            m_intakeMotor = new Talon(1);
             m_ballSensor = new DigitalInput(0);
             m_shooterSensor = new DigitalInput(0);
         }
@@ -41,28 +42,14 @@ namespace Robot2016.Systems
         }
 
 
-        private Talon ManipulatorMotor;
-        private Encoder ManipulatorEncoder;
-        private SimplePID ManipulatorPID;
-        private double m_tolerance = .05;
-
         /// <summary>
         /// A get, set for the arm state. 
         /// </summary>
         public State ArmState { get; set; }
-
-        /// <summary>
-        /// This boolean says to return the member variable "InPosition" and set it to a value.
-        /// </summary>
-        public bool InPosition
-        {
-            get
-            {
-                return (m_positionEncoder.Get() < m_PID.SetPoint + m_tolerance) &&
-                       (m_positionEncoder.Get() > m_PID.SetPoint - m_tolerance);
-            }
-        }
+       
+        public bool InPosition => (m_positionEncoder.Get() < m_PID.SetPoint + m_tolerance) && (m_positionEncoder.Get() > m_PID.SetPoint - m_tolerance);
         
+
         /// <summary>
         /// Uses the override and intake buttons to lock and unlock the intake, and changes the arm state accordingly.
         /// </summary>
@@ -74,14 +61,14 @@ namespace Robot2016.Systems
             if (m_ballSensor.Get())
 
                 {                    
-                    m_talon.Set(0);
+                    m_intakeMotor.Set(0);
                     //lift arm up
-                    ArmState = m_state;
+                    ArmState = ArmState;
                     m_locked = true;
                 }
 
             {
-                m_talon.Set(0);
+                m_intakeMotor.Set(0);
                 ArmState = ArmState;
                 m_locked = true;
             }
@@ -93,12 +80,12 @@ namespace Robot2016.Systems
 
             if (button && !m_locked)
                 {
-                    m_talon.Set(1);
+                    m_intakeMotor.Set(1);
                     //set arm down
                 }
              else
                 {
-                    m_talon.Set(0);
+                    m_intakeMotor.Set(0);
                     //lift arm up
                 } 
 
