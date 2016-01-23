@@ -9,11 +9,13 @@ namespace Robot2016.Components
     {
         private Talon m_shooterWheel;
         private Encoder m_shooterEncoder;
-
+        public double tolerance => ShooterWheelRpm * .95;
         /// <summary>
         /// Target Rotations Per Minute for shooting.
         /// </summary>
-        public double Rpm { get; set; }
+        public double ShooterWheelRpm { get; set; }
+        
+
 
         /// <summary>
         /// Initializes ShooterWheel member variables using input channels
@@ -22,6 +24,7 @@ namespace Robot2016.Components
         {
             m_shooterWheel = new Talon(TalonChannel);
             m_shooterEncoder = new Encoder(EncoderChannel1, EncoderChannel2);
+           
         }
         
         /// <summary>
@@ -29,7 +32,7 @@ namespace Robot2016.Components
         /// </summary>
         public void Spin()
         {
-            m_shooterWheel.Set(m_shooterEncoder.GetRate() < Rpm ? 1 : 0);
+            m_shooterWheel.Set(m_shooterEncoder.GetRate() < ShooterWheelRpm ? 1 : 0);
         }
        
         /// <summary>
@@ -39,25 +42,14 @@ namespace Robot2016.Components
         {
             m_shooterWheel.Set(0);
         }
-        
-        /// <summary>
-        /// Gets current rate of wheel from encoder
-        /// </summary>
-        /// <returns>Current rate of wheel</returns>
-        public double getCurrentRate()
-        {
-            return m_shooterEncoder.GetRate();
-        }
-        
+
+
         /// <summary>
         /// Checks if wheel rate is within tolerance of 95% of desired RPM
         /// </summary>
         /// <returns>True if within tolerance, false otherwise</returns>
-        public bool atRate()
-        {
-            double tolerance = Rpm * .95;
-            if(m_shooterEncoder.GetRate() > tolerance) { return true; }
-            else { return false; }
+        public bool atRate => (m_shooterEncoder.GetRate() > tolerance ? true : false);
+       
         }
 
     }
