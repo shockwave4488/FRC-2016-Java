@@ -1,17 +1,17 @@
 ﻿using CSharpRoboticsLib.ControlSystems;
 using WPILib;
+using Robot2016.Components;
 
 namespace Robot2016.Systems
 {
     class Manipulator
     {
-        private bool m_locked;
-        private Talon m_intakeMotor;
+        private Intake m_intakeMotor;
+        private Arm m_Arm;
         private DigitalInput m_ballSensor;
         private DigitalInput m_shooterSensor;
-        private Talon m_manipulatorMotor;
-        private Encoder m_positionEncoder;
         private SimplePID m_PID;
+        private Encoder m_positionEncoder;
         private double m_tolerance = .05;
     
         /// <summary>
@@ -19,13 +19,11 @@ namespace Robot2016.Systems
         /// </summary>
         public Manipulator()
         {
-
-            m_intakeMotor = new Talon(1);
+            
             m_PID = new SimplePID(1,1,1);
-            m_manipulatorMotor = new Talon(0);
-            m_positionEncoder = new Encoder(0,1);
+            m_Arm = new Arm();
+            m_positionEncoder = new Encoder(2,3);
             m_positionEncoder.DistancePerPulse = 1.0/64.0;
-            m_intakeMotor = new Talon(1);
             m_ballSensor = new DigitalInput(0);
             m_shooterSensor = new DigitalInput(0);
         }
@@ -36,9 +34,10 @@ namespace Robot2016.Systems
         public enum State
         {
             Low,
+            Intake,
             High,
-            Mid,
-            Manual,
+            Load,
+            Lower
         }
 
 
@@ -55,35 +54,35 @@ namespace Robot2016.Systems
         /// </summary>
         /// <param name="Override">The override button for the intake.</param>
         /// <param name="button">The intake button.</param>
-        public void Intake(bool Override, bool button)
+        public void Intake(bool button, bool reverse)
         {
 
-            if (m_ballSensor.Get())
+            if (m_ballSensor.Get() || !button)
 
                 {                    
-                    m_intakeMotor.Set(0);
+                    ;
                     //lift arm up
                     ArmState = ArmState;
-                    m_locked = true;
                 }
 
             {
                 m_intakeMotor.Set(0);
                 ArmState = ArmState;
-                m_locked = true;
             }
+            
 
-            if (m_shooterSensor.Get() || Override)
+            if (button && !m_ballSensor.Get())
                 {
-                    m_locked = false;
-                }
-
-            if (button && !m_locked)
+                if (!reverse)
                 {
                     m_intakeMotor.Set(1);
                     //set arm down
                 }
-             else
+                else {
+                    m_intakeMotor.Set(-1);
+                }
+            }
+            else
                 {
                     m_intakeMotor.Set(0);
                     //lift arm up
@@ -96,41 +95,18 @@ namespace Robot2016.Systems
         /// </summary>
         public double ArmManual { get; set; }
 
+
+
+
+
+
+
         /// <summary>
-        /// This funtion represents the different stages of the state machine and their operation.
+        /// This funtion updates the arm.
         /// </summary>
-        public void Arm()
+        public void UpdateArm()
         {
-            switch (ArmState)
-            {
-                case State.High:
-                    m_PID.SetPoint = 1;
-                    if (!InPosition)
-                        {
-                            m_manipulatorMotor.SetSpeed(m_PID.Get(m_positionEncoder.GetDistance()));
-                        }
-                    break;
-
-                case State.Low:
-                    m_PID.SetPoint = 0;
-                        if (!InPosition)
-                            {
-                                m_manipulatorMotor.SetSpeed(m_PID.Get(m_positionEncoder.GetDistance()));
-                            }
-                        break;
-
-                case State.Mid:
-                    m_PID.SetPoint = 0.5;
-                        if (!InPosition)
-                            {
-                                m_manipulatorMotor.SetSpeed(m_PID.Get(m_positionEncoder.GetDistance()));
-                            }
-                        break;
-
-                case State.Manual:
-                        m_manipulatorMotor.SetSpeed(ArmManual);
-                        break;
-            }
+            m_Arm.Update();
         }
     }
 }

@@ -67,9 +67,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Arm.cs" />
+    <Compile Include="Components\Intake.cs" />
     <Compile Include="Operator\FieldCentricDrive.cs" />
     <Compile Include="SystemsManagement.cs" />
-    <Compile Include="Systems\Intake.cs" />
     <Compile Include="Operator\Controllers.cs" />
     <Compile Include="Systems\Drive.cs" />
     <Compile Include="Systems\Manipulator.cs" />

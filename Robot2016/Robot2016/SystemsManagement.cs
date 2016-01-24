@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Robot2016.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,14 +30,15 @@ namespace Robot2016
         }
 
         public ShooterState shooterState { get; private set; }
-
+        public WPILib.Talon armMotor = new WPILib.Talon(1);
         public bool LoadButton { get; set; }
         public bool ChargeButton { get; set; }
         public bool ShootButton { get; set; }
         public bool IntakeButton { get; set; }
         public bool DefenseLowButton { get; set; }
         public bool DefenseHighButton { get; set; }
-
+        public Arm ManipulatorArm = new Arm();
+        public Intake ManipulatorIntake = new Intake();
         internal bool IntakeHasBall;
         internal bool ShooterHasBall;
         internal bool ShooterShotBall;
@@ -215,7 +217,8 @@ namespace Robot2016
 
         public void ArmIdle()
         {
-            //Moves arm within robot
+            armState = ArmState.Load;
+
         }
 
         public void ArmIntake()
