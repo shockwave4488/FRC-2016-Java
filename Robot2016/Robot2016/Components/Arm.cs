@@ -22,6 +22,9 @@ namespace Robot2016.Components
         private SimplePID armPID;
         private Talon armMotor;
         private AnalogPotentiometer m_armPotentiometer;
+        /// <summary>
+        /// Constructor for the Arm. Doesn't take in any values and initializes the Arm components correctly
+        /// </summary>
         public Arm() {
             armMotor = new Talon(1);
             m_armPotentiometer = new AnalogPotentiometer(1);
@@ -30,6 +33,10 @@ namespace Robot2016.Components
             base.Motor = armMotor;
             base.Sensor = m_armPotentiometer;
         }
+        /// <summary>
+        /// Moves the Arm to a new location, which is specified by the input of the function.
+        /// </summary>
+        /// <param name="armPlace"></param>
         public void newPosition(armlocation armPlace)
         {
             switch (armPlace)

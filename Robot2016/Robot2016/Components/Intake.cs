@@ -10,24 +10,35 @@ namespace Robot2016.Components
     class Intake
     {
         private Talon intakeMotor;
-        private /*IDK, beam break?*/ armBallSensor;
+        private DigitalInput armBallSensor;
         public Intake() {
 
 
             intakeMotor = new Talon(3);
-            armBallSensor = new /*IDK, beam break?*/(/*Some arbitrary channel reference*/);
+            armBallSensor = new DigitalInput(0);
 
 
         }
+
+        /// <summary>
+        /// Sets the input speed for the intake depending on both the controller button and a separate button
+        /// The separate button will determine whether or not the bot needs to 
+        /// </summary>
+        /// <param name="button"></param>
+        /// <param name="output"></param>
         public void moveThoseRollers(bool button,bool output) {
-            if (button || (!armBallSensor))
+            if (button)
             {
-                if (!output)
+                if (!armBallSensor.Get())
+                {
+                    intakeMotor.SetSpeed(1);
+                }
+                else if (!output)
                 {
                     intakeMotor.SetSpeed(1);
                 }
                 else {
-                    intakeMotor.SetSpeed(-1);
+                    intakeMotor.SetSpeed(0);
                 }
             }
             else {

@@ -66,7 +66,7 @@ namespace Robot2016.Systems
                 }
 
             {
-                m_intakeMotor.Set(0);
+                m_intakeMotor.moveThoseRollers(false,false);
                 ArmState = ArmState;
             }
             
@@ -75,16 +75,16 @@ namespace Robot2016.Systems
                 {
                 if (!reverse)
                 {
-                    m_intakeMotor.Set(1);
+                    m_intakeMotor.moveThoseRollers(true,false);
                     //set arm down
                 }
                 else {
-                    m_intakeMotor.Set(-1);
+                    m_intakeMotor.moveThoseRollers(true,true);
                 }
             }
             else
                 {
-                    m_intakeMotor.Set(0);
+                    m_intakeMotor.moveThoseRollers(false,false);
                     //lift arm up
                 } 
 
