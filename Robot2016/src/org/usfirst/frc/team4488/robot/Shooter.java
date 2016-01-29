@@ -1,8 +1,11 @@
 package org.usfirst.frc.team4488.robot;
 
+import org.usfirst.frc.team4488.robot.Turret.ShooterPosition;
+
 public class Shooter {
 	private ShooterWheels m_shooterWheels;
     private Indexer m_indexer;
+    private Turret m_turret;
 
     /// <summary>
     /// Initializes Shooter member variables.
@@ -14,7 +17,7 @@ public class Shooter {
     }
 
     /// <summary>
-    /// Spins the shooter wheel if the spin button is pressed.
+    /// Spins the shooter wheels 
     /// </summary>
     public void Spin()
     {
@@ -23,23 +26,56 @@ public class Shooter {
     }
 
     /// <summary>
-    /// Spins indexer wheels if the shooter is holding a ball, the shooter button is pressed,
-    /// and shooter wheel speed is more than 95% RPM.
+    /// Shoots ball if the shooter wheels are at the correct rate
     /// </summary>
     public void Shoot()
     {
-        m_indexer.Shoot();
+        if (m_shooterWheels.IsReadyToShoot())
+    	{
+        	m_indexer.Shoot();
+    	}
+        else 
+        {
+        	m_indexer.Stop();
+        }
+    }
+    
+    /// <summary>
+    /// Stops shooter and indexer wheels
+    /// </summary>
+    public void StopWheels()
+    {
+    	m_shooterWheels.StopWheels();
+    	m_indexer.Stop();
     }
 
+    /// <summary>
+    /// Sets both shooter and indexer wheels to load
+    /// </summary>
     public void Load()
     {
         m_shooterWheels.Load();
         m_indexer.Load();
     }
 
-    public void MovePosistion()
+    /// <summary>
+    /// Sets turret position
+    /// </summary>
+    /// <param name="position">Turret position@param
+    public void MovePosistion(ShooterPosition position)
     {
-
+    	if(position == ShooterPosition.Aiming)
+        {
+            m_turret.setPosition(ShooterPosition.Aiming);
+        }
+        if (position == ShooterPosition.Stored)
+        {
+            m_turret.setPosition(ShooterPosition.Stored);
+        }
+        if (position == ShooterPosition.Load)
+        {
+            m_turret.setPosition(ShooterPosition.Load);
+        }
     }
 
 }

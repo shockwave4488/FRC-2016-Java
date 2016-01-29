@@ -7,36 +7,40 @@ import edu.wpi.first.wpilibj.*;
 
 class Intake
 {
-    private Talon intakeMotor;
-    private DigitalInput armBallSensor;
+    private Talon m_intakeMotor;
+    private DigitalInput m_armBallSensor;
+    private Boolean SpinIntake;
+    private Boolean StopIntake;
+    private Boolean OutputIntake;
     public Intake() {
 
 
-        intakeMotor = new Talon(3);
-        armBallSensor = new DigitalInput(1);
+        m_intakeMotor = new Talon(RobotMap.IntakeMotor);
+        m_armBallSensor = new DigitalInput(RobotMap.IntakeBeamBreak);
 
 
     }
     
-    /*
-     * Moves the rollers depending on whether the button is pressed and whether or not output is true
-     * If output is true, and the button, then the intake SHOULD spin backwards to release the ball.
-     * Otherwise the intake spins normally, assuming that the ball sensor has not tripped.
-     * If this happens, nothing happens as a result of pressing the button.
-     */
-    public void moveThoseRollers(boolean button,boolean output) {
-        if (button || (!armBallSensor.get()))
+    public Boolean BallInIntake(){return m_armBallSensor.get();}
+    public void setSpinIntake(Boolean thing){SpinIntake = thing;}
+    public void setStopIntake(Boolean thing){StopIntake = thing;}
+    public void setOutputIntake(Boolean thing){OutputIntake = thing;}
+
+
+
+    public void UseIntake()
+    {
+        if (SpinIntake)
         {
-            if (!output)
-            {
-                intakeMotor.set(1);
-            }
-            else {
-                intakeMotor.set(-1);
-            }
+            m_intakeMotor.set(1);
         }
-        else {
-            intakeMotor.set(0);
+        if (StopIntake)
+        {
+            m_intakeMotor.set(0);
+        }
+        if (OutputIntake)
+        {
+            m_intakeMotor.set(-1);
         }
     }
-}
+    }

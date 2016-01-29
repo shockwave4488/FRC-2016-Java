@@ -19,9 +19,10 @@ class Arm extends MotionControlledSystem
     private SimplePID armPID;
     private Talon armMotor;
     private AnalogPotentiometer m_armPotentiometer;
+    
     public Arm() throws Exception {
-        armMotor = new Talon(1);
-        m_armPotentiometer = new AnalogPotentiometer(1);
+        armMotor = new Talon(RobotMap.ArmMotor_Channel);
+        m_armPotentiometer = new AnalogPotentiometer(RobotMap.ArmPotentiometer);
         armPID = new SimplePID(1, 1, 1);
         super.Controller = armPID;
         super.Motor = armMotor;

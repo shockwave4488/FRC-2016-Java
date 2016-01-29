@@ -14,8 +14,8 @@ public class Turret extends MotionControlledSystem{
 	private ShooterPosition m_position;
 	
 	public Turret(){
-		Motor = new Talon(1);
-		Sensor = new AnalogPotentiometer(0, 360);
+		Motor = new Talon(RobotMap.Turret_Channel);
+		Sensor = new AnalogPotentiometer(RobotMap.TurretPontentiometer, 360);
 		SetpointTolerance = 1;
 		
 		try {
@@ -26,8 +26,8 @@ public class Turret extends MotionControlledSystem{
 	}
 	
 	public ShooterPosition getPosition(){
-		return m_position;
-	}
+		return m_position;}
+		
 	
 	public void setPosition(ShooterPosition value){
 		m_position = value;
