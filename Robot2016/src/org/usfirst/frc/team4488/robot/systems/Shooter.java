@@ -65,7 +65,7 @@ public class Shooter {
     /// Sets turret position
     /// </summary>
     /// <param name="position">Turret position@param
-    public void MovePosistion(ShooterPosition position)
+    public void MovePosition(ShooterPosition position)
     {
     	if(position == ShooterPosition.Aiming)
         {
