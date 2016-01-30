@@ -1,6 +1,9 @@
-package org.usfirst.frc.team4488.robot;
+package org.usfirst.frc.team4488.robot.systems;
 
-import org.usfirst.frc.team4488.robot.Turret.ShooterPosition;
+import org.usfirst.frc.team4488.robot.components.Indexer;
+import org.usfirst.frc.team4488.robot.components.ShooterPosition;
+import org.usfirst.frc.team4488.robot.components.ShooterWheels;
+import org.usfirst.frc.team4488.robot.components.Turret;
 
 public class Shooter {
 	private ShooterWheels m_shooterWheels;
@@ -12,8 +15,8 @@ public class Shooter {
     /// </summary>
     public Shooter()
     {
-        ShooterWheels m_shooterWheels = new ShooterWheels();
-        Indexer m_indexer = new Indexer();    
+        m_shooterWheels = new ShooterWheels();
+        m_indexer = new Indexer();    
     }
 
     /// <summary>
@@ -21,7 +24,7 @@ public class Shooter {
     /// </summary>
     public void Spin()
     {
-        m_shooterWheels.Spin();
+        m_shooterWheels.spin();
         m_indexer.Stop();
     }
 
@@ -30,7 +33,7 @@ public class Shooter {
     /// </summary>
     public void Shoot()
     {
-        if (m_shooterWheels.IsReadyToShoot())
+        if (m_shooterWheels.atRate())
     	{
         	m_indexer.Shoot();
     	}
@@ -45,7 +48,7 @@ public class Shooter {
     /// </summary>
     public void StopWheels()
     {
-    	m_shooterWheels.StopWheels();
+    	m_shooterWheels.stop();
     	m_indexer.Stop();
     }
 
@@ -54,7 +57,7 @@ public class Shooter {
     /// </summary>
     public void Load()
     {
-        m_shooterWheels.Load();
+        m_shooterWheels.load();
         m_indexer.Load();
     }
 

@@ -1,64 +1,66 @@
 
 
-package org.usfirst.frc.team4488.robot;
+package org.usfirst.frc.team4488.robot.components;
+import org.usfirst.frc.team4488.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.*;
 import JavaRoboticsLib.*;
 import JavaRoboticsLib.ControlSystems.MotionControlledSystem;
 import JavaRoboticsLib.ControlSystems.SimplePID;
-enum armlocation
-{
-    Low,
-    High,
-    Intake,
-    Load,
-    Lower
-}
 
-class Arm extends MotionControlledSystem
+public class Arm extends MotionControlledSystem
 {
-    private SimplePID armPID;
-    private Talon armMotor;
+    private SimplePID m_armPID;
+    private Talon m_armMotor;
     private AnalogPotentiometer m_armPotentiometer;
+    private ArmPosition m_position;
     
-    public Arm() throws Exception {
-        armMotor = new Talon(RobotMap.ArmMotor_Channel);
+    public Arm() {
+        m_armMotor = new Talon(RobotMap.ArmMotor);
         m_armPotentiometer = new AnalogPotentiometer(RobotMap.ArmPotentiometer);
-        armPID = new SimplePID(1, 1, 1);
-        super.Controller = armPID;
-        super.Motor = armMotor;
+        try {
+			m_armPID = new SimplePID(1, 1, 1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        super.Controller = m_armPID;
+        super.Motor = m_armMotor;
         super.Sensor = m_armPotentiometer;
     }
     
     /*
      * This moves the arm to the position requested as the input of the program.
-     * Should work, (should)....................................................
      */
-    public void newPosition(armlocation armPlace)
-    {
-        switch (armPlace)
+    public void setPosition(ArmPosition value){
+    	m_position = value;
+        switch (value)
         {
         case High:
             super.setSetPoint(0);
-
             break;
 
         case Load:
             super.setSetPoint(0);
-
             break;
+            
         case Low:
             super.setSetPoint(0);
-
             break;
+            
         case Intake:
             super.setSetPoint(0);
-
             break;
+            
         case Lower:
             super.setSetPoint(0);
-
-                break;
+            break;
         }
+    }
+    
+    public ArmPosition getPosition(){
+    	return m_position;
     }
 
 }

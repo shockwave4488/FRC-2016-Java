@@ -1,20 +1,18 @@
-package org.usfirst.frc.team4488.robot;
+package org.usfirst.frc.team4488.robot.components;
+
+import org.usfirst.frc.team4488.robot.RobotMap;
 
 import JavaRoboticsLib.ControlSystems.*;
 import edu.wpi.first.wpilibj.*;
 
 public class Turret extends MotionControlledSystem{
 	
-	enum ShooterPosition{
-		Stored, Load, Aiming
-	}
-
 	private final double G = 32.174;
 	
 	private ShooterPosition m_position;
 	
 	public Turret(){
-		Motor = new Talon(RobotMap.Turret_Channel);
+		Motor = new Talon(RobotMap.TurretMotor);
 		Sensor = new AnalogPotentiometer(RobotMap.TurretPontentiometer, 360);
 		SetpointTolerance = 1;
 		

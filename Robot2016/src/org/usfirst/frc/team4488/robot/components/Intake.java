@@ -1,11 +1,13 @@
 
 
-package org.usfirst.frc.team4488.robot;
+package org.usfirst.frc.team4488.robot.components;
 
+
+import org.usfirst.frc.team4488.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.*;
 
-class Intake
+public class Intake
 {
     private Talon m_intakeMotor;
     private DigitalInput m_armBallSensor;
@@ -13,23 +15,26 @@ class Intake
     private Boolean StopIntake;
     private Boolean OutputIntake;
     public Intake() {
-
-
         m_intakeMotor = new Talon(RobotMap.IntakeMotor);
         m_armBallSensor = new DigitalInput(RobotMap.IntakeBeamBreak);
-
-
     }
     
-    public Boolean BallInIntake(){return m_armBallSensor.get();}
-    public void setSpinIntake(Boolean thing){SpinIntake = thing;}
-    public void setStopIntake(Boolean thing){StopIntake = thing;}
-    public void setOutputIntake(Boolean thing){OutputIntake = thing;}
+    public boolean BallInIntake(){
+    	return m_armBallSensor.get();
+    }
+    
+    public void setSpinIntake(Boolean thing){
+    	SpinIntake = thing;
+    }
+    
+    public void setStopIntake(Boolean thing){
+    	StopIntake = thing;
+    }
+    public void setOutputIntake(Boolean thing){
+    	OutputIntake = thing;
+    }
 
-
-
-    public void UseIntake()
-    {
+    public void UseIntake(){
         if (SpinIntake)
         {
             m_intakeMotor.set(1);

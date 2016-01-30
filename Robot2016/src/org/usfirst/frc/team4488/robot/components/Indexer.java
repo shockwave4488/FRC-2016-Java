@@ -1,4 +1,6 @@
-package org.usfirst.frc.team4488.robot;
+package org.usfirst.frc.team4488.robot.components;
+
+import org.usfirst.frc.team4488.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
@@ -12,7 +14,7 @@ public class Indexer {
     /// </summary>
     public Indexer()
     {
-        Talon m_indexWheel = new Talon(RobotMap.indexerWheelLeft);
+        Talon m_indexWheel = new Talon(RobotMap.IndexMotorLeft);
         DigitalInput m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
     }
 
