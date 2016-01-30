@@ -14,8 +14,10 @@ public class Drive implements TankDrive{
 	
 	public Drive() {
 		try {
-			m_left = new SpeedControllerGroup(Talon.class, new int[]{});
-			m_right = new SpeedControllerGroup(Talon.class, new int[]{});
+			m_left = new SpeedControllerGroup(Talon.class, new int[]{RobotMap.Drive_L1Channel,RobotMap.Drive_L2Channel,RobotMap.Drive_L3Channel});
+			m_right = new SpeedControllerGroup(Talon.class, new int[]{RobotMap.Drive_R1Channel,RobotMap.Drive_R2Channel,RobotMap.Drive_R3Channel});
+			m_leftEncoder = new Encoder(RobotMap.Drive_LEncoderAChannel, RobotMap.Drive_LEncoderBChannel);
+			m_rightEncoder = new Encoder(RobotMap.Drive_REncoderAChannel,RobotMap.Drive_REncoderBChannel);		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
