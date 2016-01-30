@@ -28,8 +28,8 @@ public class ShooterWheels {
      public ShooterWheels(){
          ShooterWheel m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter);
          ShooterWheel m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter);
-         Notifier Periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
-         Periodic.startPeriodic(.005);
+         m_periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
+         m_periodic.startPeriodic(.005);
      }
 
      /// <summary>
@@ -51,7 +51,7 @@ public class ShooterWheels {
      /// <summary>
      /// Sets both wheels to load
      /// </summary>
-     public void load() {
+     public void Load() {
          m_left.setLoad(true);
          m_right.setLoad(true);
          m_left.setSpin(false);
@@ -61,7 +61,7 @@ public class ShooterWheels {
      /// <summary>
      /// Sets both wheels to spin
      /// </summary>
-     public void spin()
+     public void Spin()
      {
          m_left.setSpin(true);
          m_right.setSpin(true);
@@ -72,7 +72,7 @@ public class ShooterWheels {
      /// <summary>
      /// Stops both wheels
      /// </summary>
-     public void stop()
+     public void Stop()
      {
          m_left.setSpin(false);
          m_right.setSpin(false);
