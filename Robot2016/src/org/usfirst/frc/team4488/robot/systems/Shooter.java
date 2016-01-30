@@ -16,14 +16,22 @@ public class Shooter {
     public Shooter()
     {
         m_shooterWheels = new ShooterWheels();
-        m_indexer = new Indexer();    
+        m_indexer = new Indexer();
+        m_turret = new Turret();
+    }
+    
+    public Boolean HasBall(){
+    	return m_indexer.IsBallInShooter();
+    }
+    
+    public Boolean ShotBall(){
+    	return m_shooterWheels.ballShot();
     }
 
     /// <summary>
     /// Spins the shooter wheels 
     /// </summary>
-    public void Spin()
-    {
+    public void Spin(){
         m_shooterWheels.spin();
         m_indexer.stop();
     }
@@ -31,14 +39,11 @@ public class Shooter {
     /// <summary>
     /// Shoots ball if the shooter wheels are at the correct rate
     /// </summary>
-    public void Shoot()
-    {
-        if (m_shooterWheels.atRate())
-    	{
+    public void Shoot(){
+        if (m_shooterWheels.atRate()){
         	m_indexer.shoot();
     	}
-        else 
-        {
+        else{
         	m_indexer.stop();
         }
     }
@@ -46,8 +51,7 @@ public class Shooter {
     /// <summary>
     /// Stops shooter and indexer wheels
     /// </summary>
-    public void StopWheels()
-    {
+    public void StopWheels(){
     	m_shooterWheels.stop();
     	m_indexer.stop();
     }
@@ -55,8 +59,7 @@ public class Shooter {
     /// <summary>
     /// Sets both shooter and indexer wheels to load
     /// </summary>
-    public void Load()
-    {
+    public void Load(){
         m_shooterWheels.load();
         m_indexer.load();
     }
@@ -65,20 +68,8 @@ public class Shooter {
     /// Sets turret position
     /// </summary>
     /// <param name="position">Turret position@param
-    public void MovePosition(ShooterPosition position)
-    {
-    	if(position == ShooterPosition.Aiming)
-        {
-            m_turret.setPosition(ShooterPosition.Aiming);
-        }
-        if (position == ShooterPosition.Stored)
-        {
-            m_turret.setPosition(ShooterPosition.Stored);
-        }
-        if (position == ShooterPosition.Load)
-        {
-            m_turret.setPosition(ShooterPosition.Load);
-        }
+    public void MovePosition(ShooterPosition position){
+    	m_turret.setPosition(position);
     }
 
 }

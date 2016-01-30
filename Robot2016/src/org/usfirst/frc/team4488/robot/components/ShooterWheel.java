@@ -10,7 +10,7 @@ import JavaRoboticsLib.Utility.*;
 public class ShooterWheel {
 	private Talon m_shooterWheel;
     private Counter m_shooterCounter;
-    private Derivative Acceleration;
+    private Derivative m_acceleration;
     private InputFilter m_filter;
     private double m_accelerationThreshold;
     
@@ -72,6 +72,8 @@ public class ShooterWheel {
     public ShooterWheel(int motorChannel, int counterChannel){
         m_shooterWheel = new Talon(motorChannel);
         m_shooterCounter = new Counter(counterChannel);
+        m_acceleration = new Derivative();
+        m_filter = new InputFilter();
     }
 
     /// <summary>
@@ -102,7 +104,7 @@ public class ShooterWheel {
     /// </summary>
     /// <returns>True if shoot, false if not</returns>
     public boolean ballShot(){
-        return m_filter.get(Acceleration.get(getRate())) < m_accelerationThreshold && getRate() < getTolerance();
+        return m_filter.get(m_acceleration.get(getRate())) < m_accelerationThreshold && getRate() < getTolerance();
     }
 
 }
