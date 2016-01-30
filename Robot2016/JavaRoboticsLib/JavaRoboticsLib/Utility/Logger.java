@@ -21,7 +21,8 @@ public class Logger
             m_timestamp = _offset.get();
         }
 
-        public String toString() {
+        @Override
+		public String toString() {
             return "[ " + (int)(m_timestamp) / 60 + ":" + m_timestamp % 60 + "]\t" + m_message;
         }
     

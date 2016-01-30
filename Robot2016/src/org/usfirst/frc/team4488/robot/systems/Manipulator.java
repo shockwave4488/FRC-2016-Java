@@ -24,25 +24,14 @@ class Manipulator
         m_intake = new Intake();
     }
 
-    public void SpinIntake(){
-        m_intake.setSpinIntake(true);
-    }
-
-    public void StopIntake(){
-        m_intake.setStopIntake(true);
-    }
-
-    public void OutputIntake(){
-        m_intake.setOutputIntake(true);
-    }
-   
+    
    /*
     * Gets the current Arm State from this class.
     */
-    public ArmPosition getArmState(){
+    /*public ArmPosition getArmState(){
     	//return m_arm.;
     	return ArmPosition.;
-    }
+    }*/
     
     /*
      *Sets the current Arm State to the input value

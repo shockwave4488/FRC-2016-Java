@@ -32,14 +32,16 @@ public class EnhancedEncoder extends Encoder
     * 
     *  @return Derivative of the distance
     */
-    public double getRate() {
+    @Override
+	public double getRate() {
         return m_velocityFilter.get(getDistance());
     }
 
     /**
     * Resets the encoder and derivative
     */
-    public void reset() {
+    @Override
+	public void reset() {
         super.reset();
         m_velocityFilter.reInitialize();
     }

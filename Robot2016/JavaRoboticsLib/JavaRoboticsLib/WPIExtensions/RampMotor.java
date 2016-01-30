@@ -79,7 +79,8 @@ public class RampMotor implements SpeedController
     * 
     *  @param value value to set to or approach
     */
-    public void set(double value) {
+    @Override
+	public void set(double value) {
         //The motor is DECELLERATING if |value| < |power| OR value and power are not both positive or both negative
         //Likewise, the motor is ACCELERATING if |value| > |power| AND value and power are both negative or both positive
         //If power is zero, the motor is accelerating.
@@ -112,7 +113,8 @@ public class RampMotor implements SpeedController
     * 
     *  @return
     */
-    public double get() {
+    @Override
+	public double get() {
         return m_controller.get();
     }
 
@@ -122,14 +124,16 @@ public class RampMotor implements SpeedController
     *  @param value 
     *  @param syncGroup
     */
-    public void set(double value, byte syncGroup) {
+    @Override
+	public void set(double value, byte syncGroup) {
         m_controller.set(value, syncGroup);
     }
 
     /**
     * Disable the speed controller
     */
-    public void disable() {
+    @Override
+	public void disable() {
         m_controller.disable();
     }
 
@@ -138,15 +142,18 @@ public class RampMotor implements SpeedController
     * 
     *  @param value
     */
-    public void pidWrite(double value) {
+    @Override
+	public void pidWrite(double value) {
         set(value);
     }
     
-    public void setInverted(boolean value){
+    @Override
+	public void setInverted(boolean value){
     	m_controller.setInverted(value);
     }
     
-    public boolean getInverted(){
+    @Override
+	public boolean getInverted(){
     	return m_controller.getInverted();
     }
 }

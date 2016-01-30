@@ -30,7 +30,7 @@ public class DeltaTime
     public double getValue()  {
         if (!m_manualDt)
         {
-            m_dt = (double)m_timer.get();
+            m_dt = m_timer.get();
             m_timer.reset();
         }
          

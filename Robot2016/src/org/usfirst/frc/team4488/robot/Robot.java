@@ -24,35 +24,40 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    public void robotInit() {
+    @Override
+	public void robotInit() {
     	c = new Controllers();
     	drive = new Drive();
     	driveHelper = new DriveHelper(drive, 1, 1, 1, 1, 1, 1);
     }
     
     
-    public void autonomousInit() {
+    @Override
+	public void autonomousInit() {
 
     }
 
     /**
      * This function is called periodically during autonomous
      */
-    public void autonomousPeriodic() {
+    @Override
+	public void autonomousPeriodic() {
 
     }
 
     /**
      * This function is called periodically during operator control
      */
-    public void teleopPeriodic() {
+    @Override
+	public void teleopPeriodic() {
         
     }
     
     /**
      * This function is called periodically during test mode
      */
-    public void testPeriodic() {
+    @Override
+	public void testPeriodic() {
     
     }
     
