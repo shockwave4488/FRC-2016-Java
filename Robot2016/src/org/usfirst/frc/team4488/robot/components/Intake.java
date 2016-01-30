@@ -11,41 +11,34 @@ public class Intake
 {
     private Talon m_intakeMotor;
     private DigitalInput m_armBallSensor;
-    private Boolean SpinIntake;
-    private Boolean StopIntake;
-    private Boolean OutputIntake;
+    
     public Intake() {
         m_intakeMotor = new Talon(RobotMap.IntakeMotor);
         m_armBallSensor = new DigitalInput(RobotMap.IntakeBeamBreak);
     }
     
-    public boolean BallInIntake(){
+    public boolean ballInIntake(){
     	return m_armBallSensor.get();
     }
     
-    public void setSpinIntake(Boolean thing){
-    	SpinIntake = thing;
+    public void intakeBall(){
+    	if(m_armBallSensor.get()){
+    		m_intakeMotor.set(0);
+    	}
+    	else{
+    		m_intakeMotor.set(1);
+    	}
     }
     
-    public void setStopIntake(Boolean thing){
-    	StopIntake = thing;
+    public void off(){
+    	m_intakeMotor.set(0);
     }
-    public void setOutputIntake(Boolean thing){
-    	OutputIntake = thing;
+    
+    public void load(){
+    	m_intakeMotor.set(0);
     }
-
-    public void UseIntake(){
-        if (SpinIntake)
-        {
-            m_intakeMotor.set(1);
-        }
-        if (StopIntake)
-        {
-            m_intakeMotor.set(0);
-        }
-        if (OutputIntake)
-        {
-            m_intakeMotor.set(-1);
-        }
+    
+    public void output(){
+    	m_intakeMotor.set(-1);
     }
-    }
+}

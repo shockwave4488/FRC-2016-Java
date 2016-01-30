@@ -4,12 +4,11 @@ package org.usfirst.frc.team4488.robot.components;
 import org.usfirst.frc.team4488.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.*;
-import JavaRoboticsLib.*;
+import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.MotionControlledSystem;
 import JavaRoboticsLib.ControlSystems.SimplePID;
 
-public class Arm extends MotionControlledSystem
-{
+public class Arm extends MotionControlledSystem {
     private SimplePID m_armPID;
     private Talon m_armMotor;
     private AnalogPotentiometer m_armPotentiometer;
@@ -21,13 +20,14 @@ public class Arm extends MotionControlledSystem
         try {
 			m_armPID = new SimplePID(1, 1, 1);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
         super.Controller = m_armPID;
         super.Motor = m_armMotor;
         super.Sensor = m_armPotentiometer;
+        
+        Logger.addMessage("Arm Initialized", 1);
     }
     
     /*

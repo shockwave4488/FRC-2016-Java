@@ -1,7 +1,7 @@
 package org.usfirst.frc.team4488.robot.components;
 
 import org.usfirst.frc.team4488.robot.RobotMap;
-
+import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
 import edu.wpi.first.wpilibj.*;
 
@@ -21,11 +21,12 @@ public class Turret extends MotionControlledSystem{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		Logger.addMessage("Turret Initialized", 1);
 	}
 	
 	public ShooterPosition getPosition(){
-		return m_position;}
-		
+		return m_position;
+	}		
 	
 	public void setPosition(ShooterPosition value){
 		m_position = value;

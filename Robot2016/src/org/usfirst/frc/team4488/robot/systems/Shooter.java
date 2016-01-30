@@ -25,7 +25,7 @@ public class Shooter {
     public void Spin()
     {
         m_shooterWheels.spin();
-        m_indexer.Stop();
+        m_indexer.stop();
     }
 
     /// <summary>
@@ -35,11 +35,11 @@ public class Shooter {
     {
         if (m_shooterWheels.atRate())
     	{
-        	m_indexer.Shoot();
+        	m_indexer.shoot();
     	}
         else 
         {
-        	m_indexer.Stop();
+        	m_indexer.stop();
         }
     }
     
@@ -49,7 +49,7 @@ public class Shooter {
     public void StopWheels()
     {
     	m_shooterWheels.stop();
-    	m_indexer.Stop();
+    	m_indexer.stop();
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class Shooter {
     public void Load()
     {
         m_shooterWheels.load();
-        m_indexer.Load();
+        m_indexer.load();
     }
 
     /// <summary>
