@@ -31,7 +31,8 @@ public class AnalogueUltrasonic extends AnalogInput
     * 
     *  @return
     */
-    public double pidGet() {
+    @Override
+	public double pidGet() {
         return get();
     }
 

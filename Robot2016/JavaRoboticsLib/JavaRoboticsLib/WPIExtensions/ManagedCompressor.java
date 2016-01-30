@@ -68,7 +68,8 @@ public class ManagedCompressor  extends Compressor
         m_period = period;
         setVoltageThreshold(voltageThreshold);
         Runnable runUpdate = new Runnable() {
-        	public void run() {update();}
+        	@Override
+			public void run() {update();}
         };
         m_periodic = new Notifier(runUpdate);
         useTimer(true);

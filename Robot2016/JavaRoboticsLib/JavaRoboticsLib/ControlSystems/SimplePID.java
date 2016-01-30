@@ -51,10 +51,12 @@ public class SimplePID implements MotionController
     /**
     * Current setpoint the PID Controller is reacting to
     */
-    public double getSetPoint() {
+    @Override
+	public double getSetPoint() {
         return m_setPoint;
     }
-    public void setSetPoint(double value) {
+    @Override
+	public void setSetPoint(double value) {
         m_setPoint = value;
     }
 
@@ -132,7 +134,8 @@ public class SimplePID implements MotionController
     *  @param currentPoint current point of the system as read by a sensor
     *  @return value calculated by the PID loop
     */
-    public double get(double currentPoint) {
+    @Override
+	public double get(double currentPoint) {
         double error = (getSetPoint() - currentPoint);
         if (getContinuous())
             error = Util.wrapError(currentPoint, getSetPoint(), getMinInput(), getMaxInput());

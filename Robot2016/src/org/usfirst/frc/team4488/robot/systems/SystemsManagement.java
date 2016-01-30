@@ -1,6 +1,6 @@
 
 
-package org.usfirst.frc.team4488.robot.systems;
+/*package org.usfirst.frc.team4488.robot.systems;
 /// <summary>
 /// Controls all non-drive systems through a state machine
 /// </summary>
@@ -363,4 +363,4 @@ class SystemsManagement
     {
         m_manipulator.HighDefense();
     }
-}
+}*/

@@ -75,12 +75,14 @@ public class SpeedControllerGroup implements SpeedController {
 		}
 	}
 
+	@Override
 	public void setInverted(boolean value){
 		for(SpeedController s : m_controllers){
 			s.setInverted(value);
 		}
 	}
 	
+	@Override
 	public boolean getInverted(){
 		if(m_controllers.length > 0)
 			return m_controllers[0].getInverted();

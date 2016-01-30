@@ -1,12 +1,12 @@
 package org.usfirst.frc.team4488.robot;
 
 public class RobotMap {	
-    public static final int DriveMotorLeft1 = 0;
-    public static final int DriveMotorLeft2 = 1;
-    public static final int DriveMotorLeft3 = 2;
-    public static final int DriveMotorRight1 = 3;
-    public static final int DriveMotorRight2 = 4;
-    public static final int DriveMotorRight3 = 5;
+    public static final int DriveMotorLeft1 = 1;
+    public static final int DriveMotorLeft2 = 2;
+    public static final int DriveMotorLeft3 = 3;
+    public static final int DriveMotorRight1 = 4;
+    public static final int DriveMotorRight2 = 5;
+    public static final int DriveMotorRight3 = 6;
     public static final int ShooterMotorLeft = 0;
     public static final int ShooterMotorRight = 1;
     public static final int IndexMotorLeft = 2;

@@ -15,11 +15,13 @@ public class SetPointProfile implements MotionController
     /**
     * Point to approach
     */
-    public double getSetPoint() {
+    @Override
+	public double getSetPoint() {
         return m_setPoint;
     }
 
-    public void setSetPoint(double value) {
+    @Override
+	public void setSetPoint(double value) {
         m_setPoint = value;
     }
 
@@ -61,7 +63,8 @@ public class SetPointProfile implements MotionController
     *  @param currentPoint point along the profile to measure
     *  @return value of the profile at that point
     */
-    public double get(double currentPoint){
+    @Override
+	public double get(double currentPoint){
         //be warned: here be lots of math
         Setpoint next = nearestGreater(currentPoint);
         Setpoint prev = nearestLess(currentPoint);
