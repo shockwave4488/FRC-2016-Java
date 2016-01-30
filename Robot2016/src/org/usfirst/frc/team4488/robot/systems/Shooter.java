@@ -16,7 +16,16 @@ public class Shooter {
     public Shooter()
     {
         m_shooterWheels = new ShooterWheels();
-        m_indexer = new Indexer();    
+        m_indexer = new Indexer();
+        m_turret = new Turret();
+    }
+    
+    public Boolean HasBall(){
+    	return m_indexer.IsBallInShooter();
+    }
+    
+    public Boolean ShotBall(){
+    	return m_shooterWheels.ballShot();
     }
 
     /// <summary>
@@ -24,8 +33,7 @@ public class Shooter {
     /// </summary>
     public void Spin()
     {
-        m_shooterWheels.spin();
-        m_indexer.Stop();
+        m_shooterWheels.Spin();
     }
 
     /// <summary>
@@ -48,7 +56,7 @@ public class Shooter {
     /// </summary>
     public void StopWheels()
     {
-    	m_shooterWheels.stop();
+    	m_shooterWheels.Stop();
     	m_indexer.Stop();
     }
 
@@ -57,7 +65,7 @@ public class Shooter {
     /// </summary>
     public void Load()
     {
-        m_shooterWheels.load();
+        m_shooterWheels.Load();
         m_indexer.Load();
     }
 
@@ -65,20 +73,8 @@ public class Shooter {
     /// Sets turret position
     /// </summary>
     /// <param name="position">Turret position@param
-    public void MovePosistion(ShooterPosition position)
-    {
-    	if(position == ShooterPosition.Aiming)
-        {
-            m_turret.setPosition(ShooterPosition.Aiming);
-        }
-        if (position == ShooterPosition.Stored)
-        {
-            m_turret.setPosition(ShooterPosition.Stored);
-        }
-        if (position == ShooterPosition.Load)
-        {
-            m_turret.setPosition(ShooterPosition.Load);
-        }
+    public void MovePosistion(ShooterPosition position){
+    	m_turret.setPosition(position);
     }
 
 }
