@@ -41,7 +41,7 @@ class Manipulator
     */
     public ArmPosition getArmState(){
     	//return m_arm.;
-    	return ArmPosition.High;
+    	return ArmPosition.;
     }
     
     /*

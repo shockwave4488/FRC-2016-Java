@@ -2,6 +2,7 @@
 
 package org.usfirst.frc.team4488.robot.components;
 import org.usfirst.frc.team4488.robot.RobotMap;
+import JavaRoboticsLib.Utility.*;
 
 import edu.wpi.first.wpilibj.*;
 import JavaRoboticsLib.*;
@@ -28,6 +29,7 @@ public class Arm extends MotionControlledSystem
         super.Controller = m_armPID;
         super.Motor = m_armMotor;
         super.Sensor = m_armPotentiometer;
+        Logger.addMessage("Arm has been initialized",0);
     }
     
     /*
