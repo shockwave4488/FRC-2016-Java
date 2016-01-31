@@ -9,7 +9,10 @@ class Manipulator
     private Intake m_intake;
     private Arm m_Arm;
     
-
+    public boolean IntakeHasBall(){
+	return m_intake.ballInIntake();
+    }
+    
     /// <summary>
     /// Manipulator constructor.
     /// </summary>
@@ -24,27 +27,70 @@ class Manipulator
         m_intake = new Intake();
     }
 
-    
-   /*
-    * Gets the current Arm State from this class.
-    */
-    /*public ArmPosition getArmState(){
-    	//return m_arm.;
-    	return ArmPosition.;
-    }*/
-    
-    /*
-     *Sets the current Arm State to the input value
-     */
-    public void setArmState(ArmPosition newState){
-    	//ArmLocation = newState;
+    /// <summary>
+    /// spins intake and moves arm 
+    /// </summary>
+    public void spinIntake(){
+        m_intake.intakeBall();
+        m_Arm.setPosition(ArmPosition.Intake);
+        m_Arm.Update();
     }
-    
 
     /// <summary>
-    /// This function updates the arm.
+    /// stops intake motors and moves arm up
     /// </summary>
-    public void UpdateArm(){
+    public void stopIntake(){
+        m_intake.off();
+        m_Arm.setPosition(ArmPosition.High);
+        m_Arm.Update();
+    }
+    
+    /// <summary>
+    /// outputs ball
+    /// </summary>
+    public void outputIntake(){
+        m_intake.output();
+        m_Arm.setPosition(ArmPosition.Intake);
+        m_Arm.Update();
+    }
+
+    /// <summary>
+    /// loads ball
+    /// </summary>
+    public void loadIntake()
+    {
+        m_intake.load();
+        m_Arm.setPosition(ArmPosition.Load);
+        m_Arm.Update();
+    }
+
+    /// <summary>
+    /// shoots ball
+    /// </summary>
+    public void shoot()
+    {
+        m_intake.off();
+        m_Arm.setPosition(ArmPosition.Low);
+        m_Arm.Update();
+    }
+
+    /// <summary>
+    /// moves arm down for low defenses and stops intake motor
+    /// </summary>
+    public void lowDefense()
+    {
+        m_intake.off();
+        m_Arm.setPosition(ArmPosition.Lower);
+        m_Arm.Update();
+    }
+
+    /// <summary>
+    /// moves arm up for high defenses and stops intake motor
+    ///  </summary>
+    public void highDefense()
+    {
+        m_intake.off();
+        m_Arm.setPosition(ArmPosition.High);
         m_Arm.Update();
     }
 }
