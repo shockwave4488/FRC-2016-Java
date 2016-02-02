@@ -3,7 +3,7 @@ package JavaRoboticsLib.Drive;
 import JavaRoboticsLib.Drive.Interfaces.TankDrive;
 import edu.wpi.first.wpilibj.DriverStation;
 
-//Shamelessly copy-pasted from Team 254©'s Robot Code©
+//Shamelessly copy-pasted from Team 254's Robot Code
 
 /**
  * Does all calculations for driving the robot split-arcade style. Contains a TankDrive object.
