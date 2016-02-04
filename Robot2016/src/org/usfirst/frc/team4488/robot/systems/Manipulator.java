@@ -4,7 +4,7 @@ import org.usfirst.frc.team4488.robot.components.Arm;
 import org.usfirst.frc.team4488.robot.components.ArmPosition;
 import org.usfirst.frc.team4488.robot.components.Intake;
 
-class Manipulator
+public class Manipulator
 {
     private Intake m_intake;
     private Arm m_Arm;

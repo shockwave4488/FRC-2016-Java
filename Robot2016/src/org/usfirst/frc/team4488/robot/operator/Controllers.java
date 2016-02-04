@@ -11,11 +11,11 @@ public class Controllers {
 	}
 	
 	public double getSpeed(){
-		return m_primary.getRawAxis(1);
+		return m_primary.getRawAxis(2);
 	}
 	
 	public double getTurn(){
-		return m_primary.getRawAxis(4);
+		return m_primary.getRawAxis(3);
 	}
 	
 	public boolean getSpinButton(){
