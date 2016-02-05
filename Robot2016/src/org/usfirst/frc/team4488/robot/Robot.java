@@ -3,9 +3,8 @@ package org.usfirst.frc.team4488.robot;
 
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
-import JavaRoboticsLib.Drive.*;
+import JavaRoboticsLib.JavaRoboticsLib.Drive.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,7 +27,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
     	c = new Controllers();
     	drive = new Drive();
-    	driveHelper = new DriveHelper(drive, 1, 1, 1, 1, 1, 1);
+    	driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
     }
     
     
