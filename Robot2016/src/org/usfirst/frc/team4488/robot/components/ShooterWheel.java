@@ -29,10 +29,6 @@ public class ShooterWheel {
        return m_shooterCounter.getRate();    
     }
     
-    public void setRate(double value){
-    	m_shooterSpeed = value;
-    }
-
     /// <summary>
     /// Gets and sets m_shooterSpeed
     /// </summary>

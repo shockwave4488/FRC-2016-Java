@@ -71,5 +71,14 @@ public class Shooter {
     public void MovePosition(ShooterPosition position){
     	m_turret.setPosition(position);
     }
+    
+   /* public void setDistance(double distance){
+    	double angle = m_turret.
+    	double heightChange = 
+    	double speed = Math.sqrt(2*32.174* heightChange);
+    	m_shooterWheels.setShooterRPM();
+    	
+    	
+    }*/
 
 }

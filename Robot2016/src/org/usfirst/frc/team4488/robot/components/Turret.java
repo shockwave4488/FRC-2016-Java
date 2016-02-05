@@ -42,4 +42,8 @@ public class Turret extends MotionControlledSystem{
             break;
 		}
 	}
+	
+	public double getAngle(){
+		return Sensor.pidGet();
+	}
 }
