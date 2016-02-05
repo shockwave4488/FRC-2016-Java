@@ -6,7 +6,9 @@ import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
 
 import JavaRoboticsLib.Drive.*;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,6 +25,7 @@ public class Robot extends IterativeRobot {
 	private AutonomousManager autonManager;
 	private Shooter shooter;
 	private Manipulator manipulator;
+	private DigitalInput shooterSensor;
 	
         /**
      * This function is run when the robot is first started up and should be
@@ -31,8 +34,8 @@ public class Robot extends IterativeRobot {
     @Override
 	public void robotInit() {
     	c = new Controllers();
-    	drive = new Drive();
-    	//shooter = new Shooter();
+    	//drive = new Drive();
+    	shooter = new Shooter();
     	//manipulator = new Manipulator();
     	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
@@ -57,8 +60,12 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void teleopPeriodic() {
+    	SmartDashboard.putBoolean("Shooter Sensor", shooter.HasBall());
+    	SmartDashboard.putBoolean("Load Button", c.getLoadButton());
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
-        drive.setPowers(c.getSpeed(), c.getTurn());
+        //drive.setPowers(c.getSpeed(), c.getTurn());
+        //shooter.MoveShooterWheels(c.getShooterLeft(), c.getShooterRight());
+        shooter.Test(c.getLoadButton(), c.getShootButton(), c.getShooterLeft(),c.getShooterLeft());
     }
     
     /**

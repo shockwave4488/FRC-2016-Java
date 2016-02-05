@@ -26,10 +26,10 @@ public class ShooterWheels {
      /// Constructor for ShooterWheels, with updating Notifier
      /// </summary>
      public ShooterWheels(){
-         ShooterWheel m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter);
-         ShooterWheel m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter);
-         m_periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
-         m_periodic.startPeriodic(.005);
+          m_left = new ShooterWheel(6, RobotMap.ShooterLeftCounter);
+          m_right = new ShooterWheel(1, RobotMap.ShooterRightCounter);
+         //m_periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
+         //m_periodic.startPeriodic(.005);
      }
 
      /// <summary>
@@ -54,8 +54,10 @@ public class ShooterWheels {
      public void Load() {
          m_left.setLoad(true);
          m_right.setLoad(true);
-         m_left.setSpin(false);
-         m_right.setSpin(false);
+         m_left.SpinWheel(0);
+         m_right.SpinWheel(0);
+         //m_left.setSpin(false);
+         //m_right.setSpin(false);
      }
 
      /// <summary>
@@ -78,6 +80,13 @@ public class ShooterWheels {
          m_right.setSpin(false);
          m_left.setLoad(false);
          m_right.setLoad(false);
+     }
+     
+     public void MoveWheels(double leftTrigger, double rightTrigger){
+    	 m_left.setLoad(false);
+         m_right.setLoad(false);
+    	 m_left.SpinWheel(leftTrigger);
+    	 m_right.SpinWheel(rightTrigger);
      }
 
 }

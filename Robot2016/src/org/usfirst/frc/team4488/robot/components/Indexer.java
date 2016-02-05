@@ -6,15 +6,20 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Indexer {
-	private Talon m_indexWheel;
+	private Talon m_leftIndexWheel;
+	private Talon m_rightIndexWheel;
     private DigitalInput m_shooterBallSensor;
+    private Object lockObject = new Object();
     
     /// <summary>
     /// Constructor for Indexer
     /// </summary>
     public Indexer(){
-        Talon m_indexWheel = new Talon(RobotMap.IndexMotorLeft);
-        DigitalInput m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
+        m_leftIndexWheel = new Talon(0);
+        m_rightIndexWheel = new Talon(5);
+        m_leftIndexWheel.setInverted(true);
+        m_rightIndexWheel.setInverted(true);
+        m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
         Logger.addMessage("Indexer Initialized", 1);
     }
 
@@ -22,33 +27,33 @@ public class Indexer {
     /// Gets whether ball is in the shooter or not
     /// </summary>
     public boolean ballInShooter(){
+    	synchronized(lockObject){
     	return m_shooterBallSensor.get();
+    	}
     }
 
     /// <summary>
     /// Sets index wheel to push ball into shooter wheels
     /// </summary>
     public void shoot(){
-        m_indexWheel.set(1);
+        m_leftIndexWheel.set(1);
+        m_rightIndexWheel.set(1);
     }
 
     /// <summary>
     /// Runs index wheels to load if there is no ball in shooter, stops otherwise
     /// </summary>
     public void load(){
-        if (!ballInShooter()){
-            m_indexWheel.set(-1);
-        }
-        else{
-            m_indexWheel.set(0);
-        }
+            m_leftIndexWheel.set(-0.5);
+            m_rightIndexWheel.set(-0.5);
     }
 
     /// <summary>
     /// Stops index wheels
     /// </summary>
     public void stop(){
-        m_indexWheel.set(0);
+        m_leftIndexWheel.set(0);
+        m_rightIndexWheel.set(0);
     }
 }
 

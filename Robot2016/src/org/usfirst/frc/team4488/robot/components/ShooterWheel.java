@@ -2,6 +2,7 @@ package org.usfirst.frc.team4488.robot.components;
 
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import JavaRoboticsLib.Utility.*;
 
 /// <summary>
@@ -14,52 +15,71 @@ public class ShooterWheel {
     private InputFilter m_filter;
     private double m_accelerationThreshold;
     
+    private Object lockObject = new Object();
+    
     private double m_shooterSpeed;
     private boolean m_load;
     private boolean m_spin;
     
     public double getTolerance(){
+    	synchronized(lockObject){
     	return getShooterSpeed() * .95;
+    	}
     }
 
     /// <summary>
     /// Gets current rate from counter of shooter wheels
     /// </summary>
     public double getRate(){
-       return m_shooterCounter.getRate();    
+       synchronized(lockObject){
+    	return m_shooterCounter.getRate();
+       }
     }
     
     /// <summary>
     /// Gets and sets m_shooterSpeed
     /// </summary>
     public double getShooterSpeed(){
-       return m_shooterSpeed;
+       synchronized(lockObject){
+    	return m_shooterSpeed;
+       }
     }
         
-    public void setShooterSpeed(double speed){	
+    public void setShooterSpeed(double speed){
+    	synchronized(lockObject){
     	m_shooterSpeed = speed;
+    	}
     }    
 
     /// <summary>
     /// Gets and sets Load boolean
     /// </summary>
     public boolean getLoad(){
+    	synchronized(lockObject){
     	return m_load;
+    	}
     }
     
     public void setLoad(boolean thing){
+    	synchronized(lockObject){
     	m_load = thing;
+    	SmartDashboard.putBoolean("m_load", m_load);
+    	}
     }
     
     /// <summary>
     /// Gets and sets Spin boolean
     /// </summary>
     public boolean getSpin(){
-       return m_spin;
+       synchronized(lockObject){
+    	return m_spin;
+       }
     }
     
     public void setSpin(boolean value){
-           m_spin = value;
+        synchronized(lockObject){   
+    	m_spin = value;
+        }
     }
     
     /// <summary>
@@ -75,16 +95,19 @@ public class ShooterWheel {
     /// <summary>
     /// Spins shooter wheel
     /// </summary>
-    public void SpinWheel(){
+    public void SpinWheel(double trigger){
         if (getLoad()){
-            m_shooterWheel.set(-0.5);
+            m_shooterWheel.set(-0.3);
         }
-        if (getSpin()){
+        else{
+        	m_shooterWheel.set(trigger);
+        }
+        /*if (getSpin()){
             m_shooterWheel.set(getRate() < getShooterSpeed() ? 1 : 0);
         }
         if (!getSpin()){
             m_shooterWheel.set(0);
-        }
+        }*/
     }
   
     /// <summary>
@@ -92,7 +115,9 @@ public class ShooterWheel {
     /// </summary>
     /// <returns>True if within tolerance, false otherwise</returns>
     public boolean atRate(){
+    	synchronized(lockObject){
     	return (getRate() > getTolerance() ? true : false);
+    	}
     }
    
     /// <summary>
@@ -101,6 +126,10 @@ public class ShooterWheel {
     /// <returns>True if shoot, false if not</returns>
     public boolean ballShot(){
         return m_filter.get(m_acceleration.get(getRate())) < m_accelerationThreshold && getRate() < getTolerance();
+    }
+    
+    public void MoveWheel(double trigger){
+    	m_shooterWheel.set(trigger);
     }
 
 }
