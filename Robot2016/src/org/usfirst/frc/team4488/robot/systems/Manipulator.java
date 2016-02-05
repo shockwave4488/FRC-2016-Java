@@ -10,7 +10,7 @@ class Manipulator
     private Arm m_Arm;
     
     public boolean IntakeHasBall(){
-	return m_intake.ballInIntake();
+    	return m_intake.ballInIntake();
     }
     
     /// <summary>

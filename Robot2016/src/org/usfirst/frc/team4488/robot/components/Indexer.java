@@ -13,8 +13,8 @@ public class Indexer {
     /// Constructor for Indexer
     /// </summary>
     public Indexer(){
-        Talon m_indexWheel = new Talon(RobotMap.IndexMotorLeft);
-        DigitalInput m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
+        m_indexWheel = new Talon(RobotMap.IndexMotorLeft);
+        m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
         Logger.addMessage("Indexer Initialized", 1);
     }
 

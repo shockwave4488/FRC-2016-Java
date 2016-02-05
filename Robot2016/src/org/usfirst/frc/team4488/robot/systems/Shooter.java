@@ -20,11 +20,11 @@ public class Shooter {
         m_turret = new Turret();
     }
     
-    public Boolean HasBall(){
-    	return m_indexer.IsBallInShooter();
+    public boolean HasBall(){
+    	return m_indexer.ballInShooter();
     }
     
-    public Boolean ShotBall(){
+    public boolean ShotBall(){
     	return m_shooterWheels.ballShot();
     }
 
@@ -32,7 +32,7 @@ public class Shooter {
     /// Spins the shooter wheels 
     /// </summary>
     public void Spin(){
-        m_shooterWheels.spin();
+        m_shooterWheels.Spin();
         m_indexer.stop();
     }
 
@@ -52,7 +52,7 @@ public class Shooter {
     /// Stops shooter and indexer wheels
     /// </summary>
     public void StopWheels(){
-    	m_shooterWheels.stop();
+    	m_shooterWheels.Stop();
     	m_indexer.stop();
     }
 
@@ -60,7 +60,7 @@ public class Shooter {
     /// Sets both shooter and indexer wheels to load
     /// </summary>
     public void Load(){
-        m_shooterWheels.load();
+        m_shooterWheels.Load();
         m_indexer.load();
     }
 
