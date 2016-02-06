@@ -4,11 +4,14 @@ package org.usfirst.frc.team4488.robot;
 import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
+import org.usfirst.frc.team4488.robot.testing.improvisedSimulator;
 
 import JavaRoboticsLib.Drive.*;
 import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -27,8 +30,9 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private DigitalInput shooterSensor;
-	private SystemsManagement systems;
-	
+	private Command autonCommand1;
+	private SendableChooser autonChooser;
+	public improvisedSimulator simulator = new improvisedSimulator();
         /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -36,8 +40,11 @@ public class Robot extends IterativeRobot {
     @Override
 	public void robotInit() {
     	c = new Controllers();
+    	autonChooser = new SendableChooser();
+    	SmartDashboard.putBoolean("Hullo",true);
     	//drive = new Drive();
     	shooter = new Shooter();
+    	simulator.rdbtnTest.setSelected(false);
     	//systems = new SystemsManagement(shooter);
     	//manipulator = new Manipulator();
     	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
@@ -73,6 +80,7 @@ public class Robot extends IterativeRobot {
     	//SmartDashboard.putBoolean("Load Button", c.getLoadButton());
     	SmartDashboard.putNumber("Current Rate", shooter.Rate());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
+    	SmartDashboard.putBoolean("Hullo",true);
     	shooter.setShooterRPM(c.getShooterRight()*6000);
     	shooter.Spin();
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
@@ -86,7 +94,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void testPeriodic() {
-    
+    	SmartDashboard.putBoolean("Hullo",true);
     }
     
 }
