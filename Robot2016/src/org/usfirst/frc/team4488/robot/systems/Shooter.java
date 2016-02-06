@@ -61,10 +61,10 @@ public class Shooter {
     /// <summary>
     /// Sets both shooter and indexer wheels to load
     /// </summary>
-   /* public void Load(){
+    public void load(){
         m_shooterWheels.Load();
         m_indexer.load();
-    }*/
+    }
 
     /// <summary>
     /// Sets turret position
@@ -103,13 +103,13 @@ public class Shooter {
     	}
     }*/
     
-   /* public void setDistance(double distance){
-    	double angle = m_turret.
-    	double heightChange = 
+    public void setDistance(double distance){
+    	double currentAngle = m_turret.getAngle();
+    	double heightChange = 8.083 - (8 + 18 * Math.sin(currentAngle / (180 / Math.PI))) / 12; 
     	double speed = Math.sqrt(2*32.174* heightChange);
-    	m_shooterWheels.setShooterRPM();
-    	
-    	
-    }*/
+    	double targetAngle = Math.atan(2 * heightChange / distance) * (180 / Math.PI);
+    	m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));   	
+    	m_turret.setPosition(ShooterPosition.Aiming);
+    }
 
 }

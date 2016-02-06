@@ -1,75 +1,76 @@
 
 
-/*package org.usfirst.frc.team4488.robot.systems;
+package org.usfirst.frc.team4488.robot.systems;
 /// <summary>
 /// Controls all non-drive systems through a state machine
 /// </summary>
 import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.Utility.*;
 import org.usfirst.frc.team4488.robot.operator.*;
-import org.usfirst.frc.team4488.robot.*;
 class SystemsManagement
 {
     private Shooter m_shooter;
     private Manipulator m_manipulator;
     private Controllers m_input;
-    private boolean load = false;
-    private boolean charge = false;
-    private boolean shoot = false;
-    private boolean intake = false;
-    private boolean defenseLow = false;
-    private boolean defenseHigh = false;
-    private ManipulatorState manipulatorState = ManipulatorState.Idle;
+    private boolean m_load = false;
+    private boolean m_charge = false;
+    private boolean m_shoot = false;
+    private boolean m_intake = false;
+    private boolean m_defenseLow = false;
+    private boolean m_defenseHigh = false;
+    private ManipulatorState m_manipulatorState;
+    private ShooterState m_shooterState;
 
     /// <summary>
     /// Button to load the shooter
     /// </summary>
     public void setLoadButton(boolean val){
-    	load = val;
+    	m_load = val;
     }
 
     /// <summary>
     /// Button to start spinning the shooter
     /// </summary>
     public void setChargeButton(boolean val){
-    	charge = val;
+    	m_charge = val;
     }
 
     /// <summary>
     /// Button to shoot the ball
     /// </summary>
     public void setShootButton(boolean val){
-    	shoot = val;
+    	m_shoot = val;
     }
 
     /// <summary>
     /// Button to move the manipulator and start
     /// </summary>
     public void setIntakeButton(boolean val){
-    	intake = val;
+    	m_intake = val;
     }
 
     /// <summary>
     /// Button to move the manipulator down to handle defenses
     /// </summary>
     public void setDefenseLowButton(boolean val){
-    	defenseLow = val;
+    	m_defenseLow = val;
     }
 
     /// <summary>
     /// Button to move the manipulator up to handle defenses
     /// </summary>
     public void setDefenseHighButton(boolean val){
-    	defenseHigh = val;
+    	m_defenseHigh = val;
     }
 
     /// <summary>
     /// Creates all managed systems (<see cref="Shooter"/>, <see cref="Manipulator"/>)
     /// </summary>
-    public SystemsManagement(){
-        shooterState = ShooterState.Idle;
-        m_shooter = new Shooter();
-        m_manipulator = new Manipulator();
+    public SystemsManagement(Shooter shooter, Manipulator manipulator){
+        m_shooterState = ShooterState.Idle;
+        m_manipulatorState = ManipulatorState.Idle;
+        m_shooter = shooter;
+        m_manipulator = manipulator;
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 
@@ -77,7 +78,7 @@ class SystemsManagement
     /// The state the <see cref="Manipulator"/> is currently in
     /// </summary>
     public ManipulatorState getManipulatorState(){
-    	return m_manipulator.
+    	return m_manipulatorState;
     }
 
     /// <summary>
@@ -96,7 +97,9 @@ class SystemsManagement
     /// <summary>
     /// The state the <see cref="Shooter"/> is currently in
     /// </summary>
-    public ShooterState shooterState { get; private set; }
+    public ShooterState getshooterState(){
+    	return m_shooterState;
+    }
 
     /// <summary>
     /// Possible states the <see cref="Shooter"/> can be in
@@ -114,150 +117,150 @@ class SystemsManagement
     public void Update(){
         Logger.addMessage("SystemsManagement Update function called",0);
         
-        switch (shooterState)
+        switch (m_shooterState)
         {
             case Idle:
                 ShooterIdle();
-                if (load && manipulatorState == ManipulatorState.Store)
+                if (m_load && m_manipulatorState == ManipulatorState.Store)
                 {
-                    shooterState = ShooterState.Load;
+                    m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
                 }
                 break;
 
             case Load:
                 ShooterLoad();
-                if (charge && m_shooter.HasBall)
+                if (m_charge && m_shooter.HasBall())
                 {
-                    shooterState = ShooterState.Charge;
+                    m_shooterState = ShooterState.Charge;
                     Logger.addMessage("ShooterState set to Charge from Load",0);
                 }
                 break;
                 
             case Charge:
                 ShooterCharge();
-                if (shoot && charge)
+                if (m_shoot && m_charge)
                 {
-                    shooterState = ShooterState.Shoot;
+                    m_shooterState = ShooterState.Shoot;
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
                 }
-                if (!ChargeButton)
+                if (!m_charge)
                 {
-                    shooterState = ShooterState.Load;
+                    m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Charge",0);
                 }
                 break;
 
             case Shoot:
                 ShooterShoot();
-                if (m_shooter.HasBall)
+                if (m_shooter.HasBall())
                 {
-                    shooterState = ShooterState.Idle;
+                    m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);
                 }
                 break;
         }
-        switch (manipulatorState)
+        switch (m_manipulatorState)
         {
             case Idle:
                 ManipulatorIdle();
-                if (intake && !m_shooter.HasBall)
+                if (m_intake && !m_shooter.HasBall())
                 {
-                    manipulatorState = ManipulatorState.Intake;
+                    m_manipulatorState = ManipulatorState.Intake;
                     Logger.addMessage("ManipulatorState set to Intake from Idle",0);
                 }
-                if (shoot && m_shooter.HasBall)
+                if (m_shoot && m_shooter.HasBall())
                 {
-                    manipulatorState = ManipulatorState.Shoot;
+                    m_manipulatorState = ManipulatorState.Shoot;
                     Logger.addMessage("ManipulatorState set to Shoot from Idle",0);
                 }
-                if (defenseLow)
+                if (m_defenseLow)
                 {
-                    manipulatorState = ManipulatorState.DefenseLow;
+                    m_manipulatorState = ManipulatorState.DefenseLow;
                     Logger.addMessage("ManipulatorState set to DefenseLow from Idle",0);
                 }
-                if (defenseHigh)
+                if (m_defenseHigh)
                 {
-                    manipulatorState = ManipulatorState.DefenseHigh;
+                    m_manipulatorState = ManipulatorState.DefenseHigh;
                     Logger.addMessage("ManipulatorState set to DefenseHigh from Idle",0);
                 }
                 break;
 
             case Intake:
                 ManipulatorIntake();
-                if (m_manipulator.IntakeHasBall)
+                if (m_manipulator.IntakeHasBall())
                 {
-                    manipulatorState = ManipulatorState.Store;
+                    m_manipulatorState = ManipulatorState.Store;
                     Logger.addMessage("ManipulatorState set to Store from Intake",0);
                 }
-                if (!intake)
+                if (!m_intake)
                 {
-                    manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Intake",0);
                 }
                 break;
 
             case Store:
                 ManipulatorStore();
-                if (load)
+                if (m_load)
                 {
-                    manipulatorState = ManipulatorState.Load;
+                    m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);
                 }
-                if (defenseLow)
+                if (m_defenseLow)
                 {
-                    manipulatorState = ManipulatorState.DefenseLow;
+                    m_manipulatorState = ManipulatorState.DefenseLow;
                     Logger.addMessage("ManipulatorState set to DefenseLow from Store",0);
                 }
-                if (defenseHigh)
+                if (m_defenseHigh)
                 {
-                    manipulatorState = ManipulatorState.DefenseHigh;
+                    m_manipulatorState = ManipulatorState.DefenseHigh;
                     Logger.addMessage("ManipulatorState set to DefenseHigh from Store",0);
                 }
                 break;
 
             case Load:
                 ManipulatorLoad();
-                if (!m_manipulator.IntakeHasBall && m_shooter.HasBall)
+                if (!m_manipulator.IntakeHasBall() && m_shooter.HasBall())
                 {
-                    manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Load",0);
                 } 
                 break;
 
             case Shoot:
                 ManipulatorShoot();
-                if (m_shooter.HasBall || !shoot)
+                if (m_shooter.HasBall() || !m_shoot)
                 {
-                    manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Shoot",0);
                 }
                 break;
            
             case DefenseLow:
                 ManipulatorDefenseLow();
-                if (!defenseLow && m_manipulator.IntakeHasBall)
+                if (!m_defenseLow && m_manipulator.IntakeHasBall())
                 {
-                    manipulatorState = ManipulatorState.Store;
+                    m_manipulatorState = ManipulatorState.Store;
                     Logger.addMessage("ManipulatorState set to Store from DefenseLow",0);
                 }
-                if (!defenseLow && !m_manipulator.IntakeHasBall)
+                if (!m_defenseLow && !m_manipulator.IntakeHasBall())
                 {
-                    manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from DefenseLow",0);
                 }
                 break;
 
             case DefenseHigh:
                 ManipulatorDefenseHigh();
-                if (!defenseHigh && m_manipulator.IntakeHasBall)
+                if (!m_defenseHigh && m_manipulator.IntakeHasBall())
                 {
-                    manipulatorState = ManipulatorState.Store;
+                    m_manipulatorState = ManipulatorState.Store;
                     Logger.addMessage("ManipulatorState set to Store from DefenseHigh",0);
                 }
-                if (!defenseHigh && !m_manipulator.IntakeHasBall)
+                if (!m_defenseHigh && !m_manipulator.IntakeHasBall())
                 {
-                    manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from DefenseHigh",0);
                 }
                 break;
@@ -279,9 +282,9 @@ class SystemsManagement
     /// </summary>
     private void ShooterLoad()
     {
-        if (!m_shooter.HasBall)
+        if (!m_shooter.HasBall())
         {
-            m_shooter.Load();
+            m_shooter.load();
             m_shooter.MovePosition(ShooterPosition.Load);
         }
         else
@@ -313,7 +316,7 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorIdle()
     {
-        m_manipulator.StopIntake();
+        m_manipulator.stopIntake();
     }
 
     /// <summary>
@@ -321,7 +324,7 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorIntake()
     {
-        m_manipulator.SpinIntake();
+        m_manipulator.spinIntake();
     }
 
     /// <summary>
@@ -329,7 +332,7 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorStore()
     {
-        m_manipulator.StopIntake();
+        m_manipulator.stopIntake();
     }
 
     /// <summary>
@@ -337,7 +340,7 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorLoad()
     {
-        m_manipulator.LoadIntake();
+        m_manipulator.loadIntake();
     }
 
     /// <summary>
@@ -345,7 +348,7 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorShoot()
     {
-        m_manipulator.Shoot();
+        m_manipulator.shoot();
     }
 
     /// <summary>
@@ -353,7 +356,7 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorDefenseLow()
     {
-        m_manipulator.LowDefense();
+        m_manipulator.lowDefense();
     }
 
     /// <summary>
@@ -361,6 +364,6 @@ class SystemsManagement
     /// </summary>
     private void ManipulatorDefenseHigh()
     {
-        m_manipulator.HighDefense();
+        m_manipulator.highDefense();
     }
-}*/
+}

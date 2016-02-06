@@ -6,6 +6,7 @@ import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
 
 import JavaRoboticsLib.Drive.*;
+import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,7 +45,8 @@ public class Robot extends IterativeRobot {
     
     @Override
 	public void autonomousInit() {
-
+    	Logger.resetTimer();
+    	autonManager.run();
     }
 
     /**
@@ -55,13 +57,16 @@ public class Robot extends IterativeRobot {
 
     }
 
+    @Override
+    public void teleopInit(){
+    	Logger.addMessage("Starting Teleop");
+    }
+    
     /**
      * This function is called periodically during operator control
      */
     @Override
 	public void teleopPeriodic() {
-    	SmartDashboard.putBoolean("Shooter Sensor", shooter.HasBall());
-    	SmartDashboard.putBoolean("Load Button", c.getLoadButton());
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
         //drive.setPowers(c.getSpeed(), c.getTurn());
         //shooter.MoveShooterWheels(c.getShooterLeft(), c.getShooterRight());

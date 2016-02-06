@@ -103,12 +103,16 @@ public class Logger
          
         TimeStampedMessage toAdd = new TimeStampedMessage(message);
         if (_printToConsole)
-            System.out.print(toAdd);
+            System.out.println(toAdd);
          
         _messages.add(toAdd);
         updateSmartDashboard();
     }
 
+    public static void addMessage(String message){
+    	addMessage(message, 0);
+    }
+    
     /**
     * Returns the contents of the {@link #Logger}
     */
@@ -116,7 +120,7 @@ public class Logger
             StringBuilder s = new StringBuilder();
             for (TimeStampedMessage t : _messages)
             {
-                s.append(t);
+                s.append(t + "\n");
             }
             return s.toString();
     }

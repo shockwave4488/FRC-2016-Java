@@ -1,6 +1,12 @@
 package org.usfirst.frc.team4488.robot.autonomous;
 
 import org.usfirst.frc.team4488.robot.systems.*;
+
+import JavaRoboticsLib.Utility.Logger;
+
+import java.lang.Thread;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class AutonomousManager {
@@ -34,5 +40,20 @@ public class AutonomousManager {
 		 m_action.addDefault("No Action", AutonAction.None);
 		 m_action.addObject("High Goal", AutonAction.HighGoal);
 		 m_action.addObject("Low Goal", AutonAction.LowGoal);
+	 }
+	 
+	 public void run(){
+		 Thread thread = new Thread(() -> {}); //To Add Later
+		 thread.run();
+		 Logger.addMessage("Starting Autonomous");
+		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
+			 try {
+				thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		 }
+		 
+		 Logger.addMessage("Ending Autonomous" + (DriverStation.getInstance().isAutonomous() ? " Early" : ""));
 	 }
 }
