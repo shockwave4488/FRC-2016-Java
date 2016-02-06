@@ -1,7 +1,7 @@
 package org.usfirst.frc.team4488.robot.components;
 
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import JavaRoboticsLib.Utility.*;
 
@@ -9,7 +9,7 @@ import JavaRoboticsLib.Utility.*;
 /// Shooter Wheel class, consisting of one shooter wheel and accompanying encoder
 /// </summary>
 public class ShooterWheel {
-	private Talon m_shooterWheel;
+	private CANTalon m_shooterWheel;
     private Counter m_shooterCounter;
     private Derivative m_acceleration;
     private InputFilter m_filter;
@@ -48,6 +48,7 @@ public class ShooterWheel {
     public void setShooterSpeed(double speed){
     	synchronized(lockObject){
     	m_shooterSpeed = speed;
+    	SmartDashboard.putNumber("Target RPM", speed);
     	}
     }    
 
@@ -86,8 +87,9 @@ public class ShooterWheel {
     /// Initializes ShooterWheel member variables using input channels
     /// </summary>
     public ShooterWheel(int motorChannel, int counterChannel){
-        m_shooterWheel = new Talon(motorChannel);
+        m_shooterWheel = new CANTalon(motorChannel);
         m_shooterCounter = new Counter(counterChannel);
+        m_shooterCounter.setSamplesToAverage(100);
         m_acceleration = new Derivative();
         m_filter = new InputFilter();
     }
@@ -95,19 +97,21 @@ public class ShooterWheel {
     /// <summary>
     /// Spins shooter wheel
     /// </summary>
-    public void SpinWheel(double trigger){
+    public void SpinWheel(){
+		double rate = ((1.0 / m_shooterCounter.getPeriod())/1024.0)*60.0;
+		SmartDashboard.putNumber("Shooter Rate 2", rate );
+		if(rate != 0)System.out.println(rate);
         if (getLoad()){
-            m_shooterWheel.set(-0.3);
+            //m_shooterWheel.set(-0.3);
         }
-        else{
-        	m_shooterWheel.set(trigger);
-        }
-        /*if (getSpin()){
-            m_shooterWheel.set(getRate() < getShooterSpeed() ? 1 : 0);
+        if (getSpin()){
+        	//double rate = m_shooterCounter.getRate();
+        	//System.out.println(m_shooterWheel.get());
+            m_shooterWheel.set(rate < getShooterSpeed() ? 1 : 0.2);
         }
         if (!getSpin()){
-            m_shooterWheel.set(0);
-        }*/
+            //m_shooterWheel.set(0);
+        }
     }
   
     /// <summary>
@@ -119,6 +123,10 @@ public class ShooterWheel {
     	return (getRate() > getTolerance() ? true : false);
     	}
     }
+    
+    public double currentRate(){
+    	return m_shooterCounter.getRate();
+    }
    
     /// <summary>
     /// Checks change in acceleration and RPM to see if ball was shot
@@ -129,7 +137,7 @@ public class ShooterWheel {
     }
     
     public void MoveWheel(double trigger){
-    	m_shooterWheel.set(trigger);
+    	//m_shooterWheel.set(trigger);
     }
 
 }

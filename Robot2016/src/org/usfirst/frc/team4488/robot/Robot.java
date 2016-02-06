@@ -26,6 +26,7 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private DigitalInput shooterSensor;
+	private SystemsManagement systems;
 	
         /**
      * This function is run when the robot is first started up and should be
@@ -36,6 +37,7 @@ public class Robot extends IterativeRobot {
     	c = new Controllers();
     	//drive = new Drive();
     	shooter = new Shooter();
+    	//systems = new SystemsManagement(shooter);
     	//manipulator = new Manipulator();
     	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
@@ -60,12 +62,16 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void teleopPeriodic() {
-    	SmartDashboard.putBoolean("Shooter Sensor", shooter.HasBall());
-    	SmartDashboard.putBoolean("Load Button", c.getLoadButton());
+    	//SmartDashboard.putBoolean("Shooter Sensor", shooter.HasNoBall());
+    	//SmartDashboard.putBoolean("Load Button", c.getLoadButton());
+    	SmartDashboard.putNumber("Current Rate", shooter.Rate());
+    	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
+    	shooter.setShooterRPM(c.getShooterRight()*6000);
+    	shooter.Spin();
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
         //drive.setPowers(c.getSpeed(), c.getTurn());
         //shooter.MoveShooterWheels(c.getShooterLeft(), c.getShooterRight());
-        shooter.Test(c.getLoadButton(), c.getShootButton(), c.getShooterLeft(),c.getShooterLeft());
+        //shooter.Test(c.getLoadButton(), c.getShootButton(), c.getShooterLeft(),c.getShooterLeft());
     }
     
     /**
