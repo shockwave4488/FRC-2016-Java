@@ -37,7 +37,7 @@ public class Robot extends IterativeRobot {
     	c = new Controllers();
     	//drive = new Drive();
     	shooter = new Shooter();
-    	//systems = new SystemsManagement(shooter);
+    	systems = new SystemsManagement(shooter);
     	//manipulator = new Manipulator();
     	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
@@ -64,10 +64,12 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
     	//SmartDashboard.putBoolean("Shooter Sensor", shooter.HasNoBall());
     	//SmartDashboard.putBoolean("Load Button", c.getLoadButton());
-    	SmartDashboard.putNumber("Current Rate", shooter.Rate());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
-    	shooter.setShooterRPM(c.getShooterRight()*6000);
-    	shooter.Spin();
+    	shooter.setShooterRPM(c.getShooterRight() * 6000);
+    	systems.setChargeButton(c.getChargeButton());
+    	systems.setLoadButton(c.getLoadButton());
+    	systems.setShootButton(c.getShootButton());
+    	systems.Update();
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
         //drive.setPowers(c.getSpeed(), c.getTurn());
         //shooter.MoveShooterWheels(c.getShooterLeft(), c.getShooterRight());

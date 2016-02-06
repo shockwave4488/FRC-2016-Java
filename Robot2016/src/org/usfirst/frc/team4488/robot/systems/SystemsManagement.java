@@ -6,6 +6,8 @@ package org.usfirst.frc.team4488.robot.systems;
 /// </summary>
 import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.Utility.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.*;
 public class SystemsManagement
@@ -110,24 +112,24 @@ public class SystemsManagement
     /// </summary>
     public void Update(){
         Logger.addMessage("SystemsManagement Update function called",0);
-        
+        SmartDashboard.putString("Shooter State", state.toString());
         switch(state)
         {
             case Idle:
                 ShooterIdle();
-                if (load && m_shooter.HasNoBall()) //&& manipulatorState == ManipulatorState.Store
+                if (load && !m_shooter.hasBall()) //&& manipulatorState == ManipulatorState.Store
                 {
                     state = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
                 }
-                if (!m_shooter.HasNoBall()&& charge){
+                if (m_shooter.hasBall()&& charge){
                 	state = ShooterState.Charge;
                 }
                 break;
 
             case Load:
                 ShooterLoad();
-                if (!m_shooter.HasNoBall())
+                if (m_shooter.hasBall())
                 {
                     state = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Load",0);
@@ -150,7 +152,7 @@ public class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (!m_shooter.HasNoBall())
+                if (!m_shooter.hasBall())
                 {
                     state = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);

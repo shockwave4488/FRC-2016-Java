@@ -14,11 +14,11 @@ public class ShooterWheels {
      /// Gets and sets RPM for both shooter wheels
      /// </summary>
      public double getShooterRPM() {
-    	 return m_left.getShooterSpeed();// + m_right.getShooterSpeed();
+    	 return m_left.getShooterSpeed() + m_right.getShooterSpeed();
      }
      
      public void setShooterRPM(double RPM) {
-         //m_right.setShooterSpeed(RPM);
+         m_right.setShooterSpeed(RPM);
          m_left.setShooterSpeed(RPM);
      }
      
@@ -26,15 +26,13 @@ public class ShooterWheels {
      /// Constructor for ShooterWheels, with updating Notifier
      /// </summary>
      public ShooterWheels(){
-          m_left = new ShooterWheel(1, 6);
-          m_right = new ShooterWheel(2, RobotMap.ShooterLeftCounter);
-         m_periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
-         m_periodic.startPeriodic(.002);
+          m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter);
+          m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterLeftCounter);
+         m_periodic = new Notifier(()-> { m_left.SpinWheel(); m_right.SpinWheel(); });
+         m_periodic.startPeriodic(.01);
      }
 
-     public double getCurrentRate(){
-    	 return m_left.currentRate();
-     }
+     
      /// <summary>
      /// Checks if both wheels are at the rate to shoot
      /// </summary>
@@ -79,12 +77,4 @@ public class ShooterWheels {
          m_left.setSpin(false);
          m_right.setSpin(false);
      }
-     
-     /*public void MoveWheels(double leftTrigger, double rightTrigger){
-    	 m_left.setLoad(false);
-         m_right.setLoad(false);
-    	 m_left.SpinWheel(leftTrigger);
-    	 m_right.SpinWheel(rightTrigger);
-     }*/
-
 }

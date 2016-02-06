@@ -28,7 +28,7 @@ public class Indexer {
     /// </summary>
     public boolean ballInShooter(){
     	synchronized(lockObject){
-    	return m_shooterBallSensor.get();
+    	return !m_shooterBallSensor.get();
     	}
     }
 
