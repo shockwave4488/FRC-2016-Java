@@ -22,7 +22,7 @@ public class RobotMap {
     public static final int IntakeBeamBreak = 1;
     public static final int IndexerBeamBreak = 9;
     public static final int ShooterLeftCounter = 3;
-    public static final int ShooterRightCounter = 4;
+    public static final int ShooterRightCounter = 23;
 
     public static final int ArmPotentiometer = 0;
     public static final int TurretPontentiometer = 1;
