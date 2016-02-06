@@ -5,6 +5,8 @@ import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Shooter {
 	private ShooterWheels m_shooterWheels;
     private Indexer m_indexer;
@@ -59,10 +61,10 @@ public class Shooter {
     /// <summary>
     /// Sets both shooter and indexer wheels to load
     /// </summary>
-    public void Load(){
+   /* public void Load(){
         m_shooterWheels.Load();
         m_indexer.load();
-    }
+    }*/
 
     /// <summary>
     /// Sets turret position
@@ -71,6 +73,35 @@ public class Shooter {
     public void MovePosition(ShooterPosition position){
     	m_turret.setPosition(position);
     }
+    
+    public void MoveShooterWheels(double leftTrigger, double rightTrigger){
+    	m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
+    }
+    
+    public void Test(Boolean loadButton, Boolean shootButton, double leftTrigger, double rightTrigger){
+    	if(m_indexer.ballInShooter()&&loadButton){
+    		m_indexer.load();
+    		m_shooterWheels.Load();
+    		SmartDashboard.putString("State", "Loading");
+    	}
+    	else if(!m_indexer.ballInShooter()&&shootButton){
+    		m_indexer.shoot();
+    		m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
+    		SmartDashboard.putString("State", "Shooting");
+    	}
+    	else{
+        	m_indexer.stop();
+    		m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
+    		SmartDashboard.putString("State", "Idle/Spinning");
+    	}
+
+    }
+    
+    /*public void ShootTest(Boolean button){
+    	if(!m_indexer.ballInShooter()&&button){
+    		m_indexer.shoot();
+    	}
+    }*/
     
    /* public void setDistance(double distance){
     	double angle = m_turret.
