@@ -22,20 +22,32 @@ public class Shooter {
         m_turret = new Turret();
     }
     
-    public Boolean HasBall(){
+    public double Rate(){
+    	return m_shooterWheels.getCurrentRate();
+    }
+    public Boolean HasNoBall(){
     	return m_indexer.ballInShooter();
     }
     
     public Boolean ShotBall(){
     	return m_shooterWheels.ballShot();
     }
+    
+    public Boolean AtRate(){
+    	return m_shooterWheels.atRate();
+    }
+    
+    public void setShooterRPM(double RPM){
+    	m_shooterWheels.setShooterRPM(RPM);
+    }
+    
 
     /// <summary>
     /// Spins the shooter wheels 
     /// </summary>
     public void Spin(){
         m_shooterWheels.Spin();
-        m_indexer.stop();
+        //m_indexer.stop();
     }
 
     /// <summary>
@@ -57,6 +69,11 @@ public class Shooter {
     	m_shooterWheels.Stop();
     	m_indexer.stop();
     }
+    
+    public void Load(){
+    	m_shooterWheels.Load();
+    	m_indexer.load();
+    }
 
     /// <summary>
     /// Sets both shooter and indexer wheels to load
@@ -74,7 +91,7 @@ public class Shooter {
     	m_turret.setPosition(position);
     }
     
-    public void MoveShooterWheels(double leftTrigger, double rightTrigger){
+    /*public void MoveShooterWheels(double leftTrigger, double rightTrigger){
     	m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
     }
     
@@ -93,7 +110,7 @@ public class Shooter {
         	m_indexer.stop();
     		m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
     		SmartDashboard.putString("State", "Idle/Spinning");
-    	}
+    	}*/
 
     }
     
@@ -112,4 +129,4 @@ public class Shooter {
     	m_turret.setPosition(ShooterPosition.Aiming);
     }
 
-}
+

@@ -27,6 +27,8 @@ class SystemsManagement
     public void setLoadButton(boolean val){
     	m_load = val;
     }
+    
+
 
     /// <summary>
     /// Button to start spinning the shooter
@@ -34,13 +36,16 @@ class SystemsManagement
     public void setChargeButton(boolean val){
     	m_charge = val;
     }
-
+    
+    
     /// <summary>
     /// Button to shoot the ball
     /// </summary>
     public void setShootButton(boolean val){
     	m_shoot = val;
     }
+    
+    
 
     /// <summary>
     /// Button to move the manipulator and start
@@ -69,8 +74,9 @@ class SystemsManagement
     public SystemsManagement(Shooter shooter, Manipulator manipulator){
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
-        m_shooter = shooter;
-        m_manipulator = manipulator;
+    	m_shooter = shooter;
+    	state = ShooterState.Idle;
+        //m_manipulator = new Manipulator();
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 
@@ -92,7 +98,7 @@ class SystemsManagement
         Shoot,
         DefenseLow,
         DefenseHigh,
-    }
+    }*/
 
     /// <summary>
     /// The state the <see cref="Shooter"/> is currently in
@@ -125,6 +131,9 @@ class SystemsManagement
                 {
                     m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
+                }
+                if (!m_shooter.HasNoBall()&& charge){
+                	state = ShooterState.Charge;
                 }
                 break;
 
@@ -160,6 +169,7 @@ class SystemsManagement
                 }
                 break;
         }
+
         switch (m_manipulatorState)
         {
             case Idle:
@@ -266,7 +276,7 @@ class SystemsManagement
                 break;
         }
         Logger.addMessage("SystemsManagement Update function completed",0);
-    }
+    }*/
 
     /// <summary>
     /// Stops all wheels and sets turret down
@@ -274,7 +284,7 @@ class SystemsManagement
     private void ShooterIdle()
     {
         m_shooter.StopWheels();
-        m_shooter.MovePosition(ShooterPosition.Stored);
+        //m_shooter.MovePosition(ShooterPosition.Stored);
     }
 
     /// <summary>
@@ -297,24 +307,22 @@ class SystemsManagement
     /// <summary>
     /// Spins shooter wheels and aims with turret
     /// </summary>
-    private void ShooterCharge()
-    {
+    private void ShooterCharge(){
         m_shooter.Spin();
-        m_shooter.MovePosition(ShooterPosition.Aiming);
+        //m_shooter.MovePosition(ShooterPosition.Aiming);
     }
 
     /// <summary>
     /// Shoots ball
     /// </summary>
-    private void ShooterShoot()
-    {
-        m_shooter.Shoot();
+    private void ShooterShoot(){
+    	m_shooter.Shoot();
     }
 
     /// <summary>
     /// Sets manipulator to inside the frame perimiter and waits
     /// </summary>
-    private void ManipulatorIdle()
+   /* private void ManipulatorIdle()
     {
         m_manipulator.stopIntake();
     }

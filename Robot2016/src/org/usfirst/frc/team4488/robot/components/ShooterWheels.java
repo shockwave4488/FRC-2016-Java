@@ -14,11 +14,11 @@ public class ShooterWheels {
      /// Gets and sets RPM for both shooter wheels
      /// </summary>
      public double getShooterRPM() {
-    	 return (m_left.getShooterSpeed() + m_right.getShooterSpeed()) / 2;
+    	 return m_left.getShooterSpeed();// + m_right.getShooterSpeed();
      }
      
      public void setShooterRPM(double RPM) {
-         m_right.setShooterSpeed(RPM);
+         //m_right.setShooterSpeed(RPM);
          m_left.setShooterSpeed(RPM);
      }
      
@@ -26,12 +26,15 @@ public class ShooterWheels {
      /// Constructor for ShooterWheels, with updating Notifier
      /// </summary>
      public ShooterWheels(){
-          m_left = new ShooterWheel(6, RobotMap.ShooterLeftCounter);
-          m_right = new ShooterWheel(1, RobotMap.ShooterRightCounter);
-         //m_periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
-         //m_periodic.startPeriodic(.005);
+          m_left = new ShooterWheel(1, 6);
+          m_right = new ShooterWheel(2, RobotMap.ShooterLeftCounter);
+         m_periodic = new Notifier(()-> { m_right.SpinWheel(); m_left.SpinWheel(); });
+         m_periodic.startPeriodic(.002);
      }
 
+     public double getCurrentRate(){
+    	 return m_left.currentRate();
+     }
      /// <summary>
      /// Checks if both wheels are at the rate to shoot
      /// </summary>
@@ -54,21 +57,16 @@ public class ShooterWheels {
      public void Load() {
          m_left.setLoad(true);
          m_right.setLoad(true);
-         m_left.SpinWheel(0);
-         m_right.SpinWheel(0);
-         //m_left.setSpin(false);
-         //m_right.setSpin(false);
      }
 
      /// <summary>
      /// Sets both wheels to spin
      /// </summary>
-     public void Spin()
-     {
-         m_left.setSpin(true);
-         m_right.setSpin(true);
-         m_left.setLoad(false);
+     public void Spin(){
+    	 m_left.setLoad(false);
          m_right.setLoad(false);
+    	 m_left.setSpin(true);
+         m_right.setSpin(true);
      }
 
      /// <summary>
@@ -76,17 +74,17 @@ public class ShooterWheels {
      /// </summary>
      public void Stop()
      {
+    	 m_left.setLoad(false);
+         m_right.setLoad(false);
          m_left.setSpin(false);
          m_right.setSpin(false);
-         m_left.setLoad(false);
-         m_right.setLoad(false);
      }
      
-     public void MoveWheels(double leftTrigger, double rightTrigger){
+     /*public void MoveWheels(double leftTrigger, double rightTrigger){
     	 m_left.setLoad(false);
          m_right.setLoad(false);
     	 m_left.SpinWheel(leftTrigger);
     	 m_right.SpinWheel(rightTrigger);
-     }
+     }*/
 
 }
