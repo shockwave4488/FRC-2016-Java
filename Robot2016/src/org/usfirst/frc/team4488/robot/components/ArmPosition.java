@@ -6,5 +6,5 @@ public enum ArmPosition
     High,
     Intake,
     Load,
-    Lower
+    Lower;
 }
