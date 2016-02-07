@@ -111,7 +111,6 @@ public class SystemsManagement
     /// Runs the <see cref="SystemsManagement"/>
     /// </summary>
     public void Update(){
-        Logger.addMessage("SystemsManagement Update function called",0);
         SmartDashboard.putString("Shooter State", state.toString());
         switch(state)
         {
@@ -138,7 +137,7 @@ public class SystemsManagement
                 
             case Charge:
                 ShooterCharge();
-                if (shoot && charge && m_shooter.AtRate())
+                if (shoot && charge) //&& m_shooter.AtRate())
                 {
                     state = ShooterState.Shoot;
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
@@ -152,7 +151,7 @@ public class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (!m_shooter.hasBall())
+                if (!shoot)
                 {
                     state = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);

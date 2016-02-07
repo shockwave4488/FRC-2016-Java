@@ -1,12 +1,11 @@
 package org.usfirst.frc.team4488.robot.systems;
 
 import org.usfirst.frc.team4488.robot.RobotMap;
-
+import com.kauailabs.navx.frc.AHRS;
 import JavaRoboticsLib.Drive.Interfaces.*;
 import JavaRoboticsLib.WPIExtensions.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive implements TankDrive{
 	
@@ -17,6 +16,8 @@ public class Drive implements TankDrive{
 	private SpeedControllerGroup m_leftFollowers;
 	private CANTalon m_right;
 	private SpeedControllerGroup m_rightFollowers;
+	
+	private AHRS m_navx;
 	
 	public Drive() {
 		try {
@@ -41,6 +42,8 @@ public class Drive implements TankDrive{
             rightSlave2.changeControlMode(TalonControlMode.Follower);
             rightSlave2.set(RobotMap.DriveMotorRight1);
             m_rightFollowers = new SpeedControllerGroup(new SpeedController[]{rightSlave1, rightSlave2});
+            
+            m_navx = new AHRS(SPI.Port.kMXP);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -4,10 +4,13 @@ package org.usfirst.frc.team4488.robot;
 import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
-
+import com.kauailabs.navx.frc.AHRS;
 import JavaRoboticsLib.Drive.*;
+import JavaRoboticsLib.Utility.Logger;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -25,9 +28,10 @@ public class Robot extends IterativeRobot {
 	private AutonomousManager autonManager;
 	private Shooter shooter;
 	private Manipulator manipulator;
-	private DigitalInput shooterSensor;
 	private SystemsManagement systems;
 	
+	private AHRS m_navx;
+	private AnalogPotentiometer potentiometer; 
         /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -35,12 +39,15 @@ public class Robot extends IterativeRobot {
     @Override
 	public void robotInit() {
     	c = new Controllers();
-    	//drive = new Drive();
+    	drive = new Drive();
     	shooter = new Shooter();
     	systems = new SystemsManagement(shooter);
+    	m_navx = new AHRS(SPI.Port.kMXP);
+    	potentiometer = new AnalogPotentiometer(RobotMap.TurretPontentiometer);
     	//manipulator = new Manipulator();
-    	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
+    	driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
+    	Logger.setPrintToConsole(true);
     }
     
     
@@ -62,18 +69,15 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void teleopPeriodic() {
-    	//SmartDashboard.putBoolean("Shooter Sensor", shooter.HasNoBall());
-    	//SmartDashboard.putBoolean("Load Button", c.getLoadButton());
+    	SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
+    	SmartDashboard.putNumber("Potentiometer", potentiometer.pidGet());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
-    	shooter.setShooterRPM(c.getShooterRight() * 6000);
+    	shooter.setShooterRPM(c.getShooterRight() * 6250);
     	systems.setChargeButton(c.getChargeButton());
     	systems.setLoadButton(c.getLoadButton());
     	systems.setShootButton(c.getShootButton());
     	systems.Update();
-    	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
-        //drive.setPowers(c.getSpeed(), c.getTurn());
-        //shooter.MoveShooterWheels(c.getShooterLeft(), c.getShooterRight());
-        //shooter.Test(c.getLoadButton(), c.getShootButton(), c.getShooterLeft(),c.getShooterLeft());
+    	driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
     }
     
     /**

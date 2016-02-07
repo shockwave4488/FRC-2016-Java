@@ -27,7 +27,7 @@ public class ShooterWheels {
      /// </summary>
      public ShooterWheels(){
           m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter);
-          m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterLeftCounter);
+          m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter);
          m_periodic = new Notifier(()-> { m_left.SpinWheel(); m_right.SpinWheel(); });
          m_periodic.startPeriodic(.01);
      }

@@ -15,12 +15,12 @@ public class Indexer {
     /// Constructor for Indexer
     /// </summary>
     public Indexer(){
-        m_leftIndexWheel = new Talon(0);
-        m_rightIndexWheel = new Talon(5);
+        m_leftIndexWheel = new Talon(RobotMap.IndexMotorLeft);
+        m_rightIndexWheel = new Talon(RobotMap.IndexMotorRight);
         m_leftIndexWheel.setInverted(true);
         m_rightIndexWheel.setInverted(true);
         m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
-        Logger.addMessage("Indexer Initialized", 1);
+        Logger.addMessage("Indexer Initialized", 1); 
     }
 
     /// <summary>

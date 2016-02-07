@@ -50,12 +50,13 @@ public class Shooter {
     /// Shoots ball if the shooter wheels are at the correct rate
     /// </summary>
     public void Shoot(){
-        if (m_shooterWheels.atRate()){
+        //if (m_shooterWheels.atRate()){
         	m_indexer.shoot();
-    	}
+        	m_shooterWheels.Spin();
+    	/*}
         else{
         	m_indexer.stop();
-        }
+        }*/
     }
     
     /// <summary>

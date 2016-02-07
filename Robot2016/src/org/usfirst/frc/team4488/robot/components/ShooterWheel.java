@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.usfirst.frc.team4488.robot.RobotMap;
+
 import JavaRoboticsLib.Utility.*;
 
 /// <summary>
@@ -26,7 +29,7 @@ public class ShooterWheel {
     
     public double getTolerance(){
     	synchronized(lockObject){
-    	return getShooterSpeed() * .95;
+    	return getShooterSpeed() * .90;
     	}
     }
 
@@ -53,7 +56,7 @@ public class ShooterWheel {
     public void setShooterSpeed(double speed){
     	synchronized(lockObject){
     	m_shooterSpeed = speed;
-    	SmartDashboard.putNumber("Target RPM", speed);
+    	SmartDashboard.putNumber("Target Rate", speed);
     	}
     }    
 
@@ -69,7 +72,6 @@ public class ShooterWheel {
     public void setLoad(boolean thing){
     	synchronized(lockObject){
     	m_load = thing;
-    	SmartDashboard.putBoolean("m_load", m_load);
     	}
     }
     
@@ -100,6 +102,8 @@ public class ShooterWheel {
         m_filter = new InputFilter();
         m_timer = new Timer();
         m_timer.start();
+        if(motorChannel == RobotMap.ShooterMotorRight)
+        	m_shooterWheel.setInverted(true);
     }
 
     /// <summary>
@@ -107,15 +111,14 @@ public class ShooterWheel {
     /// </summary>
     public void SpinWheel(){
 		SmartDashboard.putNumber("Current Rate", getRate() );
-		SmartDashboard.putNumber("Target Rate", getShooterSpeed());
         if (getLoad()){
             m_shooterWheel.set(-0.3);
         }
-        if (getSpin()){
+        else if (getSpin()){
         	m_shooterWheel.set(getRate() < getShooterSpeed() ? getShooterSpeed() / 5000 : 0);
         	if(getRate() != 0) System.out.println(getRate());
         }
-        if (!getSpin()){
+        else if (!getSpin()){
             m_shooterWheel.set(0);
         }
         m_oldPosition = m_shooterCounter.getDistance();
@@ -128,7 +131,7 @@ public class ShooterWheel {
     /// <returns>True if within tolerance, false otherwise</returns>
     public boolean atRate(){
     	synchronized(lockObject){
-    	return (getRate() > getTolerance() ? true : false);
+    	return true;//(getRate() > getTolerance());
     	}
     }
     
