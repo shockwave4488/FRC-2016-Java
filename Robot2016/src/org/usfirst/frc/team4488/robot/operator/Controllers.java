@@ -22,6 +22,10 @@ public class Controllers {
 		return m_primary.getRawAxis(2);
 	}
 	
+	public boolean getChargeButton(){
+		return m_primary.getRawButton(5);
+	}
+	
 	public double getShooterRight(){
 		return m_primary.getRawAxis(3);
 	}

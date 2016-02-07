@@ -5,7 +5,6 @@ import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 	private ShooterWheels m_shooterWheels;
@@ -19,13 +18,10 @@ public class Shooter {
     {
         m_shooterWheels = new ShooterWheels();
         m_indexer = new Indexer();
-        m_turret = new Turret();
+        //m_turret = new Turret();
     }
     
-    public double Rate(){
-    	return m_shooterWheels.getCurrentRate();
-    }
-    public Boolean HasNoBall(){
+    public Boolean hasBall(){
     	return m_indexer.ballInShooter();
     }
     
@@ -47,19 +43,20 @@ public class Shooter {
     /// </summary>
     public void Spin(){
         m_shooterWheels.Spin();
-        //m_indexer.stop();
+        m_indexer.stop();
     }
 
     /// <summary>
     /// Shoots ball if the shooter wheels are at the correct rate
     /// </summary>
     public void Shoot(){
-        if (m_shooterWheels.atRate()){
+        //if (m_shooterWheels.atRate()){
         	m_indexer.shoot();
-    	}
+        	m_shooterWheels.Spin();
+    	/*}
         else{
         	m_indexer.stop();
-        }
+        }*/
     }
     
     /// <summary>
@@ -91,35 +88,6 @@ public class Shooter {
     	m_turret.setPosition(position);
     }
     
-    /*public void MoveShooterWheels(double leftTrigger, double rightTrigger){
-    	m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
-    }
-    
-    public void Test(Boolean loadButton, Boolean shootButton, double leftTrigger, double rightTrigger){
-    	if(m_indexer.ballInShooter()&&loadButton){
-    		m_indexer.load();
-    		m_shooterWheels.Load();
-    		SmartDashboard.putString("State", "Loading");
-    	}
-    	else if(!m_indexer.ballInShooter()&&shootButton){
-    		m_indexer.shoot();
-    		m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
-    		SmartDashboard.putString("State", "Shooting");
-    	}
-    	else{
-        	m_indexer.stop();
-    		m_shooterWheels.MoveWheels(leftTrigger, rightTrigger);
-    		SmartDashboard.putString("State", "Idle/Spinning");
-    	}*/
-
-    }
-    
-    /*public void ShootTest(Boolean button){
-    	if(!m_indexer.ballInShooter()&&button){
-    		m_indexer.shoot();
-    	}
-    }*/
-    
     public void setDistance(double distance){
     	double currentAngle = m_turret.getAngle();
     	double heightChange = 8.083 - (8 + 18 * Math.sin(currentAngle / (180 / Math.PI))) / 12; 
@@ -128,5 +96,6 @@ public class Shooter {
     	m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));   	
     	m_turret.setPosition(ShooterPosition.Aiming);
     }
+}
 
 

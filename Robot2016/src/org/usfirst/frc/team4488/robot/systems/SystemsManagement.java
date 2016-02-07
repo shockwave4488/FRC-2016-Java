@@ -6,6 +6,8 @@ package org.usfirst.frc.team4488.robot.systems;
 /// </summary>
 import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.Utility.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.usfirst.frc.team4488.robot.operator.*;
 class SystemsManagement
 {
@@ -120,9 +122,7 @@ class SystemsManagement
     /// <summary>
     /// Runs the <see cref="SystemsManagement"/>
     /// </summary>
-    public void Update(){
-        Logger.addMessage("SystemsManagement Update function called",0);
-        
+    public void Update(){        
         switch (m_shooterState)
         {
             case Idle:
@@ -132,7 +132,7 @@ class SystemsManagement
                     m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
                 }
-                if (!m_shooter.HasNoBall()&& charge){
+                if (m_shooter.hasBall()&& charge){
                 	state = ShooterState.Charge;
                 }
                 break;
@@ -162,7 +162,7 @@ class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (m_shooter.HasBall())
+                if (!shoot)
                 {
                     m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);
