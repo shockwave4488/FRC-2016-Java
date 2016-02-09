@@ -5,12 +5,15 @@ import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
 import com.kauailabs.navx.frc.AHRS;
+import org.usfirst.frc.team4488.robot.testing.improvisedSimulator;
 import JavaRoboticsLib.Drive.*;
 import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -91,7 +94,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void testPeriodic() {
-    
+    	SmartDashboard.putBoolean("Hullo",true);
     }
     
 }
