@@ -21,10 +21,7 @@ public class Drive implements TankDrive{
 	
 	public Drive() {
 		try {
-			//m_rightWheel = new Talon(1);
-			//m_leftWheel = new Talon(6);
-			//m_rightWheel.setInverted(true);
-			
+
 			m_left = new CANTalon(RobotMap.DriveMotorLeft1);
 			CANTalon leftSlave1 = new CANTalon(RobotMap.DriveMotorLeft2);
             CANTalon leftSlave2 = new CANTalon(RobotMap.DriveMotorLeft3);
@@ -33,7 +30,7 @@ public class Drive implements TankDrive{
             leftSlave2.changeControlMode(TalonControlMode.Follower);
             leftSlave2.set(RobotMap.DriveMotorLeft1);
             m_leftFollowers = new SpeedControllerGroup(new SpeedController[]{leftSlave1, leftSlave2});
-            
+                        
             m_right = new CANTalon(RobotMap.DriveMotorRight1);
             CANTalon rightSlave1 = new CANTalon(RobotMap.DriveMotorRight2);
             CANTalon rightSlave2 = new CANTalon(RobotMap.DriveMotorRight3);

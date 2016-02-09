@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team4488.robot;
 
+import org.usfirst.frc.team4488.robot.autonomous.AutonAction;
+import org.usfirst.frc.team4488.robot.autonomous.AutonDefense;
 import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
@@ -11,6 +13,8 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -29,7 +33,10 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private SystemsManagement systems;
-	
+	private Talon Arm;
+	private Talon Intake;
+	private SendableChooser m_position, m_defense, m_action;
+
 	private AHRS m_navx;
 	private AnalogPotentiometer potentiometer; 
         /**
@@ -46,6 +53,8 @@ public class Robot extends IterativeRobot {
     	potentiometer = new AnalogPotentiometer(RobotMap.TurretPontentiometer);
     	//manipulator = new Manipulator();
     	driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
+    	Arm = new Talon(RobotMap.ArmMotor);
+    	Intake = new Talon(RobotMap.IntakeMotor);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
     	Logger.setPrintToConsole(true);
     }
@@ -75,15 +84,17 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void teleopPeriodic() {
-    	SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
+    	//SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
     	SmartDashboard.putNumber("Potentiometer", potentiometer.pidGet());
-    	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
-    	shooter.setShooterRPM(c.getShooterRight() * 6250);
-    	systems.setChargeButton(c.getChargeButton());
-    	systems.setLoadButton(c.getLoadButton());
-    	systems.setShootButton(c.getShootButton());
-    	systems.Update();
-    	driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
+    	//SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
+    	//shooter.setShooterRPM(c.getShooterRight() * 6250);
+    	//systems.setChargeButton(c.getChargeButton());
+    	//systems.setLoadButton(c.getLoadButton());
+    	//systems.setShootButton(c.getShootButton());
+    	//systems.Update();
+    	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
+    	Arm.set(c.getArmManual());
+    	Intake.set(c.getIntakeArmManual());
     }
     
     /**
@@ -91,7 +102,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void testPeriodic() {
-    
+
     }
     
 }
