@@ -19,10 +19,6 @@ public class Controllers {
 		return m_primary.getRawAxis(4);
 	}
 	
-	public double getShooterLeft(){
-		return m_primary.getRawAxis(2);
-	}
-	
 	public boolean getChargeButton(){
 		return m_primary.getRawButton(5);
 	}
@@ -44,7 +40,13 @@ public class Controllers {
 	}
 	
 	public double getIntakeArmManual(){
-		return m_secondary.getRawAxis(1);
+		return m_primary.getRawAxis(1);
+	}
+		
+		
+	public double getArmManual(){
+		return m_primary.getRawAxis(1)*-1.0;
+		
 	}
 	/*
 	 * This function vibrates the primary controller

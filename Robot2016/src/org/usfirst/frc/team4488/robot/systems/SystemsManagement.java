@@ -9,11 +9,10 @@ import JavaRoboticsLib.Utility.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team4488.robot.operator.*;
-class SystemsManagement
+public class SystemsManagement
 {
     private Shooter m_shooter;
     private Manipulator m_manipulator;
-    private Controllers m_input;
     private boolean m_load = false;
     private boolean m_charge = false;
     private boolean m_shoot = false;
@@ -73,11 +72,12 @@ class SystemsManagement
     /// <summary>
     /// Creates all managed systems (<see cref="Shooter"/>, <see cref="Manipulator"/>)
     /// </summary>
-    public SystemsManagement(Shooter shooter, Manipulator manipulator){
+    public SystemsManagement(Shooter shooter)//, Manipulator manipulator)
+    {
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
     	m_shooter = shooter;
-    	state = ShooterState.Idle;
+    	m_shooterState = ShooterState.Idle;
         //m_manipulator = new Manipulator();
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
@@ -100,23 +100,13 @@ class SystemsManagement
         Shoot,
         DefenseLow,
         DefenseHigh,
-    }*/
+    }
 
     /// <summary>
     /// The state the <see cref="Shooter"/> is currently in
     /// </summary>
     public ShooterState getshooterState(){
     	return m_shooterState;
-    }
-
-    /// <summary>
-    /// Possible states the <see cref="Shooter"/> can be in
-    /// </summary>
-    public enum ShooterState{
-        Idle,
-        Load,
-        Charge,
-        Shoot,
     }
 
     /// <summary>
@@ -127,21 +117,21 @@ class SystemsManagement
         {
             case Idle:
                 ShooterIdle();
-                if (m_load && m_manipulatorState == ManipulatorState.Store)
+                if (m_load && !m_shooter.hasBall()) //&& m_manipulatorState == ManipulatorState.Store)
                 {
                     m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
                 }
-                if (m_shooter.hasBall()&& charge){
-                	state = ShooterState.Charge;
+                if (m_shooter.hasBall()&& m_charge){
+                	m_shooterState = ShooterState.Charge;
                 }
                 break;
 
             case Load:
                 ShooterLoad();
-                if (m_charge && m_shooter.HasBall())
+                if (m_shooter.hasBall())
                 {
-                    m_shooterState = ShooterState.Charge;
+                    m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Charge from Load",0);
                 }
                 break;
@@ -162,15 +152,16 @@ class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (!shoot)
+                if (!m_shoot)
                 {
                     m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);
                 }
                 break;
         }
+        }
 
-        switch (m_manipulatorState)
+        /*switch (m_manipulatorState)
         {
             case Idle:
                 ManipulatorIdle();
@@ -290,18 +281,10 @@ class SystemsManagement
     /// <summary>
     /// Puts turret at load position and sets wheels to load if shooter has no ball. Stops all wheels and sets turret down if shooter has ball
     /// </summary>
-    private void ShooterLoad()
-    {
-        if (!m_shooter.HasBall())
-        {
-            m_shooter.load();
-            m_shooter.MovePosition(ShooterPosition.Load);
-        }
-        else
-        {
-            m_shooter.StopWheels();
-            m_shooter.MovePosition(ShooterPosition.Stored);
-        }
+    private void ShooterLoad(){
+       m_shooter.load();
+       //m_shooter.MovePosition(ShooterPosition.Load);
+        
     }
 
     /// <summary>
@@ -318,6 +301,7 @@ class SystemsManagement
     private void ShooterShoot(){
     	m_shooter.Shoot();
     }
+}
 
     /// <summary>
     /// Sets manipulator to inside the frame perimiter and waits
@@ -374,4 +358,4 @@ class SystemsManagement
     {
         m_manipulator.highDefense();
     }
-}
+}*/
