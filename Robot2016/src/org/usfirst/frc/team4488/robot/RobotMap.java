@@ -23,8 +23,6 @@ public class RobotMap {
     public static final int DriveRightEncoderA = 9;
     public static final int DriveRightEncoderB = 10;
 
-    public static final int IntakeBeamBreak = 1;
-
   
     public static final int ShooterLeftCounter = 8;
     public static final int ShooterRightCounter = 7;
