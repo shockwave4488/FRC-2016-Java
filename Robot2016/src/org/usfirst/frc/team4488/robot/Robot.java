@@ -51,13 +51,13 @@ public class Robot extends IterativeRobot {
     @Override
 	public void robotInit() {
     	c = new Controllers();
-    	drive = new Drive();
-    	shooter = new Shooter();
-    	systems = new SystemsManagement(shooter);
-    	m_navx = new AHRS(SPI.Port.kMXP);
-    	potentiometer = new AnalogPotentiometer(RobotMap.TurretPontentiometer);
+    	//drive = new Drive();
+    	//shooter = new Shooter();
+    	//systems = new SystemsManagement(shooter);
+    	//m_navx = new AHRS(SPI.Port.kMXP);
+    	//potentiometer = new AnalogPotentiometer(RobotMap.TurretPontentiometer);
     	//manipulator = new Manipulator();
-    	driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
+    	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
     	Arm = new Talon(RobotMap.ArmMotor);
     	Intake = new Talon(RobotMap.IntakeMotor);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
