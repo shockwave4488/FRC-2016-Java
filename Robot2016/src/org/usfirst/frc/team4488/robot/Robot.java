@@ -6,7 +6,6 @@ import org.usfirst.frc.team4488.robot.autonomous.AutonDefense;
 import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
-import com.kauailabs.navx.frc.AHRS;
 import org.usfirst.frc.team4488.robot.testing.improvisedSimulator;
 import JavaRoboticsLib.Drive.*;
 import JavaRoboticsLib.Utility.Logger;
@@ -66,6 +65,9 @@ public class Robot extends IterativeRobot {
     
     
     @Override
+    /**
+     * This program is run when the autonomous period of the game begins.
+     */
 	public void autonomousInit() {
     	Logger.resetTimer();
     	autonManager.run();
@@ -80,6 +82,9 @@ public class Robot extends IterativeRobot {
     }
 
     @Override
+    /**
+     * This function is called when Tele-op first begins.
+     */
     public void teleopInit(){
     	Logger.addMessage("Starting Teleop");
     }
