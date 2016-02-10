@@ -27,6 +27,7 @@ public class RobotMap {
     public static final int ShooterLeftCounter = 8;
     public static final int ShooterRightCounter = 7;
     public static final int TurretPontentiometer = 3;
+    public static final int IndexerBeamBreak = 4;
 
     //Constants having to do with the Arm and Intake systems.
     public static final int IntakeBeamBreak = 1;

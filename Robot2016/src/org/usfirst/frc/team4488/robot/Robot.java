@@ -7,6 +7,9 @@ import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
 import org.usfirst.frc.team4488.robot.testing.improvisedSimulator;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import JavaRoboticsLib.Drive.*;
 import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
