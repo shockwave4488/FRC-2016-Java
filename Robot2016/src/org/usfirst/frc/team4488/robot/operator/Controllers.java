@@ -40,12 +40,12 @@ public class Controllers {
 	}
 	
 	public double getIntakeArmManual(){
-		return m_primary.getRawAxis(1);
+		return m_primary.getRawAxis(4)*-1.0;
 	}
 		
 		
 	public double getArmManual(){
-		return m_primary.getRawAxis(1)*-1.0;
+		return m_primary.getRawAxis(1);
 		
 	}
 	/*

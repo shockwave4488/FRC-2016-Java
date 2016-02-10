@@ -113,7 +113,8 @@ public class SystemsManagement
     /// Runs the <see cref="SystemsManagement"/>
     /// </summary>
     public void Update(){        
-        switch (m_shooterState)
+        SmartDashboard.putString("Shooter State", m_shooterState.toString());
+    	switch (m_shooterState)
         {
             case Idle:
                 ShooterIdle();

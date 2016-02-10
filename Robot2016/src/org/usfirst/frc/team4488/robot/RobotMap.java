@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4488.robot;
 
+import edu.wpi.first.wpilibj.SPI;
+
 public class RobotMap {	
 	//Constants having to do with the drive system.
     public static final int DriveMotorLeft1 = 1;
@@ -24,10 +26,10 @@ public class RobotMap {
     public static final int DriveRightEncoderB = 10;
 
   
-    public static final int ShooterLeftCounter = 8;
-    public static final int ShooterRightCounter = 7;
+    public static final int ShooterLeftCounter = 10;
+    public static final int ShooterRightCounter = 11 ;
     public static final int TurretPontentiometer = 3;
-    public static final int IndexerBeamBreak = 4;
+    public static final int IndexerBeamBreak = 1;
 
     //Constants having to do with the Arm and Intake systems.
     public static final int IntakeBeamBreak = 1;

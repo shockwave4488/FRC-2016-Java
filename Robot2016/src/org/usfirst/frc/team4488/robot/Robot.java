@@ -54,8 +54,8 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
     	c = new Controllers();
     	//drive = new Drive();
-    	//shooter = new Shooter();
-    	//systems = new SystemsManagement(shooter);
+    	shooter = new Shooter();
+    	systems = new SystemsManagement(shooter);
     	//m_navx = new AHRS(SPI.Port.kMXP);
     	//potentiometer = new AnalogPotentiometer(RobotMap.TurretPontentiometer);
     	//manipulator = new Manipulator();
@@ -98,13 +98,15 @@ public class Robot extends IterativeRobot {
     @Override
 	public void teleopPeriodic() {
     	//SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
-    	SmartDashboard.putNumber("Potentiometer", potentiometer.pidGet());
-    	//SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
-    	//shooter.setShooterRPM(c.getShooterRight() * 6250);
-    	//systems.setChargeButton(c.getChargeButton());
-    	//systems.setLoadButton(c.getLoadButton());
-    	//systems.setShootButton(c.getShootButton());
-    	//systems.Update();
+    	//SmartDashboard.putNumber("Potentiometer", potentiometer.pidGet());
+    	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
+    	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
+    	shooter.setShooterRPM(c.getShooterRight() * 6250);
+    	systems.setChargeButton(c.getChargeButton());
+    	
+    	systems.setLoadButton(c.getLoadButton());
+    	systems.setShootButton(c.getShootButton());
+    	systems.Update();
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
     	Arm.set(c.getArmManual());
     	Intake.set(c.getIntakeArmManual());
