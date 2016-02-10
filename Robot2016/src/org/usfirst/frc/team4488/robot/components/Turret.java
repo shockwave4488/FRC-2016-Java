@@ -27,7 +27,9 @@ public class Turret extends MotionControlledSystem{
 	public ShooterPosition getPosition(){
 		return m_position;
 	}		
-	
+	/*
+	 * Sets the position of the shooter's turret based on the current ShooterState state being inputed.
+	 */
 	public void setPosition(ShooterPosition value){
 		m_position = value;
 		switch(value){
@@ -43,6 +45,9 @@ public class Turret extends MotionControlledSystem{
 		}
 	}
 	
+	/*
+	 * Gets the value that the turret's potentiometer is reading.
+	 */
 	public double getAngle(){
 		return Sensor.pidGet();
 	}

@@ -33,6 +33,9 @@ public class Shooter {
     	return m_shooterWheels.atRate();
     }
     
+    /*
+     * Sets the RPM for the shooter, how fast to spin the shooter wheels.
+     */
     public void setShooterRPM(double RPM){
     	m_shooterWheels.setShooterRPM(RPM);
     }
@@ -88,6 +91,9 @@ public class Shooter {
     	m_turret.setPosition(position);
     }
     
+    /*
+     * This tells the shooter how far it is from the goal, so that it can automatically aim accordingly.
+     */
     public void setDistance(double distance){
     	double currentAngle = m_turret.getAngle();
     	double heightChange = 8.083 - (8 + 18 * Math.sin(currentAngle / (180 / Math.PI))) / 12; 

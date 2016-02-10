@@ -50,7 +50,6 @@ public class Controllers {
 	}
 	/*
 	 * This function vibrates the primary controller
-	 * I don't know how to actually have a rumbletype inside of the function
 	 */
 	public void vibratePrimary(double amnt,RumbleType vibrate){
 		m_primary.setRumble(RumbleType.kLeftRumble, (float)amnt);
