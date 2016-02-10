@@ -42,6 +42,14 @@ public class AutonomousManager {
 		 m_action.addObject("Low Goal", AutonAction.LowGoal);
 	 }
 	 
+	 
+	 /*
+	  * Begins the autonomous routine, during the autonomous period of the match
+	  * The routine is a melding of three parts:
+	  * The code called based on what defense is being breached
+	  * The code called based on position of the bot, spot 1, spot 2, spybot, etc.
+	  * The code called based on action to perform after the breach, high or low goal, or nothing.
+	  */
 	 public void run(){
 		 Thread thread = new Thread(() -> {}); //To Add Later
 		 thread.run();

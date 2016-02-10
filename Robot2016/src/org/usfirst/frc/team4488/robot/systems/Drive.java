@@ -47,6 +47,9 @@ public class Drive implements TankDrive{
 	}
 	
 	@Override
+	/**
+	 * Sets the CIM motors on the West Coast Drive train to the leftPower and rightPower. Essential for the TankDrive interface
+	 */
 	public void setPowers(double leftPower, double rightPower) {
 		m_left.set(leftPower);
 		m_right.set(rightPower);

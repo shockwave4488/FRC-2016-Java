@@ -57,6 +57,9 @@ public class Arm extends MotionControlledSystem {
         }
     }
     
+    /*
+     * Returns the current position of the arm
+     */
     public ArmPosition getPosition(){
     	return m_position;
     }

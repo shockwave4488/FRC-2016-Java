@@ -68,6 +68,9 @@ public class improvisedSimulator {
 		
 		window.setVisible(true);
 	}
+	/*
+	 * Sets any progress bar to a value. Changes the color depending on certain specifications.
+	 */
 	public void setProgressBar(JProgressBar jpb,int value){
 		jpb.setValue(value);
 		jpb.setString("Motor Value:"+value+"% Power");
@@ -81,6 +84,9 @@ public class improvisedSimulator {
 			jpb.setForeground(new Color(255,0,0));
 		}
 	}
+	/*
+	 * Changes a progress bar's current value by a certain amount. Also changes the color according to specs.
+	 */
 	public void modifyProgressBar(JProgressBar jpb, int value){
 		jpb.setValue(value);
 		jpb.setString("Motor Value:"+value+"% Power");
@@ -94,10 +100,17 @@ public class improvisedSimulator {
 			jpb.setForeground(new Color(255,0,0));
 		}
 	}
+	/*
+	 * Sets the maximum value of a progress bar. This function also sets the current value to the maximum.
+	 */
 	public void setMaximumAndValue(JProgressBar jpb,int maximum){
 		jpb.setMaximum(maximum);
 		jpb.setValue(maximum);
 	}
+	
+	/*
+	 * Sets a Radio button's value to a certain boolean. Somewhat useful, I suppose...
+	 */
 	public void setRadioButtonValue(JRadioButton jrb,boolean value){
 		jrb.setSelected(value);
 	}
