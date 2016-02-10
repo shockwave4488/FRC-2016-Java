@@ -19,14 +19,14 @@ public class ShooterWheel {
     private InputFilter m_filter;
     private double m_accelerationThreshold;
     private double m_oldPosition;
-    private Timer m_timer;
+    private double m_dt = 0.01;
     
     private Object lockObject = new Object();
     
     private double m_shooterSpeed;
     private boolean m_load;
     private boolean m_spin;
-    
+        
     public double getTolerance(){
     	synchronized(lockObject){
     	return getShooterSpeed() * .90;
@@ -38,10 +38,16 @@ public class ShooterWheel {
     /// </summary>
     public double getRate(){
        synchronized(lockObject){
-       	double delta = m_shooterCounter.getDistance() - m_oldPosition; //dX
-       	delta /= m_timer.get(); // dX / dT
+    	double delta = delta();
+       	delta /= m_dt; // dX / dT
        	return delta * 60;// RPS -> RPM
        }
+    }
+    
+    public double delta(){
+    	synchronized(lockObject){
+    		return  m_shooterCounter.getDistance() - m_oldPosition; //dX
+    	}
     }
     
     /// <summary>
@@ -100,8 +106,6 @@ public class ShooterWheel {
         m_shooterCounter.setDistancePerPulse(1.0 / 1024.0);
         m_acceleration = new Derivative();
         m_filter = new InputFilter();
-        m_timer = new Timer();
-        m_timer.start();
         if(motorChannel == RobotMap.ShooterMotorRight)
         	m_shooterWheel.setInverted(true);
     }
@@ -110,7 +114,7 @@ public class ShooterWheel {
     /// Spins shooter wheel
     /// </summary>
     public void SpinWheel(){
-		SmartDashboard.putNumber("Current Rate", getRate() );
+ 		SmartDashboard.putNumber("Current Rate", getRate() );
         if (getLoad()){
             m_shooterWheel.set(-0.3);
         }
@@ -122,7 +126,6 @@ public class ShooterWheel {
             m_shooterWheel.set(0);
         }
         m_oldPosition = m_shooterCounter.getDistance();
-    	m_timer.reset();
     }
   
     /// <summary>

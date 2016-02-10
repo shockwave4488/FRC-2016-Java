@@ -17,7 +17,7 @@ public class Indexer {
     public Indexer(){
         m_leftIndexWheel = new Talon(RobotMap.IndexMotorLeft);
         m_rightIndexWheel = new Talon(RobotMap.IndexMotorRight);
-        m_leftIndexWheel.setInverted(true);
+        m_leftIndexWheel.setInverted(false);
         m_rightIndexWheel.setInverted(true);
         m_shooterBallSensor = new DigitalInput(RobotMap.IndexerBeamBreak);
         Logger.addMessage("Indexer Initialized", 1); 
