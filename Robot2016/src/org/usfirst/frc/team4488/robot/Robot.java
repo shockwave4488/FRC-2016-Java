@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj.Talon;
-
+import edu.wpi.first.wpilibj.Utility;
 import edu.wpi.first.wpilibj.command.Command;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -64,6 +64,10 @@ public class Robot extends IterativeRobot {
     	Intake = new Talon(RobotMap.IntakeMotor);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
     	Logger.setPrintToConsole(true);
+    	
+    	SmartDashboard.putNumber("P", 0);
+    	SmartDashboard.putNumber("I", 0);
+    	SmartDashboard.putNumber("D", 0);
     }
     
     
@@ -101,15 +105,18 @@ public class Robot extends IterativeRobot {
     	//SmartDashboard.putNumber("Potentiometer", potentiometer.pidGet());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
-    	shooter.setShooterRPM(c.getShooterRight() * 6250);
+    	SmartDashboard.putBoolean("Ball Shot?", shooter.ShotBall());
+    	shooter.setShooterRPM(SmartDashboard.getNumber("Target Rate", 0));
     	systems.setChargeButton(c.getChargeButton());
     	
     	systems.setLoadButton(c.getLoadButton());
     	systems.setShootButton(c.getShootButton());
     	systems.Update();
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
-    	Arm.set(c.getArmManual());
+    	Arm.set(Math.abs(c.getArmManual()) < 0.2 ? 0 : c.getArmManual());
     	Intake.set(c.getIntakeArmManual());
+    	
+    	//System.out.println(Utility.getFPGATime());
     }
     
     /**

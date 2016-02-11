@@ -92,6 +92,12 @@ public class SimplePID implements MotionController
     public void setMinInput(double value) {
         m_minInput = value;
     }
+    
+    public void setGains(double p, double i, double d){
+    	m_kP = p;
+    	m_kI = i;
+    	m_kD = d;
+    }
 
     /**
     * Creates a new instance of the SimplePID class

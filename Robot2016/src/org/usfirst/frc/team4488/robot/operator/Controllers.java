@@ -36,7 +36,7 @@ public class Controllers {
 	//}
 	
 	public boolean getShootButton(){
-		return m_primary.getRawButton(3);
+		return m_primary.getRawButton(6);
 	}
 	
 	public double getIntakeArmManual(){
