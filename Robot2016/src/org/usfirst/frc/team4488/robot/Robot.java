@@ -6,21 +6,14 @@ import org.usfirst.frc.team4488.robot.autonomous.AutonDefense;
 import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
-import org.usfirst.frc.team4488.robot.testing.improvisedSimulator;
-
 import com.kauailabs.navx.frc.AHRS;
-
 import JavaRoboticsLib.Drive.*;
 import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SPI;
-
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Utility;
-import edu.wpi.first.wpilibj.command.Command;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -40,12 +33,12 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private SystemsManagement systems;
+	
 	private Talon Arm;
 	private Talon Intake;
 	private SendableChooser m_position, m_defense, m_action;
 
-	private AHRS m_navx;
-	private AnalogPotentiometer potentiometer; 
+	private AHRS m_navx; 
         /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -56,16 +49,15 @@ public class Robot extends IterativeRobot {
     	//drive = new Drive();
     	shooter = new Shooter();
     	systems = new SystemsManagement(shooter);
-    	//m_navx = new AHRS(SPI.Port.kMXP);
-    	//potentiometer = new AnalogPotentiometer(RobotMap.TurretPontentiometer);
+    	m_navx = new AHRS(SPI.Port.kMXP);
     	//manipulator = new Manipulator();
-    	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 1, 0, 1, 0.2);
+    	//driveHelper = new DriveHelper(drive, 0, 0, 1, 0, 1, 0.2);
     	Arm = new Talon(RobotMap.ArmMotor);
     	Intake = new Talon(RobotMap.IntakeMotor);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
     	Logger.setPrintToConsole(true);
     	
-    	SmartDashboard.putNumber("P", 0);
+    	SmartDashboard.putNumber("P", 0.005);
     	SmartDashboard.putNumber("I", 0);
     	SmartDashboard.putNumber("D", 0);
     }
@@ -101,11 +93,11 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void teleopPeriodic() {
-    	//SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
-    	//SmartDashboard.putNumber("Potentiometer", potentiometer.pidGet());
+    	SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
     	SmartDashboard.putBoolean("Ball Shot?", shooter.ShotBall());
+    	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
     	shooter.setShooterRPM(SmartDashboard.getNumber("Target Rate", 0));
     	systems.setChargeButton(c.getChargeButton());
     	
@@ -124,11 +116,6 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void testPeriodic() {
-
-
-
-    	SmartDashboard.putBoolean("Hullo",true);
-
     }
     
 }

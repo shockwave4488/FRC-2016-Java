@@ -18,7 +18,7 @@ public class Shooter {
     {
         m_shooterWheels = new ShooterWheels();
         m_indexer = new Indexer();
-        //m_turret = new Turret();
+        m_turret = new Turret();
     }
     
     public Boolean hasBall(){
@@ -31,6 +31,14 @@ public class Shooter {
     
     public Boolean AtRate(){
     	return m_shooterWheels.atRate();
+    }
+    
+    public double TurretAngle(){
+    	return m_turret.getAngle();
+    }
+    
+    public ShooterPosition TurretPosition(){
+    	return m_turret.getPosition();
     }
     
     /*
@@ -87,7 +95,7 @@ public class Shooter {
     /// Sets turret position
     /// </summary>
     /// <param name="position">Turret position@param
-    public void MovePosition(ShooterPosition position){
+    public void MoveTurretPosition(ShooterPosition position){
     	m_turret.setPosition(position);
     }
     

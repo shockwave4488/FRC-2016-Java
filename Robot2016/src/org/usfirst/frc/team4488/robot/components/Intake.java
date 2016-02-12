@@ -21,7 +21,7 @@ public class Intake
      *Returns the result of the beam break in the arm to determine whether there is a ball in the intake 
      */
     public boolean ballInIntake(){
-    	return m_armBallSensor.get();
+    	return !m_armBallSensor.get();
     }
     
     /*
