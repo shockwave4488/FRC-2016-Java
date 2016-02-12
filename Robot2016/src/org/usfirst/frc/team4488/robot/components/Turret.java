@@ -13,7 +13,7 @@ public class Turret extends MotionControlledSystem{
 	
 	public Turret(){
 		Motor = new Talon(RobotMap.TurretMotor);
-		Sensor = new AnalogPotentiometer(RobotMap.TurretPontentiometer, 360);
+		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, 269.3);
 		SetpointTolerance = 1;
 		
 		try {
@@ -26,7 +26,7 @@ public class Turret extends MotionControlledSystem{
 	
 	public ShooterPosition getPosition(){
 		return m_position;
-	}		
+	}
 	/*
 	 * Sets the position of the shooter's turret based on the current ShooterState state being inputed.
 	 */

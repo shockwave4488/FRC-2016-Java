@@ -44,8 +44,10 @@ public class Indexer {
     /// Runs index wheels to load if there is no ball in shooter, stops otherwise
     /// </summary>
     public void load(){
-            m_leftIndexWheel.set(-0.5);
-            m_rightIndexWheel.set(-0.5);
+    	if(!ballInShooter()){
+            m_leftIndexWheel.set(-0.3);
+            m_rightIndexWheel.set(-0.3);
+    	}
     }
 
     /// <summary>

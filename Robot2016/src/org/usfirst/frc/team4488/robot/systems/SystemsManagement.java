@@ -6,6 +6,7 @@ package org.usfirst.frc.team4488.robot.systems;
 /// </summary>
 import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.Utility.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team4488.robot.operator.*;
@@ -21,6 +22,8 @@ public class SystemsManagement
     private boolean m_defenseHigh = false;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
+    
+    private Timer m_shootTimer;
 
     /// <summary>
     /// Button to load the shooter
@@ -77,7 +80,8 @@ public class SystemsManagement
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
     	m_shooter = shooter;
-    	m_shooterState = ShooterState.Idle;
+    	m_shootTimer = new Timer();
+    	m_shootTimer.start();
         //m_manipulator = new Manipulator();
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
@@ -139,7 +143,8 @@ public class SystemsManagement
                 
             case Charge:
                 ShooterCharge();
-                if (m_shoot && m_charge)
+                if(!m_shooter.AtRate()) m_shootTimer.reset();
+                if (m_shoot && m_charge && m_shootTimer.get() > 0.25)
                 {
                     m_shooterState = ShooterState.Shoot;
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
