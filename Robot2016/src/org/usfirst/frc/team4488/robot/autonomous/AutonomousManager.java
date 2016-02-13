@@ -8,7 +8,6 @@ import java.lang.Thread;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousManager {
 	 private SendableChooser m_position, m_defense, m_action;
@@ -111,7 +110,6 @@ public class AutonomousManager {
 		 Logger.addMessage("Starting Autonomous");
 		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
 			 try {
-				
 				thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
