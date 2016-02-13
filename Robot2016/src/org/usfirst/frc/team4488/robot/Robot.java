@@ -12,6 +12,7 @@ import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -120,4 +121,8 @@ public class Robot extends IterativeRobot {
     	allPeriodic();
     }
     
+    @Override
+    public void disabledPeriodic(){
+    	allPeriodic();
+    }
 }
