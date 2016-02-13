@@ -44,6 +44,14 @@ public class AutonomousManager {
 	 }
 	 
 	 
+	 
+	 public void moveToDistance(double distance){
+		 while(m_drive.)
+	 }
+	 
+	 
+	 
+	 
 	 /*
 	  * Begins the autonomous routine, during the autonomous period of the match
 	  * The routine is a melding of three parts:
@@ -51,24 +59,59 @@ public class AutonomousManager {
 	  * The code called based on position of the bot, spot 1, spot 2, spybot, etc.
 	  * The code called based on action to perform after the breach, high or low goal, or nothing.
 	  */
-	 @SuppressWarnings("deprecation")
 	public void run(){
-		 Thread thread = new Thread(() -> {}); //To Add Later
+		 Thread thread = new Thread(() -> {
+			 if(true){
+				switch((int)SmartDashboard.getNumber("AutonDefense")){
+				case 0:
+					//Cheval De Fries
+				case 1:
+					//Ramparts
+				case 2:
+					//Rock Wall
+				case 3:
+					//Rough Terrain
+				case 4:
+					//Moat
+				case 5:
+					//Low Bar
+				case 6:
+					//Challenge
+				
+				}
+				switch((int)SmartDashboard.getNumber("AutonPosition")){
+				case 0:
+					//Spybot
+				case 1:
+					//Position 1
+				case 2:
+					//Position 2
+				case 3:
+					//Position 3
+				case 4:
+					//Position 4
+				case 5:
+					//Position 5
+				}
+				switch((int)SmartDashboard.getNumber("AutonAction")){
+				case 0:
+					//Breach-only
+				case 1:
+					//Low Goal
+				case 2:
+					//High Goal
+				case 3:
+					//High Goal+Breach-Spy only
+				case 4:
+					//Low Goal and Breach- Spy only
+				}
+			 }
+		 }); //To Add Later
 		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
 		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
 			 try {
-				switch((int)SmartDashboard.getNumber("AutonDefense")){
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
 				
-				}
-				switch((int)SmartDashboard.getNumber("AutonPosition")){}
-				switch((int)SmartDashboard.getNumber("AutonAction")){
-				}
 				thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

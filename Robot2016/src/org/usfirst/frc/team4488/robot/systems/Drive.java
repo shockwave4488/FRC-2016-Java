@@ -17,6 +17,7 @@ public class Drive implements TankDrive{
 	private CANTalon m_right;
 	private SpeedControllerGroup m_rightFollowers;
 	
+	
 	private AHRS m_navx;
 	
 	public Drive() {
@@ -39,7 +40,7 @@ public class Drive implements TankDrive{
             rightSlave2.changeControlMode(TalonControlMode.Follower);
             rightSlave2.set(RobotMap.DriveMotorRight1);
             m_rightFollowers = new SpeedControllerGroup(new SpeedController[]{rightSlave1, rightSlave2});
-            
+            m_right.get();
             m_navx = new AHRS(SPI.Port.kMXP);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,6 +55,10 @@ public class Drive implements TankDrive{
 		m_left.set(leftPower);
 		m_right.set(rightPower);
 		//SmartDashboard.putNumber("Drive Speed", m_left.getSpeed());
+	}
+	
+	public int[] getEncoderVals(){
+		m_left.get
 	}
 
 }
