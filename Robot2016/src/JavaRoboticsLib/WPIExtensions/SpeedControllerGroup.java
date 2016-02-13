@@ -89,4 +89,11 @@ public class SpeedControllerGroup implements SpeedController {
 		else
 			return false;
 	}
+
+	@Override
+	public void stopMotor() {
+		for(SpeedController s : m_controllers){
+			s.stopMotor();
+		}		
+	}
 }

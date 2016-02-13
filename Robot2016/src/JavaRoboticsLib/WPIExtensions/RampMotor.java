@@ -103,7 +103,7 @@ public class RampMotor implements SpeedController
     * 
     *  @param value Power to set to
     */
-    public void forcePower(double value) throws Exception {
+    public void forcePower(double value){
         m_power = value;
         m_controller.set(value);
     }
@@ -156,6 +156,11 @@ public class RampMotor implements SpeedController
 	public boolean getInverted(){
     	return m_controller.getInverted();
     }
+
+	@Override
+	public void stopMotor() {
+		forcePower(0);		
+	}
 }
 
 
