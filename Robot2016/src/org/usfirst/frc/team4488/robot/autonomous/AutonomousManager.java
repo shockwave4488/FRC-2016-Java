@@ -8,6 +8,7 @@ import java.lang.Thread;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousManager {
 	 private SendableChooser m_position, m_defense, m_action;
@@ -50,12 +51,24 @@ public class AutonomousManager {
 	  * The code called based on position of the bot, spot 1, spot 2, spybot, etc.
 	  * The code called based on action to perform after the breach, high or low goal, or nothing.
 	  */
-	 public void run(){
+	 @SuppressWarnings("deprecation")
+	public void run(){
 		 Thread thread = new Thread(() -> {}); //To Add Later
 		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
 		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
 			 try {
+				switch((int)SmartDashboard.getNumber("AutonDefense")){
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				
+				}
+				switch((int)SmartDashboard.getNumber("AutonPosition")){}
+				switch((int)SmartDashboard.getNumber("AutonAction")){
+				}
 				thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
