@@ -40,6 +40,8 @@ public class Drive implements TankDrive{
             rightSlave2.set(RobotMap.DriveMotorRight1);
             m_rightFollowers = new SpeedControllerGroup(new SpeedController[]{rightSlave1, rightSlave2});
             
+            m_left.setVoltageRampRate(60);
+            m_right.setVoltageRampRate(60);
             m_navx = new AHRS(SPI.Port.kMXP);
 		} catch (Exception e) {
 			e.printStackTrace();

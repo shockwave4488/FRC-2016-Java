@@ -7,7 +7,7 @@ import org.usfirst.frc.team4488.robot.components.Intake;
 public class Manipulator
 {
     private Intake m_intake;
-    private Arm m_Arm;
+    private Arm m_arm;
     
     public boolean IntakeHasBall(){
 	return m_intake.ballInIntake();
@@ -18,7 +18,7 @@ public class Manipulator
     /// </summary>
     public Manipulator(){       
         try {
-			m_Arm = new Arm();
+			m_arm = new Arm();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -32,8 +32,8 @@ public class Manipulator
     /// </summary>
     public void spinIntake(){
         m_intake.intakeBall();
-        m_Arm.setPosition(ArmPosition.Intake);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.Intake);
+        m_arm.Update();
     }
 
     /// <summary>
@@ -41,8 +41,8 @@ public class Manipulator
     /// </summary>
     public void stopIntake(){
         m_intake.off();
-        m_Arm.setPosition(ArmPosition.High);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.High);
+        m_arm.Update();
     }
     
     /// <summary>
@@ -50,8 +50,8 @@ public class Manipulator
     /// </summary>
     public void outputIntake(){
         m_intake.output();
-        m_Arm.setPosition(ArmPosition.Intake);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.Intake);
+        m_arm.Update();
     }
 
     /// <summary>
@@ -60,8 +60,8 @@ public class Manipulator
     public void loadIntake()
     {
         m_intake.load();
-        m_Arm.setPosition(ArmPosition.Load);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.Load);
+        m_arm.Update();
     }
 
     /// <summary>
@@ -70,8 +70,8 @@ public class Manipulator
     public void shoot()
     {
         m_intake.off();
-        m_Arm.setPosition(ArmPosition.Low);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.Low);
+        m_arm.Update();
     }
 
     /// <summary>
@@ -80,8 +80,8 @@ public class Manipulator
     public void lowDefense()
     {
         m_intake.off();
-        m_Arm.setPosition(ArmPosition.Lower);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.Lower);
+        m_arm.Update();
     }
 
     /// <summary>
@@ -90,7 +90,23 @@ public class Manipulator
     public void highDefense()
     {
         m_intake.off();
-        m_Arm.setPosition(ArmPosition.High);
-        m_Arm.Update();
+        m_arm.setPosition(ArmPosition.High);
+        m_arm.Update();
+    }
+    
+    public void setIntakeManual(boolean manual){
+    	m_intake.setManual(manual);
+    }
+    
+    public void setArmManual(boolean value){
+    	m_arm.setManual(value);
+    }
+    
+    public void setIntakeManualPower(double power){
+    	m_intake.setManualPower(power);
+    }
+    
+    public void setArmManualPower(double power){
+    	m_arm.setManualPower(power);
     }
 }

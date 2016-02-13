@@ -75,14 +75,14 @@ public class SystemsManagement
     /// <summary>
     /// Creates all managed systems (<see cref="Shooter"/>, <see cref="Manipulator"/>)
     /// </summary>
-    public SystemsManagement(Shooter shooter)//, Manipulator manipulator)
+    public SystemsManagement(Shooter shooter, Manipulator manipulator)//, Manipulator manipulator)
     {
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
     	m_shooter = shooter;
     	m_shootTimer = new Timer();
     	m_shootTimer.start();
-        //m_manipulator = new Manipulator();
+        m_manipulator = manipulator;
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 

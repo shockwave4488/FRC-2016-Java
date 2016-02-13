@@ -105,7 +105,8 @@ public class Shooter {
     public void setDistance(double distance){
     	double currentAngle = m_turret.getAngle();
     	double heightChange = 8.083 - (8 + 18 * Math.sin(currentAngle / (180 / Math.PI))) / 12; 
-    	double speed = Math.sqrt(2*32.174* heightChange);
+    	double dragFactor = 1.014 + (distance - 5) * 0.008 / 7.5;
+    	double speed = Math.sqrt(2 * 32.174 * heightChange) * dragFactor;
     	double targetAngle = Math.atan(2 * heightChange / distance) * (180 / Math.PI);
     	m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));   	
     	m_turret.setPosition(ShooterPosition.Aiming);
