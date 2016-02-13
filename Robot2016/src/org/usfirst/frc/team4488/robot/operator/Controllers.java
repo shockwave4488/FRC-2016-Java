@@ -12,7 +12,7 @@ public class Controllers {
 	}
 	
 	public double getSpeed(){
-		return m_primary.getRawAxis(1);
+		return m_primary.getRawAxis(1) * -1.0;
 	}
 	
 	public double getTurn(){
@@ -31,21 +31,22 @@ public class Controllers {
 		return m_primary.getRawButton(1);
 	}
 	
-	//public boolean getSpinButton(){
-		//return m_primary.getRawButton(1);
-	//}
+	public boolean getSpinButton(){
+		return m_primary.getRawButton(1);
+	}
 	
 	public boolean getShootButton(){
 		return m_primary.getRawButton(6);
 	}
 	
-	public double getIntakeArmManual(){
-		return m_primary.getRawAxis(4)*-1.0;
+	public double getIntakeManual(){
+		//return m_primary.getRawAxis(4)*-1.0;
+		return 0;
 	}
 		
 		
 	public double getArmManual(){
-		return m_primary.getRawAxis(1);
+		return m_primary.getRawAxis(2) - m_primary.getRawAxis(3);
 		
 	}
 	/*

@@ -12,6 +12,7 @@ import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -34,8 +35,6 @@ public class Robot extends IterativeRobot {
 	private Manipulator manipulator;
 	private SystemsManagement systems;
 	
-	private Talon Arm;
-	private Talon Intake;
 	private SendableChooser m_position, m_defense, m_action;
 
 	private AHRS m_navx; 
@@ -46,14 +45,12 @@ public class Robot extends IterativeRobot {
     @Override
 	public void robotInit() {
     	c = new Controllers();
-    	//drive = new Drive();
+    	drive = new Drive();
     	shooter = new Shooter();
-    	systems = new SystemsManagement(shooter);
+    	manipulator = new Manipulator();
+    	systems = new SystemsManagement(shooter, manipulator);
     	m_navx = new AHRS(SPI.Port.kMXP);
-    	//manipulator = new Manipulator();
-    	//driveHelper = new DriveHelper(drive, 0, 0, 1, 0, 1, 0.2);
-    	Arm = new Talon(RobotMap.ArmMotor);
-    	Intake = new Talon(RobotMap.IntakeMotor);
+    	driveHelper = new DriveHelper(drive, 0.05, 0.05, 0.6, 0, 0.75, 0.2);
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
     	Logger.setPrintToConsole(true);
     	
@@ -62,6 +59,13 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("D", 0);
     }
     
+    private void allPeriodic(){
+    	SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
+    	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
+    	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
+    	SmartDashboard.putBoolean("Ball Shot?", shooter.ShotBall());
+    	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
+    }
     
     @Override
     /**
@@ -77,6 +81,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void autonomousPeriodic() {
+    	allPeriodic();
 
     }
 
@@ -92,22 +97,19 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     @Override
-	public void teleopPeriodic() {
-    	SmartDashboard.putNumber("Gyro", m_navx.getFusedHeading());
-    	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
-    	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
-    	SmartDashboard.putBoolean("Ball Shot?", shooter.ShotBall());
-    	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
+	public void teleopPeriodic() {  	
+    	allPeriodic();
+    	
     	shooter.setShooterRPM(SmartDashboard.getNumber("Target Rate", 0));
     	systems.setChargeButton(c.getChargeButton());
     	
     	systems.setLoadButton(c.getLoadButton());
     	systems.setShootButton(c.getShootButton());
+    	manipulator.setArmManualPower(c.getArmManual());
+    	manipulator.setIntakeManualPower(c.getIntakeManual());
     	systems.Update();
-    	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
-    	Arm.set(Math.abs(c.getArmManual()) < 0.2 ? 0 : c.getArmManual());
-    	Intake.set(c.getIntakeArmManual());
     	
+    	driveHelper.Drive(c.getSpeed(), c.getTurn(), false, true);
     	//System.out.println(Utility.getFPGATime());
     }
     
@@ -116,6 +118,11 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void testPeriodic() {
+    	allPeriodic();
     }
     
+    @Override
+    public void disabledPeriodic(){
+    	allPeriodic();
+    }
 }
