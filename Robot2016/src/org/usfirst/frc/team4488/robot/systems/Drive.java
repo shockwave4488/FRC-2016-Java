@@ -57,8 +57,5 @@ public class Drive implements TankDrive{
 		//SmartDashboard.putNumber("Drive Speed", m_left.getSpeed());
 	}
 	
-	public int[] getEncoderVals(){
-		m_left.get
-	}
 
 }
