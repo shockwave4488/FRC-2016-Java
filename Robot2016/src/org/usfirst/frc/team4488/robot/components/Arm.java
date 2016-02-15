@@ -63,5 +63,13 @@ public class Arm extends MotionControlledSystem {
     public ArmPosition getPosition(){
     	return m_position;
     }
+    
+    public double armAngle(){
+    	return m_armPotentiometer.pidGet();
+    }
 
+    @Override
+    public void Update(){
+    	super.Update();
+    }
 }
