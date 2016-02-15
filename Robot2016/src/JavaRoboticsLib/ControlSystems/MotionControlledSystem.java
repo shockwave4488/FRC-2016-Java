@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.Notifier;
 public abstract class MotionControlledSystem   
 {
     private double m_manualPower;
-	
+	protected double highLimit;
+	protected double lowLimit;    
+    
     /**
     * Notifier to update the {@link #MotionControlledSystem} periodically
     */
@@ -42,7 +44,7 @@ public abstract class MotionControlledSystem
     /**
     * Set the {@link #MotionControlledSystem} into manual mode of operation
     */
-    private boolean m_manual;
+    private boolean m_manual = false;
     
     public boolean getManual() {
         return m_manual;
@@ -77,7 +79,11 @@ public abstract class MotionControlledSystem
      */
     public void Update()
     {
-        Motor.set(m_manual ? m_manualPower : Controller.get(Sensor.pidGet()));
+    	double power = m_manual ? m_manualPower : Controller.get(Sensor.pidGet());
+    	
+    	if((Sensor.pidGet() < lowLimit && power < 0)||(Sensor.pidGet() > highLimit && power > 0)){
+    		power = 0;}
+        Motor.set(power);
     }
 
 

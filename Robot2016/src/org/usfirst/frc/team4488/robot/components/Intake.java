@@ -11,14 +11,18 @@ public class Intake
 {
     private Talon m_intakeMotor;
     private DigitalInput m_armBallSensor;
+    private Encoder m_intakeEncoder;
     private boolean m_manual;
+    
     private double m_manualPower;
     
     public Intake() {
         m_intakeMotor = new Talon(RobotMap.IntakeMotor);
         m_armBallSensor = new DigitalInput(RobotMap.IntakeBeamBreak);
+        m_intakeEncoder = new Encoder(RobotMap.IntakeEncoderA, RobotMap.IntakeEncoderB);
         m_manual = false;
         m_manualPower = 0;
+        
     }
     
     /**
@@ -32,28 +36,18 @@ public class Intake
      * Spins the intake only if there is no ball in the intake. If there is, the intake is not spun.
      */
     public void intakeBall(){
-    	if(m_manual){
-    		runManual();
-    		return;
-    	}
-    	
-    	if(m_armBallSensor.get()){
+    	if(!m_armBallSensor.get()){
     		m_intakeMotor.set(0);
     	}
     	else{
     		m_intakeMotor.set(1);
     	}
     }
-    
+       
     /**
      * Turns off the intake motors.
      */
     public void off(){
-    	if(m_manual){
-    		runManual();
-    		return;
-    	}
-    	
     	m_intakeMotor.set(0);
     }
     
@@ -61,23 +55,13 @@ public class Intake
      * Pushes the ball into the shooter (Kiss pass)
      */
     public void load(){
-    	if(m_manual){
-    		runManual();
-    		return;
-    	}
-    	
-    	m_intakeMotor.set(0);
+    	m_intakeMotor.set(1);
     }
     
     /**
      * If the ball needs to be spat out for any reason, this function reverses the intake.
      */
     public void output(){
-    	if(m_manual){
-    		runManual();
-    		return;
-    	}
-    	
     	m_intakeMotor.set(-1);
     }
     
@@ -95,5 +79,9 @@ public class Intake
     
     public void runManual(){
     		m_intakeMotor.set(m_manualPower);
+    }
+    
+    public double encoderPosition(){
+    	return m_intakeEncoder.pidGet();
     }
 }

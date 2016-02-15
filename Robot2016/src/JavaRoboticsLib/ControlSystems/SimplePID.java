@@ -11,6 +11,7 @@ public class SimplePID implements MotionController
 {
     private double m_kP, m_kI, m_kD;
     private Derivative m_d;
+    private double m_lastError;
     private Integral m_i;
     private double m_max;   
     private double m_min;
@@ -58,6 +59,7 @@ public class SimplePID implements MotionController
     @Override
 	public void setSetPoint(double value) {
         m_setPoint = value;
+        resetIntegral();
     }
 
     /**
@@ -117,9 +119,9 @@ public class SimplePID implements MotionController
         m_kD = d;
         setMax(max);
         setMin(min);
-        setSetPoint(0);
         m_d = new Derivative();
         m_i = new Integral();
+        setSetPoint(0);
         setContinuous(false);
     }
 
@@ -146,9 +148,11 @@ public class SimplePID implements MotionController
         if (getContinuous())
             error = Util.wrapError(currentPoint, getSetPoint(), getMinInput(), getMaxInput());
          
+        
         double p = m_kP == 0 ? 0 : m_kP * error;
         double I = m_kI == 0 ? 0 : m_kI * m_i.get(error);
-        double d = m_kD == 0 ? 0 : m_kD * m_d.get(error);
+        double d = m_kD == 0 ? 0 : m_kD * (error - m_lastError);
+        m_lastError = error;
         return Util.limit(p + I + d, getMin(), getMax());
     }
 
@@ -159,6 +163,9 @@ public class SimplePID implements MotionController
         m_i.reInitialize();
     }
 
+    public void setP(double value){
+    	m_kP = value;
+    }
 }
 
 

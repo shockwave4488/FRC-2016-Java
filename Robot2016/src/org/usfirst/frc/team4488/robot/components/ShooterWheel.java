@@ -113,10 +113,9 @@ public class ShooterWheel {
     public ShooterWheel(int motorChannel, int counterChannel){
         m_shooterWheel = new Talon(motorChannel);
         m_shooterCounter = new Counter(counterChannel);
-        m_shooterCounter.setSamplesToAverage(1);
         m_shooterCounter.setDistancePerPulse(1.0 /1024.0);
         try {
-			m_pid = new SimplePID(SmartDashboard.getNumber("ShooterP", 0.005), 0, 0);
+			m_pid = new SimplePID(0.005, 0, 0);
 		} catch (Exception e) {}
         m_oldTime = Utility.getFPGATime();
         if(motorChannel == RobotMap.ShooterMotorRight){
@@ -129,10 +128,10 @@ public class ShooterWheel {
     /// </summary>
     public void SpinWheel(){    	
     	if(m_shooterWheel.getChannel() == RobotMap.ShooterMotorRight){
-        	System.out.println("RIGHTY " + getRate());
+        	//System.out.println("RIGHTY " + getRate());
     	}
     	else{
-    		System.out.println("LEFTY " + getRate());
+    		//System.out.println("LEFTY " + getRate());
     	}
  		SmartDashboard.putNumber("Current Rate", getRate() );
  		

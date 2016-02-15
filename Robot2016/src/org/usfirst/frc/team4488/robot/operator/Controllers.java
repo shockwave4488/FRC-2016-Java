@@ -9,6 +9,7 @@ public class Controllers {
 	
 	public Controllers(){
 		m_primary = new Joystick(0);
+		m_secondary = new Joystick(1);
 	}
 	
 	public double getSpeed(){
@@ -16,38 +17,37 @@ public class Controllers {
 	}
 	
 	public double getTurn(){
+
 		return m_primary.getRawAxis(4);
 	}
 	
 	public boolean getChargeButton(){
-		return m_primary.getRawButton(5);
-	}
-	
-	public double getShooterRight(){
-		return m_primary.getRawAxis(3);
+		return m_secondary.getRawButton(5);
 	}
 	
 	public boolean getLoadButton(){
-		return m_primary.getRawButton(1);
-	}
-	
-	public boolean getSpinButton(){
-		return m_primary.getRawButton(1);
+		return m_secondary.getRawButton(3);
 	}
 	
 	public boolean getShootButton(){
-		return m_primary.getRawButton(6);
+		return m_secondary.getRawButton(6);
 	}
 	
-	public double getIntakeManual(){
-		//return m_primary.getRawAxis(4)*-1.0;
-		return 0;
+	public boolean getIntakeButton(){
+		return m_secondary.getRawButton(1);
+	}
+	
+	public boolean getShootAlignButton(){
+		return m_primary.getRawButton(9);
 	}
 		
-		
 	public double getArmManual(){
-		return m_primary.getRawAxis(2) - m_primary.getRawAxis(3);
+		return m_secondary.getRawAxis(2) - m_secondary.getRawAxis(3);
 		
+	}
+	
+	public double getTurretManual(){
+		return -m_secondary.getRawAxis(1);
 	}
 	/*
 	 * This function vibrates the primary controller

@@ -9,7 +9,6 @@ public enum AutonDefense {
 	Ramparts,
 	RockWall,
 	ChevalDeFrise,
-	Challenge,
-	
+	Challenge,	
 }
 

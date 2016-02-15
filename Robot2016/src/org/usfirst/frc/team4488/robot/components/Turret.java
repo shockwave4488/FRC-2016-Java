@@ -4,23 +4,25 @@ import org.usfirst.frc.team4488.robot.RobotMap;
 import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Turret extends MotionControlledSystem{
 	
-	private final double G = 32.174;
-	
+	private double m_aimingAngle;	
 	private ShooterPosition m_position;
 	
 	public Turret(){
 		Motor = new Talon(RobotMap.TurretMotor);
 		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, 269.3);
 		SetpointTolerance = 1;
-		
+		lowLimit = 15.0;
+		highLimit = 100.0;
 		try {
-			Controller = new SimplePID(0, 0, 0);
-		} catch (Exception e) {
-			e.printStackTrace();
+			Controller = new SimplePID(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0), -0.5, 0.5);
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
+		Motor.setInverted(true);
 		Logger.addMessage("Turret Initialized", 1);
 	}
 	
@@ -31,18 +33,23 @@ public class Turret extends MotionControlledSystem{
 	 * Sets the position of the shooter's turret based on the current ShooterState state being inputed.
 	 */
 	public void setPosition(ShooterPosition value){
+		SmartDashboard.putString("Turret Positon", value.toString());
 		m_position = value;
 		switch(value){
 		case Aiming:
-            setSetPoint(Math.atan(123 * G)); //replace 123 with distance as reported by camera
+            setSetPoint(m_aimingAngle); //replace 123 with distance as reported by camera
             break;
         case Load:
-            setSetPoint(Preferences.getInstance().getDouble("ShooterLow", 0.0));
+            setSetPoint(30);
             break;
         case Stored:
-        	setSetPoint(Preferences.getInstance().getDouble("ShooterStored", 0.0));
+        	setSetPoint(0);
             break;
 		}
+	}
+	
+	public void setAimingAngle(double angle){
+		m_aimingAngle = angle;
 	}
 	
 	/*
@@ -50,5 +57,13 @@ public class Turret extends MotionControlledSystem{
 	 */
 	public double getAngle(){
 		return Sensor.pidGet();
+	} 
+	
+	@Override
+	public void Update(){
+		((SimplePID)Controller).setGains(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
+		if(getAngle() > 65)
+			((SimplePID)Controller).setP(SmartDashboard.getNumber("TurretP", 0) / 2.0);
+		super.Update();
 	}
 }

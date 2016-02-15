@@ -19,19 +19,15 @@ public class RobotMap {
     public static final int ArmMotor = 9;
     public static final int IntakeMotor = 2;
 
-
-    public static final int DriveLeftEncoderA = 7;
-    public static final int DriveLeftEncoderB = 8;
-    public static final int DriveRightEncoderA = 9;
-    public static final int DriveRightEncoderB = 10;
-
+    public static final int IntakeEncoderA = 12 ;
+    public static final int IntakeEncoderB = 13 ;
   
     public static final int ShooterLeftCounter = 10;
     public static final int ShooterRightCounter = 11;
     public static final int TurretPotentiometer = 0;
-    public static final int IndexerBeamBreak = 1;
+    public static final int IndexerBeamBreak = 22;
 
     //Constants having to do with the Arm and Intake systems.
-    public static final int IntakeBeamBreak = 1;
-    public static final int ArmPotentiometer = 0;
+    public static final int IntakeBeamBreak = 18;
+    public static final int ArmPotentiometer = 1;
 }

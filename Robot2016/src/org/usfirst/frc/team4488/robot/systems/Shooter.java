@@ -5,6 +5,9 @@ import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
 
+import JavaRoboticsLib.Utility.Logger;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class Shooter {
 	private ShooterWheels m_shooterWheels;
@@ -55,6 +58,7 @@ public class Shooter {
     public void Spin(){
         m_shooterWheels.Spin();
         m_indexer.stop();
+        m_turret.Update();
     }
 
     /// <summary>
@@ -64,6 +68,8 @@ public class Shooter {
         //if (m_shooterWheels.atRate()){
         	m_indexer.shoot();
         	m_shooterWheels.Spin();
+            m_turret.Update();
+
     	/*}
         else{
         	m_indexer.stop();
@@ -76,19 +82,25 @@ public class Shooter {
     public void StopWheels(){
     	m_shooterWheels.Stop();
     	m_indexer.stop();
+        m_turret.Update();
+
     }
     
     public void Load(){
     	m_shooterWheels.Load();
     	m_indexer.load();
+        m_turret.Update();
+
     }
 
     /// <summary>
     /// Sets both shooter and indexer wheels to load
     /// </summary>
     public void load(){
+    	Logger.addMessage("Loading");
         m_shooterWheels.Load();
         m_indexer.load();
+        m_turret.Update();
     }
 
     /// <summary>
@@ -96,6 +108,7 @@ public class Shooter {
     /// </summary>
     /// <param name="position">Turret position@param
     public void MoveTurretPosition(ShooterPosition position){
+    	Logger.addMessage("Setting Turret Position");
     	m_turret.setPosition(position);
     }
     
@@ -103,13 +116,37 @@ public class Shooter {
      * This tells the shooter how far it is from the goal, so that it can automatically aim accordingly.
      */
     public void setDistance(double distance){
+    	if(distance == 0)
+    		return;
+    	    	
     	double currentAngle = m_turret.getAngle();
     	double heightChange = 8.083 - (8 + 18 * Math.sin(currentAngle / (180 / Math.PI))) / 12; 
     	double dragFactor = 1.014 + (distance - 5) * 0.008 / 7.5;
-    	double speed = Math.sqrt(2 * 32.174 * heightChange) * dragFactor;
+    	double shootScalar = 4 - (10 / distance);
+    	double speed = Math.sqrt(2 * 32.174 * heightChange) * dragFactor * shootScalar;
     	double targetAngle = Math.atan(2 * heightChange / distance) * (180 / Math.PI);
-    	m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));   	
-    	m_turret.setPosition(ShooterPosition.Aiming);
+    	
+    	if(distance < 6)
+    		speed = 100;
+    	
+    	//m_turret.setAimingAngle(targetAngle + (7.0711 * Math.cos(targetAngle / (180 / Math.PI))));
+    	//m_turret.setAimingAngle(SmartDashboard.getNumber("AzimuthY", 0));
+    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint"));
+    	//m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));
+    	m_shooterWheels.setShooterRPM(6000);
+    	SmartDashboard.putNumber("target Angle", targetAngle);
+    }
+    
+    public double getShooterRPM(){
+    	return m_shooterWheels.getShooterRPM();
+    }
+    
+    public void setTurretManual(boolean manual){
+    	m_turret.setManual(manual);
+    }
+    
+    public void setTurretManualPower(double power){
+    	m_turret.setManualPower(power);
     }
 }
 

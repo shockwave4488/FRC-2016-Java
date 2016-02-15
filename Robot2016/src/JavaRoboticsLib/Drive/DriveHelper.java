@@ -20,6 +20,12 @@ public class DriveHelper {
 
   public DriveHelper(TankDrive drive, double speedDeadzone, double turnDeadzone, double highNonLinearity, double lowNonLinearity, double highSensitivity, double lowSensitivity) {
     this.drive = drive;
+    m_highNonLinearity = highNonLinearity;
+    m_lowNonLinearity = lowNonLinearity;
+    m_speedDeadZone = speedDeadzone;
+    m_turnDeadZone = turnDeadzone;
+    m_highSensitivity = highSensitivity;
+    m_lowSensitivity = lowSensitivity;
   }
   
   public TankDrive getDrive() {return drive;}
@@ -33,6 +39,7 @@ public class DriveHelper {
 
     turn = handleDeadband(turn, m_turnDeadZone);
     throttle = handleDeadband(throttle, m_speedDeadZone);
+    isQuickTurn |= Math.abs(throttle) < 0.5;
 
     //double negInertia = turn - m_oldTurn;
     //m_oldTurn = turn;

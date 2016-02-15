@@ -6,5 +6,4 @@ public enum AutonAction {
 	HighGoal,
 	LowGoal,
 	None,
-
 }

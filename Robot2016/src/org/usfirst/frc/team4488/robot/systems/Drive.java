@@ -6,12 +6,16 @@ import JavaRoboticsLib.Drive.Interfaces.*;
 import JavaRoboticsLib.WPIExtensions.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive implements TankDrive{
 	
 	//private Talon m_rightWheel;
 	//private Talon m_leftWheel;
 
+	private static final double RAMPRATE = 60; //Volts per second
+	private static final int COUNTSPERREV = 360; //Encoder counts per revolution
+	
 	private CANTalon m_left;
 	private SpeedControllerGroup m_leftFollowers;
 	private CANTalon m_right;
@@ -40,8 +44,13 @@ public class Drive implements TankDrive{
             rightSlave2.set(RobotMap.DriveMotorRight1);
             m_rightFollowers = new SpeedControllerGroup(new SpeedController[]{rightSlave1, rightSlave2});
             
-            m_left.setVoltageRampRate(60);
-            m_right.setVoltageRampRate(60);
+            m_left.enableBrakeMode(false);
+            m_right.enableBrakeMode(false);
+            m_left.setVoltageRampRate(RAMPRATE);
+            m_right.setVoltageRampRate(RAMPRATE);
+            m_left.configEncoderCodesPerRev(COUNTSPERREV);
+            m_right.configEncoderCodesPerRev(COUNTSPERREV);
+            m_right.setInverted(true);
             m_navx = new AHRS(SPI.Port.kMXP);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,7 +64,43 @@ public class Drive implements TankDrive{
 	public void setPowers(double leftPower, double rightPower) {
 		m_left.set(leftPower);
 		m_right.set(rightPower);
-		//SmartDashboard.putNumber("Drive Speed", m_left.getSpeed());
+		SmartDashboard.putNumber("Drive Speed Left", m_left.getSpeed());
+		SmartDashboard.putNumber("Drive Power Left", leftPower);
+		SmartDashboard.putNumber("Drive Speed Right", m_right.getSpeed());
+		SmartDashboard.putNumber("Drive Power Right", rightPower);
 	}
-
+	
+	public double getAngle(){
+		return m_navx.getFusedHeading();
+	}
+	
+	public void resetAngle(){
+		m_navx.reset();
+	}
+	
+	public double getLeftDistance(){
+		return m_left.getPosition() * 8.0 * Math.PI;
+	}
+	
+	public double getRightDistance(){
+		return m_right.getPosition() * 8.0 * Math.PI;
+	}
+	
+	public double getLeftSpeed(){
+		return m_left.getSpeed() * 8.0 * Math.PI;
+	}
+	
+	public double getRightSpeed(){
+		return m_right.getSpeed() * 8.0 * Math.PI;
+	}
+	
+	public double getLinearDistance() {return (getLeftDistance() + getRightDistance()) / 2;}
+	public double getTurnDistance() {return (getLeftDistance() - getRightDistance()) / 2;}
+	public double getLinearSpeed() {return (getLeftSpeed() + getRightSpeed()) / 2;}
+	public double getTurnSpeed() {return (getLeftSpeed() - getRightSpeed()) / 2;}
+	
+	public void resetEncoders(){
+		m_left.setEncPosition(0);
+		m_right.setEncPosition(0);
+		}
 }

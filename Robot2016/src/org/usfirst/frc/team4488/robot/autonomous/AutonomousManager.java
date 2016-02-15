@@ -56,7 +56,7 @@ public class AutonomousManager {
 		 Logger.addMessage("Starting Autonomous");
 		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
 			 try {
-				thread.sleep(20);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
