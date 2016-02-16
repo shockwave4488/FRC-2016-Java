@@ -8,5 +8,5 @@ public enum ArmPosition
     High,
     Intake,
     Load,
-    Lower;
+    Shoot;
 }

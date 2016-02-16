@@ -14,26 +14,17 @@ public class SystemsManagement
 {
     private Shooter m_shooter;
     private Manipulator m_manipulator;
-    private boolean m_load = false;
     private boolean m_charge = false;
     private boolean m_shoot = false;
     private boolean m_intake = false;
     private boolean m_defenseLow = false;
     private boolean m_defenseHigh = false;
+    private boolean m_reset = false;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
     
     private Timer m_shootTimer;
-    private Timer m_manipTimer;
-
-    /// <summary>
-    /// Button to load the shooter
-    /// </summary>
-    public void setLoadButton(boolean val){
-    	m_load = val;
-    }
-    
-
+    private Timer m_manipTimer;   
 
     /// <summary>
     /// Button to start spinning the shooter
@@ -50,7 +41,9 @@ public class SystemsManagement
     	m_shoot = val;
     }
     
-    
+    public void setResetButton(boolean val){
+    	m_reset = val;
+    }
 
     /// <summary>
     /// Button to move the manipulator and start
@@ -113,7 +106,7 @@ public class SystemsManagement
         {
             case Idle:
                 ShooterIdle();
-                if (m_load && !m_shooter.hasBall()) //&& m_manipulatorState == ManipulatorState.Store)
+                if (!m_shooter.hasBall() && m_manipulator.HasBall()) //&& m_manipulatorState == ManipulatorState.Store)
                 {
                     m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
@@ -136,9 +129,12 @@ public class SystemsManagement
                 
             case Charge:
                 ShooterCharge();
-                if (m_shoot && m_charge && m_shootTimer.get() > 1)
+                if(!m_shooter.AtRate()) m_shootTimer.reset();
+                if (m_shoot && m_charge && m_shootTimer.get() > 1 && m_shooter.turretAtPosition())
                 {
                     m_shooterState = ShooterState.Shoot;
+
+                	m_shootTimer.reset();
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
                 }
                 if (!m_charge)
@@ -150,7 +146,7 @@ public class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (!m_shoot)
+                if (!m_shoot && m_shootTimer.get() > 1)
                 {
                     m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);
@@ -168,7 +164,7 @@ public class SystemsManagement
                     m_manipulatorState = ManipulatorState.Intake;
                     Logger.addMessage("ManipulatorState set to Intake from Idle",0);
                 }
-                if (m_shoot && m_shooter.hasBall())
+                if (m_charge && m_shooter.hasBall())
                 {
                     m_manipulatorState = ManipulatorState.Shoot;
                     Logger.addMessage("ManipulatorState set to Shoot from Idle",0);
@@ -201,7 +197,7 @@ public class SystemsManagement
 
             case Store:
                 ManipulatorStore();
-                if (m_load)
+                if (m_shooter.turretAtPosition())
                 {
                     m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);
@@ -220,7 +216,7 @@ public class SystemsManagement
 
             case Load:
                 ManipulatorLoad();
-                if (!m_manipulator.IntakeHasBall() && m_shooter.hasBall())
+                if (m_shooter.hasBall())
                 {
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Load",0);
@@ -229,7 +225,7 @@ public class SystemsManagement
 
             case Shoot:
                 ManipulatorShoot();
-                if (!m_shoot)
+                if (!m_charge)
                 {
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Shoot",0);
@@ -337,6 +333,13 @@ public class SystemsManagement
     private void ManipulatorShoot()
     {
         m_manipulator.shoot();
+    }
+    
+    public void Reset(){
+    	if(m_reset){
+    		m_shooterState = ShooterState.Idle;
+    		m_manipulatorState = ManipulatorState.Idle;
+    	}
     }
 
     /// <summary>

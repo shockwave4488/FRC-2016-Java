@@ -40,7 +40,7 @@ public class Turret extends MotionControlledSystem{
             setSetPoint(m_aimingAngle); //replace 123 with distance as reported by camera
             break;
         case Load:
-            setSetPoint(30);
+            setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 45));
             break;
         case Stored:
         	setSetPoint(0);

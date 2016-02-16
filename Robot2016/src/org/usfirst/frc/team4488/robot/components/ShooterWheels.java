@@ -32,15 +32,6 @@ public class ShooterWheels {
          m_periodic.startPeriodic(.010);
      }
 
-     
-     /// <summary>
-     /// Checks if both wheels are at the rate to shoot
-     /// </summary>
-     /// <returns>True if ready to shoot, false otherwise</returns>
-     public boolean ballShot() {
-         return (m_left.ballShot() && m_right.ballShot());
-     }
-     
      /// <summary>
      /// Checks both wheels if the ball was shot
      /// </summary>

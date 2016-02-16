@@ -78,6 +78,10 @@ public class Drive implements TankDrive{
 		m_navx.reset();
 	}
 	
+	public AHRS getGyroscope(){
+		return m_navx;
+	}
+	
 	public double getLeftDistance(){
 		return m_left.getPosition() * 8.0 * Math.PI;
 	}
@@ -102,5 +106,5 @@ public class Drive implements TankDrive{
 	public void resetEncoders(){
 		m_left.setEncPosition(0);
 		m_right.setEncPosition(0);
-		}
+	}
 }

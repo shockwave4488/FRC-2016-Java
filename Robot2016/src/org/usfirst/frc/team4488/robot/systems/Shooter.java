@@ -28,10 +28,6 @@ public class Shooter {
     	return m_indexer.ballInShooter();
     }
     
-    public Boolean ShotBall(){
-    	return m_shooterWheels.ballShot();
-    }
-    
     public Boolean AtRate(){
     	return m_shooterWheels.atRate();
     }
@@ -85,19 +81,11 @@ public class Shooter {
         m_turret.Update();
 
     }
-    
-    public void Load(){
-    	m_shooterWheels.Load();
-    	m_indexer.load();
-        m_turret.Update();
-
-    }
 
     /// <summary>
     /// Sets both shooter and indexer wheels to load
     /// </summary>
     public void load(){
-    	Logger.addMessage("Loading");
         m_shooterWheels.Load();
         m_indexer.load();
         m_turret.Update();
@@ -108,7 +96,6 @@ public class Shooter {
     /// </summary>
     /// <param name="position">Turret position@param
     public void MoveTurretPosition(ShooterPosition position){
-    	Logger.addMessage("Setting Turret Position");
     	m_turret.setPosition(position);
     }
     
@@ -133,7 +120,7 @@ public class Shooter {
     	//m_turret.setAimingAngle(SmartDashboard.getNumber("AzimuthY", 0));
     	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint"));
     	//m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));
-    	m_shooterWheels.setShooterRPM(6000);
+    	m_shooterWheels.setShooterRPM(5500);
     	SmartDashboard.putNumber("target Angle", targetAngle);
     }
     
@@ -147,6 +134,10 @@ public class Shooter {
     
     public void setTurretManualPower(double power){
     	m_turret.setManualPower(power);
+    }
+    
+    public boolean turretAtPosition(){
+    	return m_turret.AtSetpoint();
     }
 }
 

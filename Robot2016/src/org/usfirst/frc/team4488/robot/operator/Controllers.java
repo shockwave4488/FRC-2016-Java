@@ -25,10 +25,6 @@ public class Controllers {
 		return m_secondary.getRawButton(5);
 	}
 	
-	public boolean getLoadButton(){
-		return m_secondary.getRawButton(3);
-	}
-	
 	public boolean getShootButton(){
 		return m_secondary.getRawButton(6);
 	}
@@ -40,15 +36,11 @@ public class Controllers {
 	public boolean getShootAlignButton(){
 		return m_primary.getRawButton(9);
 	}
-		
-	public double getArmManual(){
-		return m_secondary.getRawAxis(2) - m_secondary.getRawAxis(3);
-		
+	
+	public boolean getReset(){
+		return m_secondary.getRawButton(8);
 	}
 	
-	public double getTurretManual(){
-		return -m_secondary.getRawAxis(1);
-	}
 	/*
 	 * This function vibrates the primary controller
 	 */

@@ -47,31 +47,38 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void robotInit() {
+    	Logger.setPrintToConsole(true);
+    	Logger.setSmartDashboardName("Logger");
     	c = new Controllers();
     	drive = new Drive();
     	shooter = new Shooter();
     	manipulator = new Manipulator();
     	systems = new SystemsManagement(shooter, manipulator);
-    	driveHelper = new DriveHelper(drive, 0.05, 0.05, 0.6, 0.6, 0.75, 0.2);
+    	driveHelper = new DriveHelper(drive, 0.075, 0.075, 0.6, 0.6, 0.75, 0.2);
     	smartDrive = new SmartDrive(drive);
     	camlights = new CameraLights();
     	//autonManager = new AutonomousManager(drive, shooter, manipulator);
-    	Logger.setPrintToConsole(true);
+    	
+    	SmartDashboard.putNumber("Turret Load Angle", 45);
 
     	SmartDashboard.putNumber("DriveP", 0.15);
     	SmartDashboard.putNumber("Cam Light Brightness", .5);
     	SmartDashboard.putNumber("Distance", 4);
     	SmartDashboard.putNumber("Shooting Scalar", 3);
     	SmartDashboard.putNumber("Angle Setpoint", 60);
+    	SmartDashboard.putNumber("Arm P", 0.025);
+    	SmartDashboard.putNumber("Arm I", 0);
+    	SmartDashboard.putNumber("Arm D", 0);
     }
     
     private void allPeriodic(){
     	SmartDashboard.putNumber("Target RPM", shooter.getShooterRPM());
     	SmartDashboard.putNumber("Gyro", drive.getAngle());
+    	SmartDashboard.putNumber("Pitch", drive.getGyroscope().getPitch());
+    	SmartDashboard.putNumber("Roll", drive.getGyroscope().getRoll());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
     	SmartDashboard.putBoolean("Intake Has Ball?", manipulator.HasBall());
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
-    	SmartDashboard.putBoolean("Ball Shot?", shooter.ShotBall());
     	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
     	SmartDashboard.putNumber("ArmPot", manipulator.getArmAngle());
     	SmartDashboard.putNumber("Drive Distance", drive.getLinearDistance());
@@ -106,7 +113,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit(){
     	Logger.addMessage("Starting Teleop");
     	shooter.setTurretManual(false);
-    	manipulator.setArmManual(true);
+    	manipulator.setArmManual(false);
     }
     
     /**
@@ -119,15 +126,16 @@ public class Robot extends IterativeRobot {
     	shooter.setDistance(SmartDashboard.getNumber("Distance", 0));
 
     	systems.setChargeButton(c.getChargeButton());    	
-    	systems.setLoadButton(c.getLoadButton());
+    	systems.setResetButton(c.getReset());
     	systems.setShootButton(c.getShootButton());
     	systems.setIntakeButton(c.getIntakeButton());
 
     	camlights.setLights(Relay.Value.kForward, SmartDashboard.getNumber("Cam Light Brightness", .5));
-    	manipulator.setArmManualPower(c.getArmManual());
-    	shooter.setTurretManualPower(c.getTurretManual());
+    	
 
+    	
     	systems.Update();
+    	systems.Reset();
     	if(c.getShootAlignButton())
     		smartDrive.turnToCamera();
     	else

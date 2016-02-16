@@ -162,19 +162,8 @@ public class ShooterWheel {
     	}
     }
     
-   
-    /// <summary>
-    /// Checks change in acceleration and RPM to see if ball was shot
-    /// </summary>
-    /// <returns>True if shoot, false if not</returns>
-    public boolean ballShot(){
-    	//double accel = -m_acceleration.get(m_filter.get(getRate()));
-        //return accel > m_accelerationThreshold && getRate() < getLowTolerance();
-    	return false;
-    }
-    
     private double feedForward(){
-    	double rate = getShooterSpeed() / 6500;
+    	double rate = getShooterSpeed() / 6000;
     	SmartDashboard.putNumber("High", rate);
     	return rate;
     }

@@ -23,4 +23,22 @@ public class SmartDrive {
 		double power = m_turnController.get(m_drive.getAngle());
 		m_drive.setPowers(power, -power);
 	}
+	
+	public void forwardToRamp(){
+		double pitch = m_drive.getGyroscope().getPitch();
+		double roll = m_drive.getGyroscope().getRoll();
+		if(Math.abs(pitch) < 1)
+			m_drive.setPowers(0.25, 0.25);
+		else
+			m_drive.setPowers(-0.1, -0.1);
+	}
+	
+	public void backwardsToRamp(){
+		double pitch = m_drive.getGyroscope().getPitch();
+		double roll = m_drive.getGyroscope().getRoll();
+		if(Math.abs(pitch) < 1)
+			m_drive.setPowers(-0.25, -0.25);
+		else
+			m_drive.setPowers(0.1, 0.1);
+	}
 }

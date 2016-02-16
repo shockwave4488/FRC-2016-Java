@@ -46,7 +46,7 @@ public class Manipulator
     /// </summary>
     public void spinIntake(){
         m_intake.intakeBall();
-        //m_arm.setPosition(ArmPosition.Intake);
+        m_arm.setPosition(ArmPosition.Intake);
         m_arm.Update();
     }
 
@@ -55,7 +55,7 @@ public class Manipulator
     /// </summary>
     public void stopIntake(){
         m_intake.off();
-        //m_arm.setPosition(ArmPosition.High);
+        m_arm.setPosition(ArmPosition.High);
         m_arm.Update();
     }
     
@@ -64,7 +64,7 @@ public class Manipulator
     /// </summary>
     public void outputIntake(){
         m_intake.output();
-        //m_arm.setPosition(ArmPosition.Intake);
+        m_arm.setPosition(ArmPosition.Intake);
         m_arm.Update();
     }
 
@@ -73,9 +73,10 @@ public class Manipulator
     /// </summary>
     public void loadIntake()
     {
-        m_intake.load();
-        //m_arm.setPosition(ArmPosition.Load);
-        m_arm.Update();
+        
+       m_arm.setPosition(ArmPosition.Load);
+       m_arm.Update();
+       m_intake.load();     
     }
 
     /// <summary>
@@ -84,8 +85,8 @@ public class Manipulator
     public void shoot()
     {
         m_intake.off();
-        //m_arm.setPosition(ArmPosition.Low);
-        m_arm.Update();
+        m_arm.setPosition(ArmPosition.Shoot);
+       m_arm.Update();
     }
 
     /// <summary>
@@ -94,7 +95,7 @@ public class Manipulator
     public void lowDefense()
     {
         m_intake.off();
-        //m_arm.setPosition(ArmPosition.Lower);
+        m_arm.setPosition(ArmPosition.Low);
         m_arm.Update();
     }
 
@@ -104,21 +105,14 @@ public class Manipulator
     public void highDefense()
     {
         m_intake.off();
-        //m_arm.setPosition(ArmPosition.High);
+        m_arm.setPosition(ArmPosition.High);
         m_arm.Update();
     }
     
-    public void setIntakeManual(boolean manual){
-    	m_intake.setManual(manual);
-    }
     
     public void setArmManual(boolean value){
     	m_arm.setManual(value);
-    	Logger.addMessage("Arm set to Manual");
-    }
-    
-    public void setIntakeManualPower(double power){
-    	m_intake.setManualPower(power);
+    	Logger.addMessage("Arm set to " + (value ? "Manual" : "Automatic"));
     }
     
     public void setArmManualPower(double power){
