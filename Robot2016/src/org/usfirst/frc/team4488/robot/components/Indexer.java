@@ -11,6 +11,13 @@ public class Indexer {
     private DigitalInput m_shooterBallSensor;
     private Object lockObject = new Object();
     
+    //Indexer State: Purely for the dashboard
+    private enum indexerState{
+    	intake,
+    	shoot,
+    	off
+    }
+    private indexerState m_indexState;
     /// <summary>
     /// Constructor for Indexer
     /// </summary>
@@ -23,6 +30,11 @@ public class Indexer {
         Logger.addMessage("Indexer Initialized", 1); 
     }
 
+    public indexerState getState(){
+    	return m_indexState;
+    }
+    
+    
     /// <summary>
     /// Gets whether ball is in the shooter or not
     /// </summary>
@@ -38,6 +50,7 @@ public class Indexer {
     public void shoot(){
         m_leftIndexWheel.set(1);
         m_rightIndexWheel.set(1);
+        m_indexState=indexerState.shoot;
     }
 
     /// <summary>
@@ -47,6 +60,7 @@ public class Indexer {
     	if(!ballInShooter()){
             m_leftIndexWheel.set(-0.3);
             m_rightIndexWheel.set(-0.3);
+            m_indexState=indexerState.intake;
     	}
     }
 
@@ -56,6 +70,7 @@ public class Indexer {
     public void stop(){
         m_leftIndexWheel.set(0);
         m_rightIndexWheel.set(0);
+        m_indexState=indexerState.off;
     }
 }
 

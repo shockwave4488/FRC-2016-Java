@@ -12,6 +12,7 @@ public class Arm extends MotionControlledSystem {
     private Talon m_armMotor;
     private AnalogPotentiometer m_armPotentiometer;
     private ArmPosition m_position;
+    private double m_desiredArmPosition=0;
     
     public Arm() {
         m_armMotor = new Talon(RobotMap.ArmMotor);
@@ -37,22 +38,27 @@ public class Arm extends MotionControlledSystem {
         {
         case High:
             super.setSetPoint(0);
+            m_desiredArmPosition=0; //Whatever value is used above.
             break;
 
         case Load:
             super.setSetPoint(0);
+            m_desiredArmPosition=0; //Whatever value is used above.
             break;
             
         case Low:
             super.setSetPoint(0);
+            m_desiredArmPosition=0; //Whatever value is used above.
             break;
             
         case Intake:
             super.setSetPoint(0);
+            m_desiredArmPosition=0; //Whatever value is used above.
             break;
             
         case Lower:
             super.setSetPoint(0);
+            m_desiredArmPosition=0; //Whatever value is used above.
             break;
         }
     }
@@ -62,6 +68,18 @@ public class Arm extends MotionControlledSystem {
      */
     public ArmPosition getPosition(){
     	return m_position;
+    }
+    
+    public double getDesiredPosition(){
+    	return m_desiredArmPosition;
+    }
+    
+    /**
+     * returns the current value of the arm's potentiometer
+     * @return
+     */
+    public double getPotentiometer(){
+    	return m_armPotentiometer.get();
     }
 
 }

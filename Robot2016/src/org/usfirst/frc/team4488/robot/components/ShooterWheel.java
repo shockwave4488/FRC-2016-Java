@@ -38,6 +38,7 @@ public class ShooterWheel {
     private double getHighTolerance(){
     	return getShooterSpeed() * (1.0 + m_tolerance);
     }
+    
 
     /// <summary>
     /// Gets current rate from counter of shooter wheels
@@ -60,6 +61,11 @@ public class ShooterWheel {
     	}
     }
 
+    public double getPower(){
+    	return m_shooterWheel.get();
+    }
+    
+    
     
     /// <summary>
     /// Gets and sets m_shooterSpeed

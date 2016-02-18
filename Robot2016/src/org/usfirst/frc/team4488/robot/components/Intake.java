@@ -36,6 +36,20 @@ public class Intake
     	}
     }
     
+    /**
+     * gets the current value from the beam break and sends that onwards
+     * @return
+     */
+    public boolean getBBStatus(){
+    	return m_armBallSensor.get();
+    }
+    
+    
+    public double getCurrentValue(){
+    	return m_intakeMotor.get();
+    }
+    
+    
     /*
      * Turns off the intake motors.
      */

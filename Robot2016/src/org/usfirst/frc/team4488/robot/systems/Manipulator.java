@@ -45,6 +45,25 @@ public class Manipulator
         m_Arm.Update();
     }
     
+    /**
+     * Returns every value recieved from both the arm and the intake. Good for use in cooperation with the dashboard.
+     * @return
+     */
+    public Object[] getValues(){
+    	Object[] values = new Object[9];
+    	//Arm-based values to be sent to the dashboard.
+    	values[0]=m_Arm.getPotentiometer();		//Double
+    	values[1]=m_Arm.getPosition();			//ArmPosition(enumerator)	
+    	values[2]=m_Arm.getDesiredPosition();	//double
+    	values[3]=m_Arm.getManual();			//Boolean
+    	
+    	//Intake-based values to be sent to the dashboard.
+    	values[4]=m_intake.getBBStatus();		//Boolean
+    	values[5]=m_intake.getCurrentValue();	//Double
+    	
+    	return values;
+    }
+    
     /// <summary>
     /// outputs ball
     /// </summary>

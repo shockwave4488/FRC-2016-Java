@@ -22,6 +22,12 @@ public class ShooterWheels {
          m_left.setShooterSpeed(RPM);
      }
      
+     
+     //returns the average shooter speed of the two shooters.
+     public double getShooterPowers(){
+    	 return (m_right.getPower()+m_left.getPower())/2;
+     }
+     
      /// <summary>
      /// Constructor for ShooterWheels, with updating Notifier
      /// </summary>

@@ -41,6 +41,24 @@ public class Shooter {
     	return m_turret.getPosition();
     }
     
+    public double WheelSpeed(){
+    	return m_shooterWheels.getShooterRPM();
+    }
+    
+    public Object[] getShooterVals(){
+    	Object[] shooterVals = new Object[12];
+    	//Shooter-wheel specific
+    	shooterVals[0]=WheelSpeed();
+    	shooterVals[1]=m_shooterWheels.getShooterPowers();
+    	shooterVals[2]=m_indexer.getState();
+    	
+    	
+    	
+    	
+    	return shooterVals;
+    }
+    
+    
     /*
      * Sets the RPM for the shooter, how fast to spin the shooter wheels.
      */
