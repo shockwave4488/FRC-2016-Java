@@ -14,7 +14,6 @@ public class Drive implements TankDrive{
 	//private Talon m_leftWheel;
 
 	private static final double RAMPRATE = 60; //Volts per second
-	private static final int COUNTSPERREV = 360; //Encoder counts per revolution
 	
 	private CANTalon m_left;
 	private SpeedControllerGroup m_leftFollowers;
@@ -26,30 +25,28 @@ public class Drive implements TankDrive{
 	public Drive() {
 		try {
 
-			m_left = new CANTalon(RobotMap.DriveMotorLeft1);
+			m_left = new CANTalon(RobotMap.DriveMotorLeftM);
 			CANTalon leftSlave1 = new CANTalon(RobotMap.DriveMotorLeft2);
             CANTalon leftSlave2 = new CANTalon(RobotMap.DriveMotorLeft3);
             leftSlave1.changeControlMode(TalonControlMode.Follower);
-            leftSlave1.set(RobotMap.DriveMotorLeft1);
+            leftSlave1.set(RobotMap.DriveMotorLeftM);
             leftSlave2.changeControlMode(TalonControlMode.Follower);
-            leftSlave2.set(RobotMap.DriveMotorLeft1);
+            leftSlave2.set(RobotMap.DriveMotorLeftM);
             m_leftFollowers = new SpeedControllerGroup(new SpeedController[]{leftSlave1, leftSlave2});
                         
-            m_right = new CANTalon(RobotMap.DriveMotorRight1);
+            m_right = new CANTalon(RobotMap.DriveMotorRightM);
             CANTalon rightSlave1 = new CANTalon(RobotMap.DriveMotorRight2);
             CANTalon rightSlave2 = new CANTalon(RobotMap.DriveMotorRight3);
             rightSlave1.changeControlMode(TalonControlMode.Follower);
-            rightSlave1.set(RobotMap.DriveMotorRight1);
+            rightSlave1.set(RobotMap.DriveMotorRightM);
             rightSlave2.changeControlMode(TalonControlMode.Follower);
-            rightSlave2.set(RobotMap.DriveMotorRight1);
+            rightSlave2.set(RobotMap.DriveMotorRightM);
             m_rightFollowers = new SpeedControllerGroup(new SpeedController[]{rightSlave1, rightSlave2});
             
             m_left.enableBrakeMode(false);
             m_right.enableBrakeMode(false);
             m_left.setVoltageRampRate(RAMPRATE);
             m_right.setVoltageRampRate(RAMPRATE);
-            m_left.configEncoderCodesPerRev(COUNTSPERREV);
-            m_right.configEncoderCodesPerRev(COUNTSPERREV);
             m_right.setInverted(true);
             m_navx = new AHRS(SPI.Port.kMXP);
 		} catch (Exception e) {
@@ -83,11 +80,12 @@ public class Drive implements TankDrive{
 	}
 	
 	public double getLeftDistance(){
-		return m_left.getPosition() * 8.0 * Math.PI;
+		return -m_left.getPosition() * (7.8 / 12.0) * Math.PI / 1024.0;
 	}
 	
 	public double getRightDistance(){
-		return m_right.getPosition() * 8.0 * Math.PI;
+		return m_right.getPosition() * (7.8 / 12.0
+				) * Math.PI / 1024.0;
 	}
 	
 	public double getLeftSpeed(){

@@ -13,6 +13,7 @@ public class Arm extends MotionControlledSystem {
     private Talon m_armMotor;
     private AnalogPotentiometer m_armPotentiometer;
     private ArmPosition m_position;
+    private double m_semiManualPosition;
     
     public Arm() {
         m_armMotor = new Talon(RobotMap.ArmMotor);
@@ -48,8 +49,8 @@ public class Arm extends MotionControlledSystem {
             super.setSetPoint(110);
             break;
             
-        case Low:
-            super.setSetPoint(-20);            
+        case SemiManual:
+            super.setSetPoint(m_semiManualPosition);            
             break;
             
         case Intake:
@@ -57,8 +58,20 @@ public class Arm extends MotionControlledSystem {
             break;
             
         case Shoot:
-            super.setSetPoint(50);
+            super.setSetPoint(70);
             break;
+            
+        case Low:
+        	super.setSetPoint(-10);
+        	break;
+        	
+        case PortcullisUp:
+        	super.setSetPoint(0);
+        	break;
+        
+        case PortcullisDown:
+        	super.setSetPoint(0);
+        	break;
         }
     }
     
@@ -73,6 +86,10 @@ public class Arm extends MotionControlledSystem {
     	return m_armPotentiometer.pidGet();
     }
 
+    public void setSemiManualPosition(double value){
+    	m_semiManualPosition = value;
+    }
+    
     @Override
     public void Update(){
     	m_armPID.setGains(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0));

@@ -23,7 +23,7 @@ public class Logger
 
         @Override
 		public String toString() {
-            return "[ " + (int)(m_timestamp) / 60 + ":" + m_timestamp % 60 + "]\t" + m_message;
+            return "[ " + (int)(m_timestamp) / 60 + ":" + m_timestamp % 60 + "]\t" + m_message + "\n";
         }
     
     }
@@ -103,7 +103,7 @@ public class Logger
          
         TimeStampedMessage toAdd = new TimeStampedMessage(message);
         if (_printToConsole)
-            System.out.println(toAdd);
+            System.out.print(toAdd);
          
         _messages.add(toAdd);
         updateSmartDashboard();

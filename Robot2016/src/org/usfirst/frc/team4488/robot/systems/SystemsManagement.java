@@ -18,8 +18,9 @@ public class SystemsManagement
     private boolean m_shoot = false;
     private boolean m_intake = false;
     private boolean m_defenseLow = false;
-    private boolean m_defenseHigh = false;
+    private double m_armSemiManualPosition = 0;
     private boolean m_reset = false;
+    private boolean m_port = false;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
     
@@ -44,7 +45,11 @@ public class SystemsManagement
     public void setResetButton(boolean val){
     	m_reset = val;
     }
-
+    
+    public void setPortButton(boolean val){
+    	m_port = val;
+    }
+    
     /// <summary>
     /// Button to move the manipulator and start
     /// </summary>
@@ -59,13 +64,11 @@ public class SystemsManagement
     	m_defenseLow = val;
     }
 
-    /// <summary>
-    /// Button to move the manipulator up to handle defenses
-    /// </summary>
-    public void setDefenseHighButton(boolean val){
-    	m_defenseHigh = val;
+    public void setSemiManualPosition(double value){
+    	m_armSemiManualPosition = value;
+    	m_manipulator.setArmSemiManualPosition(110.0 - (value * 130.0));
     }
-
+    
     /// <summary>
     /// Creates all managed systems (<see cref="Shooter"/>, <see cref="Manipulator"/>)
     /// </summary>
@@ -106,7 +109,7 @@ public class SystemsManagement
         {
             case Idle:
                 ShooterIdle();
-                if (!m_shooter.hasBall() && m_manipulator.HasBall()) //&& m_manipulatorState == ManipulatorState.Store)
+                if (!m_shooter.hasBall() && m_manipulatorState == ManipulatorState.Store)
                 {
                     m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
@@ -169,16 +172,20 @@ public class SystemsManagement
                     m_manipulatorState = ManipulatorState.Shoot;
                     Logger.addMessage("ManipulatorState set to Shoot from Idle",0);
                 }
-                /*if (m_defenseLow)
+                if (m_defenseLow)
                 {
                     m_manipulatorState = ManipulatorState.DefenseLow;
                     Logger.addMessage("ManipulatorState set to DefenseLow from Idle",0);
                 }
-                if (m_defenseHigh)
+                if (m_armSemiManualPosition > 0.05)
                 {
-                    m_manipulatorState = ManipulatorState.DefenseHigh;
-                    Logger.addMessage("ManipulatorState set to DefenseHigh from Idle",0);
-                }*/
+                    m_manipulatorState = ManipulatorState.DefenseSemiManual;
+                    Logger.addMessage("ManipulatorState set to SemiManual from Idle",0);
+                }
+                if (m_port)
+                {
+                	m_manipulatorState = ManipulatorState.DefensePortLow;
+                }
                 break;
 
             case Intake:
@@ -197,21 +204,11 @@ public class SystemsManagement
 
             case Store:
                 ManipulatorStore();
-                if (m_shooter.turretAtPosition())
+                if (m_shooter.turretAtPosition() && m_manipulator.getArmAngle() > 20)
                 {
                     m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);
                 }
-                /*if (m_defenseLow)
-                {
-                    m_manipulatorState = ManipulatorState.DefenseLow;
-                    Logger.addMessage("ManipulatorState set to DefenseLow from Store",0);
-                }
-                if (m_defenseHigh)
-                {
-                    m_manipulatorState = ManipulatorState.DefenseHigh;
-                    Logger.addMessage("ManipulatorState set to DefenseHigh from Store",0);
-                }*/
                 break;
 
             case Load:
@@ -232,33 +229,38 @@ public class SystemsManagement
                 }
                 break;
            
-           /*case DefenseLow:
+           case DefenseLow:
                 ManipulatorDefenseLow();
-                if (!m_defenseLow && m_manipulator.IntakeHasBall())
-                {
-                    m_manipulatorState = ManipulatorState.Store;
-                    Logger.addMessage("ManipulatorState set to Store from DefenseLow",0);
-                }
-                if (!m_defenseLow && !m_manipulator.IntakeHasBall())
+                if (!m_defenseLow)
                 {
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from DefenseLow",0);
                 }
+               
                 break;
 
-            case DefenseHigh:
-                ManipulatorDefenseHigh();
-                if (!m_defenseHigh && m_manipulator.IntakeHasBall())
-                {
-                    m_manipulatorState = ManipulatorState.Store;
-                    Logger.addMessage("ManipulatorState set to Store from DefenseHigh",0);
-                }
-                if (!m_defenseHigh && !m_manipulator.IntakeHasBall())
+            case DefenseSemiManual:
+                ManipulatorDefenseSemiManual();
+                if (m_armSemiManualPosition < 0.05)
                 {
                     m_manipulatorState = ManipulatorState.Idle;
-                    Logger.addMessage("ManipulatorState set to Idle from DefenseHigh",0);
+                    Logger.addMessage("ManipulatorState set to Idle from SemiManual",0);
                 }
-                break;*/
+                break;
+             
+            case DefensePortLow:
+            	ManipulatorDefensePortLow();
+            	if(m_manipulator.armAtPosition()&&m_port)
+            	{
+            		m_manipulatorState = ManipulatorState.DefensePortHigh;
+            	}
+            	
+            case DefensePortHigh:
+            	ManipulatorDefensePortHigh();
+            	if(m_manipulator.armAtPosition()&&m_port){
+            		m_manipulatorState = ManipulatorState.Idle;
+
+            	}
         }
     }
 
@@ -345,7 +347,7 @@ public class SystemsManagement
     /// <summary>
     /// Moves the manipulator down to deal with defenses
     /// </summary>
-    /*private void ManipulatorDefenseLow()
+    private void ManipulatorDefenseLow()
     {
         m_manipulator.lowDefense();
     }
@@ -353,8 +355,17 @@ public class SystemsManagement
     /// <summary>
     /// moves the manipulator up to deal with defenses
     /// </summary>
-    private void ManipulatorDefenseHigh()
+    private void ManipulatorDefenseSemiManual()
     {
-        m_manipulator.highDefense();
-    }*/
+        m_manipulator.semiManualDefense();
+    }
+    
+    private void ManipulatorDefensePortLow()
+    {
+    	m_manipulator.PortcullisDown();
+    }
+    private void ManipulatorDefensePortHigh()
+    {
+    	m_manipulator.PortcullisUp();
+    }
 }

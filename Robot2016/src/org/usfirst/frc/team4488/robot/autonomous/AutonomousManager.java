@@ -3,8 +3,10 @@ package org.usfirst.frc.team4488.robot.autonomous;
 import org.usfirst.frc.team4488.robot.systems.*;
 
 import JavaRoboticsLib.Utility.Logger;
-
+import java.lang.FunctionalInterface;
 import java.lang.Thread;
+import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,9 +16,9 @@ public class AutonomousManager {
 	
 	 private Manipulator m_manip;
 	 private Shooter m_shooter;
-	 private Drive m_drive;
+	 private SmartDrive m_drive;
 	
-	 public AutonomousManager(Drive drive, Shooter shooter, Manipulator manip){
+	 public AutonomousManager(SmartDrive drive, Shooter shooter, Manipulator manip){
 		 m_manip = manip;
 		 m_shooter = shooter;
 		 m_drive = drive;
@@ -42,6 +44,24 @@ public class AutonomousManager {
 		 m_action.addObject("Low Goal", AutonAction.LowGoal);
 	 }
 	 
+	 public void wait(Supplier<Boolean> expression, Runnable periodic) {
+		 while(!expression.get() && DriverStation.getInstance().isAutonomous()){
+			 periodic.run();
+			 try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		 }
+	 }
+	 
+	 public boolean driveAtPosition(double position, double tolerance){
+		 return m_drive.getDrive().getLinearDistance() > position - tolerance && m_drive.getDrive().getLinearDistance() < position + tolerance;
+	 }
+	 
+	 public boolean driveAtAngle(double angle, double tolerance){
+		 return m_drive.getDrive().getAngle() > angle - tolerance && m_drive.getDrive().getAngle() < angle + tolerance;
+	 }
 	 
 	 /*
 	  * Begins the autonomous routine, during the autonomous period of the match
@@ -51,9 +71,10 @@ public class AutonomousManager {
 	  * The code called based on action to perform after the breach, high or low goal, or nothing.
 	  */
 	 public void run(){
-		 Thread thread = new Thread(() -> {}); //To Add Later
+		 Thread thread = new Thread(() -> {driveAutonomous();}); //To Add Later
 		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
+		 
 		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
 			 try {
 				Thread.sleep(20);
@@ -63,5 +84,17 @@ public class AutonomousManager {
 		 }
 		 
 		 Logger.addMessage("Ending Autonomous" + (DriverStation.getInstance().isAutonomous() ? " Early" : ""));
+	 }
+	 
+	 public void driveAutonomous(){
+		 m_drive.getDrive().resetAngle();
+		 m_drive.getDrive().resetEncoders();
+		 wait(() -> driveAtPosition(7, 0.1), () -> m_drive.driveToDistance(7, 0));
+	 }
+	 
+	 public void turnAutonomous(){
+		 m_drive.getDrive().resetAngle();
+		 m_drive.turnToAngle(90);
+		 wait(() -> driveAtAngle(90, 2.5), () -> m_drive.turnToAngle(90));
 	 }
 }

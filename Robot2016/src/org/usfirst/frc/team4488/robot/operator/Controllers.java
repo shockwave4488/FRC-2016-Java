@@ -26,7 +26,7 @@ public class Controllers {
 	}
 	
 	public boolean getShootButton(){
-		return m_secondary.getRawButton(6);
+		return m_secondary.getRawButton(6) || m_primary.getRawButton(6);
 	}
 	
 	public boolean getIntakeButton(){
@@ -41,10 +41,30 @@ public class Controllers {
 		return m_secondary.getRawButton(8);
 	}
 	
+	public boolean getAlignForwardButton(){
+		return m_primary.getRawButton(5);
+	}
+	
+	public boolean getAlignReverseButton(){
+		return m_primary.getRawButton(6);
+	}
+	
+	public boolean getPortculisDefenseButton(){
+		return m_secondary.getRawButton(2);
+	}
+	
+	public boolean getLowDefenseButton(){
+		return m_secondary.getRawButton(4);
+	}
+	
+	public double getSemiManualPosition(){
+		return m_secondary.getRawAxis(3);
+	}
+	
 	/*
 	 * This function vibrates the primary controller
 	 */
-	public void vibratePrimary(double amnt,RumbleType vibrate){
+	public void vibratePrimary(double amnt){
 		m_primary.setRumble(RumbleType.kLeftRumble, (float)amnt);
 		m_primary.setRumble(RumbleType.kRightRumble, (float)amnt);
 	}

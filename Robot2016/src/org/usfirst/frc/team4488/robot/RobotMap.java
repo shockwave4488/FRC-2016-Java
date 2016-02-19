@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.SPI;
 
 public class RobotMap {	
 	//Constants having to do with the drive system.
-    public static final int DriveMotorLeft1 = 1;
+    public static final int DriveMotorLeftM = 1;
     public static final int DriveMotorLeft2 = 2;
     public static final int DriveMotorLeft3 = 3;
-    public static final int DriveMotorRight1 = 4;
+    public static final int DriveMotorRightM = 6;
     public static final int DriveMotorRight2 = 5;
-    public static final int DriveMotorRight3 = 6;
+    public static final int DriveMotorRight3 = 4;
 
     public static final int ShooterMotorLeft = 0;
     public static final int ShooterMotorRight = 7;

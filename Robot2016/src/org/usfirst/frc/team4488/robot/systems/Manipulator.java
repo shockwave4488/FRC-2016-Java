@@ -33,12 +33,12 @@ public class Manipulator
     	return m_arm.armAngle();
     }
     
-    public double getIntakePosition(){
-    	return m_intake.encoderPosition();
-    }
-    
     public boolean HasBall(){
     	return m_intake.ballInIntake();
+    }
+    
+    public boolean armAtPosition(){
+    	return m_arm.AtSetpoint();
     }
 
     /// <summary>
@@ -102,13 +102,24 @@ public class Manipulator
     /// <summary>
     /// moves arm up for high defenses and stops intake motor
     ///  </summary>
-    public void highDefense()
+    public void semiManualDefense()
     {
         m_intake.off();
-        m_arm.setPosition(ArmPosition.High);
+        m_arm.setPosition(ArmPosition.SemiManual);
         m_arm.Update();
     }
     
+    public void PortcullisUp(){
+    	m_intake.off();
+    	m_arm.setPosition(ArmPosition.PortcullisUp);
+    	m_arm.Update();
+    }
+    
+    public void PortcullisDown(){
+    	m_intake.off();
+    	m_arm.setPosition(ArmPosition.PortcullisDown);
+    	m_arm.Update();
+    }
     
     public void setArmManual(boolean value){
     	m_arm.setManual(value);
@@ -117,5 +128,9 @@ public class Manipulator
     
     public void setArmManualPower(double power){
     	m_arm.setManualPower(power);
+    }
+    
+    public void setArmSemiManualPosition(double value){
+    	m_arm.setSemiManualPosition(value);
     }
 }

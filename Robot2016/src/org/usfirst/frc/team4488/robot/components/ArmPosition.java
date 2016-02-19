@@ -8,5 +8,8 @@ public enum ArmPosition
     High,
     Intake,
     Load,
-    Shoot;
+    Shoot,
+    SemiManual,
+    PortcullisDown,
+    PortcullisUp,
 }

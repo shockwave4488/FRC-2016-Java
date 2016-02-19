@@ -31,7 +31,7 @@ public class Turret extends MotionControlledSystem{
 	}
 	/*
 	 * Sets the position of the shooter's turret based on the current ShooterState state being inputed.
-	 */
+	 */ 
 	public void setPosition(ShooterPosition value){
 		SmartDashboard.putString("Turret Positon", value.toString());
 		m_position = value;
@@ -40,7 +40,7 @@ public class Turret extends MotionControlledSystem{
             setSetPoint(m_aimingAngle); //replace 123 with distance as reported by camera
             break;
         case Load:
-            setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 45));
+            setSetPoint(40);
             break;
         case Stored:
         	setSetPoint(0);

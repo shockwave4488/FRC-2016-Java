@@ -54,10 +54,10 @@ public class Robot extends IterativeRobot {
     	shooter = new Shooter();
     	manipulator = new Manipulator();
     	systems = new SystemsManagement(shooter, manipulator);
-    	driveHelper = new DriveHelper(drive, 0.075, 0.075, 0.6, 0.6, 0.75, 0.2);
+    	driveHelper = new DriveHelper(drive, 0.1, 0.075, 0.6, 0.6, 0.75, 0.2);
     	smartDrive = new SmartDrive(drive);
     	camlights = new CameraLights();
-    	//autonManager = new AutonomousManager(drive, shooter, manipulator);
+    	autonManager = new AutonomousManager(smartDrive, shooter, manipulator);
     	
     	SmartDashboard.putNumber("Turret Load Angle", 45);
 
@@ -74,18 +74,19 @@ public class Robot extends IterativeRobot {
     private void allPeriodic(){
     	SmartDashboard.putNumber("Target RPM", shooter.getShooterRPM());
     	SmartDashboard.putNumber("Gyro", drive.getAngle());
-    	SmartDashboard.putNumber("Pitch", drive.getGyroscope().getPitch());
-    	SmartDashboard.putNumber("Roll", drive.getGyroscope().getRoll());
+    	SmartDashboard.putNumber("Pitch", drive.getGyroscope().getRoll());
+    	SmartDashboard.putNumber("Roll", drive.getGyroscope().getPitch());
     	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
     	SmartDashboard.putBoolean("Intake Has Ball?", manipulator.HasBall());
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
     	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
     	SmartDashboard.putNumber("ArmPot", manipulator.getArmAngle());
     	SmartDashboard.putNumber("Drive Distance", drive.getLinearDistance());
+    	SmartDashboard.putNumber("Left Encoder", drive.getLeftDistance());
+    	SmartDashboard.putNumber("Right Encoder", drive.getRightDistance());
     	SmartDashboard.putNumber("Turn Distance", drive.getTurnDistance());
     	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed());
-    	SmartDashboard.putNumber("Intake Position", manipulator.getIntakePosition());
     }
     
     @Override
@@ -95,6 +96,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
     	Logger.resetTimer();
     	autonManager.run();
+    	
     }
 
     /**
@@ -129,16 +131,22 @@ public class Robot extends IterativeRobot {
     	systems.setResetButton(c.getReset());
     	systems.setShootButton(c.getShootButton());
     	systems.setIntakeButton(c.getIntakeButton());
+    	systems.setDefenseLowButton(c.getLowDefenseButton());
+    	systems.setSemiManualPosition(c.getSemiManualPosition());
 
-    	camlights.setLights(Relay.Value.kForward, SmartDashboard.getNumber("Cam Light Brightness", .5));
+    	camlights.setLights(systems.getshooterState() == ShooterState.Charge  ? Relay.Value.kForward : Relay.Value.kReverse, SmartDashboard.getNumber("Cam Light Brightness", .5));
     	
 
     	
     	systems.Update();
     	systems.Reset();
-    	if(c.getShootAlignButton())
+    	/*if(c.getShootAlignButton())
     		smartDrive.turnToCamera();
-    	else
+    	else if(c.getAlignForwardButton())
+    		smartDrive.forwardToRamp();
+    	else if(c.getAlignReverseButton())
+    		smartDrive.backwardsToRamp();
+    	else*/
     		driveHelper.Drive(c.getSpeed(), c.getTurn(), false, true);
     	//System.out.println(Utility.getFPGATime());
     }
