@@ -40,6 +40,10 @@ public class Manipulator
     public boolean armAtPosition(){
     	return m_arm.AtSetpoint();
     }
+    
+    public boolean armAtPosition(double position, double tolerance){
+    	return m_arm.armAngle() > position - tolerance && m_arm.armAngle() < position + tolerance;
+    }
 
     /// <summary>
     /// spins intake and moves arm 
@@ -107,7 +111,7 @@ public class Manipulator
         m_intake.off();
         m_arm.setPosition(ArmPosition.SemiManual);
         m_arm.Update();
-    }
+    } 
     
     public void PortcullisUp(){
     	m_intake.off();

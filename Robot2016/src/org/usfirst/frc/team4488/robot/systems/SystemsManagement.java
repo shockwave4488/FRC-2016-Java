@@ -5,6 +5,8 @@ package org.usfirst.frc.team4488.robot.systems;
 /// Controls all non-drive systems through a state machine
 /// </summary>
 import org.usfirst.frc.team4488.robot.components.*;
+
+import JavaRoboticsLib.FlowControl.Toggle;
 import JavaRoboticsLib.Utility.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +23,7 @@ public class SystemsManagement
     private double m_armSemiManualPosition = 0;
     private boolean m_reset = false;
     private boolean m_port = false;
+    private Toggle m_intakeToggle;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
     
@@ -82,6 +85,7 @@ public class SystemsManagement
     	m_manipTimer = new Timer();
     	m_manipTimer.start();
         m_manipulator = manipulator;
+        m_intakeToggle = new Toggle();
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 
@@ -105,6 +109,8 @@ public class SystemsManagement
     public void Update(){        
         SmartDashboard.putString("Shooter State", m_shooterState.toString());
         SmartDashboard.putString("Manipulator State", m_manipulatorState.toString());
+        m_intakeToggle.setState(m_intake);
+        
     	switch (m_shooterState)
         {
             case Idle:
@@ -162,7 +168,7 @@ public class SystemsManagement
         {
             case Idle:
                 ManipulatorIdle();
-                if (m_intake && !m_shooter.hasBall())
+                if (m_intakeToggle.getState() && !m_shooter.hasBall())
                 {
                     m_manipulatorState = ManipulatorState.Intake;
                     Logger.addMessage("ManipulatorState set to Intake from Idle",0);
@@ -195,7 +201,7 @@ public class SystemsManagement
                     m_manipulatorState = ManipulatorState.Store;
                     Logger.addMessage("ManipulatorState set to Store from Intake",0);
                 }
-                if (!m_intake)
+                if (!m_intakeToggle.getState())
                 {
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Intake",0);
@@ -213,6 +219,7 @@ public class SystemsManagement
 
             case Load:
                 ManipulatorLoad();
+                m_intakeToggle.force(false);
                 if (m_shooter.hasBall())
                 {
                     m_manipulatorState = ManipulatorState.Idle;

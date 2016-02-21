@@ -118,7 +118,7 @@ public class Shooter {
     	
     	//m_turret.setAimingAngle(targetAngle + (7.0711 * Math.cos(targetAngle / (180 / Math.PI))));
     	//m_turret.setAimingAngle(SmartDashboard.getNumber("AzimuthY", 0));
-    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint"));
+    	m_turret.setAimingAngle(60);
     	//m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));
     	m_shooterWheels.setShooterRPM(5500);
     	SmartDashboard.putNumber("target Angle", targetAngle);

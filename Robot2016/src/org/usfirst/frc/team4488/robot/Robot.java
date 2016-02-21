@@ -61,7 +61,7 @@ public class Robot extends IterativeRobot {
     	
     	SmartDashboard.putNumber("Turret Load Angle", 45);
 
-    	SmartDashboard.putNumber("DriveP", 0.15);
+    	SmartDashboard.putNumber("DriveP", 0.25);
     	SmartDashboard.putNumber("Cam Light Brightness", .5);
     	SmartDashboard.putNumber("Distance", 4);
     	SmartDashboard.putNumber("Shooting Scalar", 3);
@@ -69,6 +69,8 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Arm P", 0.025);
     	SmartDashboard.putNumber("Arm I", 0);
     	SmartDashboard.putNumber("Arm D", 0);
+    	SmartDashboard.putNumber("Camera Offset", 0);
+
     }
     
     private void allPeriodic(){
@@ -95,6 +97,7 @@ public class Robot extends IterativeRobot {
      */
 	public void autonomousInit() {
     	Logger.resetTimer();
+    	drive.BreakModeAll();
     	autonManager.run();
     	
     }
@@ -105,7 +108,7 @@ public class Robot extends IterativeRobot {
     @Override
 	public void autonomousPeriodic() {
     	allPeriodic();
-
+    	drive.BreakModeAll();
     }
 
     @Override
@@ -116,6 +119,7 @@ public class Robot extends IterativeRobot {
     	Logger.addMessage("Starting Teleop");
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
+        drive.UnBreakModeAll();
     }
     
     /**
@@ -140,13 +144,9 @@ public class Robot extends IterativeRobot {
     	
     	systems.Update();
     	systems.Reset();
-    	/*if(c.getShootAlignButton())
+    	if(c.getShootAlignButton())
     		smartDrive.turnToCamera();
-    	else if(c.getAlignForwardButton())
-    		smartDrive.forwardToRamp();
-    	else if(c.getAlignReverseButton())
-    		smartDrive.backwardsToRamp();
-    	else*/
+    	else
     		driveHelper.Drive(c.getSpeed(), c.getTurn(), false, true);
     	//System.out.println(Utility.getFPGATime());
     }
@@ -162,5 +162,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledPeriodic(){
     	allPeriodic();
+    	camlights.setLights(Relay.Value.kForward, .5);
+    	drive.BreakModeAll();
     }
 }

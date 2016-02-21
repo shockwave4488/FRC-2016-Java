@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousManager {
 	 private SendableChooser m_position, m_defense, m_action;
@@ -68,10 +69,11 @@ public class AutonomousManager {
 	  * The routine is a melding of three parts:
 	  * The code called based on what defense is being breached
 	  * The code called based on position of the bot, spot 1, spot 2, spybot, etc.
-	  * The code called based on action to perform after the breach, high or low goal, or nothing.
+	  * The code called based on action to perform after the breach, hupatrigh or low goal, or nothing.
 	  */
 	 public void run(){
-		 Thread thread = new Thread(() -> {driveAutonomous();}); //To Add Later
+		 Thread thread = new Thread(() -> {portcullis();}); //To Add Later
+		 m_drive.resetAll();
 		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
 		 
@@ -90,11 +92,49 @@ public class AutonomousManager {
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
 		 wait(() -> driveAtPosition(7, 0.1), () -> m_drive.driveToDistance(7, 0));
+		 m_drive.stop();
 	 }
 	 
 	 public void turnAutonomous(){
 		 m_drive.getDrive().resetAngle();
-		 m_drive.turnToAngle(90);
-		 wait(() -> driveAtAngle(90, 2.5), () -> m_drive.turnToAngle(90));
+		 wait(() -> driveAtAngle(90, 0.25), () -> m_drive.turnToAngle(90));
+		 m_drive.stop();
+	 }
+	 
+	 public void lowBar(){
+		 m_manip.lowDefense();
+		 wait(m_manip::armAtPosition, m_manip::lowDefense);
+		 wait(() -> driveAtPosition(5, 0.1), () -> m_drive.driveToDistance(10,  0.1));
+		 m_drive.stop();
+		 m_manip.stopIntake();
+		 wait(m_manip::armAtPosition, m_manip::stopIntake);
+	 }
+	 
+	 public void chevalDeFrise(){
+		 wait(() -> driveAtPosition(0.8, 0.05), () -> m_drive.driveToDistance(2,  0.5));
+		 m_drive.stop();
+		 m_manip.lowDefense();
+		 
+		 wait(() -> m_manip.armAtPosition(7, 1) || m_manip.armAtPosition(), m_manip::lowDefense);
+		 wait(() -> driveAtPosition(1.5, 0.1), () -> m_drive.driveToDistance(5,0));
+		 wait(() -> driveAtPosition(5, 0.1), () -> {m_drive.driveToDistance(10, 0); m_manip.stopIntake();});
+		 m_drive.stop();
+	 }
+	 
+	 public void portcullis(){
+		 wait(() -> driveAtPosition(0.8,  0.05), () -> {m_drive.driveToDistance(2,  0.5); m_manip.lowDefense();});
+		 m_manip.setArmSemiManualPosition(-15);
+		 wait(() -> m_manip.armAtPosition(-15, 1), () -> m_manip.semiManualDefense());
+		 m_manip.setArmSemiManualPosition(40);
+		 wait(() -> m_manip.armAtPosition(40, 1), () -> m_manip.semiManualDefense());
+		 wait(() -> driveAtPosition(6, .25), () -> {
+			 m_drive.driveToDistance(10,  0); 
+			 m_manip.setArmSemiManualPosition(70);
+			 m_manip.semiManualDefense();
+		 });
+		 m_drive.stop();
 	 }
 }
+
+
+

@@ -7,17 +7,27 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.MotionControlledSystem;
 import JavaRoboticsLib.ControlSystems.SimplePID;
+import JavaRoboticsLib.FlowControl.EdgeTrigger;
 
 public class Arm extends MotionControlledSystem {
     private SimplePID m_armPID;
     private Talon m_armMotor;
-    private AnalogPotentiometer m_armPotentiometer;
+    private DigitalInput m_backLimit;
     private ArmPosition m_position;
     private double m_semiManualPosition;
+    private boolean m_limitFound;
+    private EdgeTrigger m_limitFoundEdge;
+    private Timer m_findLimitWatchdog;
+    private ArmEncoder m_encoder;
     
     public Arm() {
         m_armMotor = new Talon(RobotMap.ArmMotor);
-        m_armPotentiometer = new AnalogPotentiometer(RobotMap.ArmPotentiometer, 360, -178);
+        m_encoder = new ArmEncoder(RobotMap.ArmEncoderA, RobotMap.ArmEncoderB);
+        m_encoder.setDistancePerPulse(1.0 / (1024 * 4 / 360));
+        m_backLimit = new DigitalInput(RobotMap.ArmBackLimit);
+        m_limitFoundEdge = new EdgeTrigger(false);
+        m_findLimitWatchdog = new Timer();
+        m_findLimitWatchdog.start();
         try {
 			m_armPID = new SimplePID(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0), -0.75, 0.75);
 		} catch (Exception e) {
@@ -26,13 +36,16 @@ public class Arm extends MotionControlledSystem {
         
         super.Controller = m_armPID;
         super.Motor = m_armMotor;
-        super.Sensor = m_armPotentiometer;
+        super.Sensor = m_encoder;
+        super.SetpointTolerance = 2;
+        
+        m_limitFound = false;
         lowLimit = -20;
         highLimit = 110;
         Motor.setInverted(true);
         Logger.addMessage("Arm Initialized", 1);
     }
-    
+    		
     /*
      * This moves the arm to the position requested as the input of the program.
      */
@@ -72,6 +85,7 @@ public class Arm extends MotionControlledSystem {
         case PortcullisDown:
         	super.setSetPoint(0);
         	break;
+        
         }
     }
     
@@ -83,16 +97,32 @@ public class Arm extends MotionControlledSystem {
     }
     
     public double armAngle(){
-    	return m_armPotentiometer.pidGet();
+    	return m_encoder.pidGet();
     }
 
     public void setSemiManualPosition(double value){
     	m_semiManualPosition = value;
     }
     
+    public void resetEncoder(double offset){
+    	m_encoder.reset(offset);
+    }
+    
     @Override
     public void Update(){
     	m_armPID.setGains(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0));
+    	if(!m_limitFound){
+    		if(!m_backLimit.get() && m_findLimitWatchdog.get() < 1){
+    			super.setManual(true);
+    			super.setManualPower(-0.1);
+     		}
+    		else{
+    			super.setManual(false);
+    			m_limitFound = true;
+    		}
+    	}
+    	if(m_backLimit.get())
+    		resetEncoder(120);
     	super.Update();
     }
 }

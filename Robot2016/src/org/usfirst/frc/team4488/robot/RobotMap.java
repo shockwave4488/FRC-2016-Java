@@ -30,4 +30,7 @@ public class RobotMap {
     //Constants having to do with the Arm and Intake systems.
     public static final int IntakeBeamBreak = 18;
     public static final int ArmPotentiometer = 1;
+    public static final int ArmEncoderA = ?;
+    public static final int ArmEncoderB = ?;
+    public static final int ArmBackLimit = ?;
 }
