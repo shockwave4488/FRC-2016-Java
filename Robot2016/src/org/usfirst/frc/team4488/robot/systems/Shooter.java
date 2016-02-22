@@ -6,6 +6,7 @@ import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
 
 import JavaRoboticsLib.Utility.Logger;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -13,6 +14,9 @@ public class Shooter {
 	private ShooterWheels m_shooterWheels;
     private Indexer m_indexer;
     private Turret m_turret;
+    
+    private double m_rangeSnapshot;
+    private Timer m_rangeWait;
 
     /// <summary>
     /// Initializes Shooter member variables.
@@ -22,6 +26,8 @@ public class Shooter {
         m_shooterWheels = new ShooterWheels();
         m_indexer = new Indexer();
         m_turret = new Turret();
+        m_rangeWait = new Timer();
+        m_rangeWait.start();
     }
     
     public Boolean hasBall(){
@@ -99,29 +105,28 @@ public class Shooter {
     	m_turret.setPosition(position);
     }
     
+    public void resetRangeFinding(){
+    	m_rangeSnapshot = 0;
+    	m_rangeWait.reset();
+    }
+    
     /*
      * This tells the shooter how far it is from the goal, so that it can automatically aim accordingly.
      */
-    public void setDistance(double distance){
-    	if(distance == 0)
-    		return;
-    	    	
-    	double currentAngle = m_turret.getAngle();
-    	double heightChange = 8.083 - (8 + 18 * Math.sin(currentAngle / (180 / Math.PI))) / 12; 
-    	double dragFactor = 1.014 + (distance - 5) * 0.008 / 7.5;
-    	double shootScalar = 4 - (10 / distance);
-    	double speed = Math.sqrt(2 * 32.174 * heightChange) * dragFactor * shootScalar;
-    	double targetAngle = Math.atan(2 * heightChange / distance) * (180 / Math.PI);
-    	
-    	if(distance < 6)
-    		speed = 100;
-    	
-    	//m_turret.setAimingAngle(targetAngle + (7.0711 * Math.cos(targetAngle / (180 / Math.PI))));
-    	//m_turret.setAimingAngle(SmartDashboard.getNumber("AzimuthY", 0));
-    	m_turret.setAimingAngle(60);
-    	//m_shooterWheels.setShooterRPM(speed * (180 / Math.PI));
+    public void setDistance(){
+    	if(m_rangeSnapshot == 0){
+    		m_turret.setAimingAngle(60);
+    		if(!m_turret.AtSetpoint())
+    			m_rangeWait.reset();
+    		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.5)
+    			m_rangeSnapshot = SmartDashboard.getNumber("Range", 8);
+    	}
+    	else{
+        	double angle = Math.atan(18 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
+        	m_turret.setAimingAngle(angle);
+        	SmartDashboard.putNumber("target Angle", angle);
+    	}
     	m_shooterWheels.setShooterRPM(5500);
-    	SmartDashboard.putNumber("target Angle", targetAngle);
     }
     
     public double getShooterRPM(){

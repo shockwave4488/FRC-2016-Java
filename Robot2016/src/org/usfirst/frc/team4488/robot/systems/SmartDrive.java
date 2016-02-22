@@ -27,7 +27,7 @@ public class SmartDrive {
 	
 	public void turnToCamera(){
 		m_turnController.setP(SmartDashboard.getNumber("DriveP", 0.25));
-		m_turnController.setSetPoint(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle() + SmartDashboard.getNumber("Camera Offset", 0)));
+		m_turnController.setSetPoint(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()));
 		double power = m_turnController.get(m_drive.getAngle());
 		m_drive.setPowers(power, -power);
 	}

@@ -58,18 +58,6 @@ public class Robot extends IterativeRobot {
     	smartDrive = new SmartDrive(drive);
     	camlights = new CameraLights();
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator);
-    	
-    	SmartDashboard.putNumber("Turret Load Angle", 45);
-
-    	SmartDashboard.putNumber("DriveP", 0.25);
-    	SmartDashboard.putNumber("Cam Light Brightness", .5);
-    	SmartDashboard.putNumber("Distance", 4);
-    	SmartDashboard.putNumber("Shooting Scalar", 3);
-    	SmartDashboard.putNumber("Angle Setpoint", 60);
-    	SmartDashboard.putNumber("Arm P", 0.025);
-    	SmartDashboard.putNumber("Arm I", 0);
-    	SmartDashboard.putNumber("Arm D", 0);
-    	SmartDashboard.putNumber("Camera Offset", 0);
 
     }
     
@@ -88,7 +76,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Right Encoder", drive.getRightDistance());
     	SmartDashboard.putNumber("Turn Distance", drive.getTurnDistance());
     	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
-    	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed());
+    	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
     }
     
     @Override
@@ -129,7 +117,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {  	
     	allPeriodic();
     	
-    	shooter.setDistance(SmartDashboard.getNumber("Distance", 0));
+    	shooter.setDistance();
 
     	systems.setChargeButton(c.getChargeButton());    	
     	systems.setResetButton(c.getReset());

@@ -10,6 +10,4 @@ public enum ArmPosition
     Load,
     Shoot,
     SemiManual,
-    PortcullisDown,
-    PortcullisUp,
 }

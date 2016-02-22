@@ -16,6 +16,6 @@ public class ArmEncoder extends Encoder {
 	
 	@Override
 	public double pidGet(){
-		return super.pidGet() + m_offset;
+		return m_offset - super.pidGet();
 	}
 }

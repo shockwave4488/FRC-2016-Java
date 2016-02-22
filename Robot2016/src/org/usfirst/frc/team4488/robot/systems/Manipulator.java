@@ -21,11 +21,11 @@ public class Manipulator
     public Manipulator(){       
         try {
 			m_arm = new Arm();
+	        m_arm.Start(0.05);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
         m_intake = new Intake();
     }
     
@@ -38,10 +38,14 @@ public class Manipulator
     }
     
     public boolean armAtPosition(){
+    	if(!m_arm.getLimitFound())
+    		return false;
     	return m_arm.AtSetpoint();
     }
     
     public boolean armAtPosition(double position, double tolerance){
+    	if(!m_arm.getLimitFound())
+    		return false;
     	return m_arm.armAngle() > position - tolerance && m_arm.armAngle() < position + tolerance;
     }
 
@@ -51,7 +55,6 @@ public class Manipulator
     public void spinIntake(){
         m_intake.intakeBall();
         m_arm.setPosition(ArmPosition.Intake);
-        m_arm.Update();
     }
 
     /// <summary>
@@ -60,7 +63,6 @@ public class Manipulator
     public void stopIntake(){
         m_intake.off();
         m_arm.setPosition(ArmPosition.High);
-        m_arm.Update();
     }
     
     /// <summary>
@@ -69,7 +71,6 @@ public class Manipulator
     public void outputIntake(){
         m_intake.output();
         m_arm.setPosition(ArmPosition.Intake);
-        m_arm.Update();
     }
 
     /// <summary>
@@ -79,7 +80,6 @@ public class Manipulator
     {
         
        m_arm.setPosition(ArmPosition.Load);
-       m_arm.Update();
        m_intake.load();     
     }
 
@@ -90,7 +90,6 @@ public class Manipulator
     {
         m_intake.off();
         m_arm.setPosition(ArmPosition.Shoot);
-       m_arm.Update();
     }
 
     /// <summary>
@@ -100,7 +99,6 @@ public class Manipulator
     {
         m_intake.off();
         m_arm.setPosition(ArmPosition.Low);
-        m_arm.Update();
     }
 
     /// <summary>
@@ -110,21 +108,8 @@ public class Manipulator
     {
         m_intake.off();
         m_arm.setPosition(ArmPosition.SemiManual);
-        m_arm.Update();
     } 
-    
-    public void PortcullisUp(){
-    	m_intake.off();
-    	m_arm.setPosition(ArmPosition.PortcullisUp);
-    	m_arm.Update();
-    }
-    
-    public void PortcullisDown(){
-    	m_intake.off();
-    	m_arm.setPosition(ArmPosition.PortcullisDown);
-    	m_arm.Update();
-    }
-    
+     
     public void setArmManual(boolean value){
     	m_arm.setManual(value);
     	Logger.addMessage("Arm set to " + (value ? "Manual" : "Automatic"));

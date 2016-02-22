@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import java.util.function.Predicate;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -72,7 +73,7 @@ public class AutonomousManager {
 	  * The code called based on action to perform after the breach, hupatrigh or low goal, or nothing.
 	  */
 	 public void run(){
-		 Thread thread = new Thread(() -> {portcullis();}); //To Add Later
+		 Thread thread = new Thread(() -> {chevalDeFrise();}); //To Add Later
 		 m_drive.resetAll();
 		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
@@ -91,7 +92,7 @@ public class AutonomousManager {
 	 public void driveAutonomous(){
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
-		 wait(() -> driveAtPosition(7, 0.1), () -> m_drive.driveToDistance(7, 0));
+		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, 0));
 		 m_drive.stop();
 	 }
 	 
@@ -104,34 +105,68 @@ public class AutonomousManager {
 	 public void lowBar(){
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
-		 wait(() -> driveAtPosition(5, 0.1), () -> m_drive.driveToDistance(10,  0.1));
+		 wait(() -> driveAtPosition(7, 0.1), () -> m_drive.driveToDistance(10,  0.1));
 		 m_drive.stop();
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
 	 }
 	 
 	 public void chevalDeFrise(){
+		 driveAutonomous();
+		 m_drive.resetAll();
 		 wait(() -> driveAtPosition(0.8, 0.05), () -> m_drive.driveToDistance(2,  0.5));
 		 m_drive.stop();
 		 m_manip.lowDefense();
 		 
-		 wait(() -> m_manip.armAtPosition(7, 1) || m_manip.armAtPosition(), m_manip::lowDefense);
+		 wait(() -> m_manip.armAtPosition(7, 2) || m_manip.armAtPosition(), m_manip::lowDefense);
 		 wait(() -> driveAtPosition(1.5, 0.1), () -> m_drive.driveToDistance(5,0));
-		 wait(() -> driveAtPosition(5, 0.1), () -> {m_drive.driveToDistance(10, 0); m_manip.stopIntake();});
+		 wait(() -> driveAtPosition(7, 0.1), () -> {m_drive.driveToDistance(10, 0); m_manip.stopIntake();});
 		 m_drive.stop();
 	 }
 	 
 	 public void portcullis(){
+		 driveAutonomous();
+		 m_drive.resetAll();
 		 wait(() -> driveAtPosition(0.8,  0.05), () -> {m_drive.driveToDistance(2,  0.5); m_manip.lowDefense();});
 		 m_manip.setArmSemiManualPosition(-15);
 		 wait(() -> m_manip.armAtPosition(-15, 1), () -> m_manip.semiManualDefense());
+		 m_drive.getDrive().setPowers(.05, .05);
 		 m_manip.setArmSemiManualPosition(40);
-		 wait(() -> m_manip.armAtPosition(40, 1), () -> m_manip.semiManualDefense());
+		 m_drive.resetAll();
+		 wait(() -> m_manip.armAtPosition(30, 1), () -> m_manip.semiManualDefense());
 		 wait(() -> driveAtPosition(6, .25), () -> {
 			 m_drive.driveToDistance(10,  0); 
 			 m_manip.setArmSemiManualPosition(70);
 			 m_manip.semiManualDefense();
-		 });
+		 });		
+		 m_drive.stop();
+	 }
+	 
+	 public void rockWall(){
+		 Timer overTimer = new Timer();
+		 overTimer.start();
+		 wait(() -> overTimer.get() > 2.75, () -> m_drive.getDrive().setPowers(0.75, 0.75));
+		 m_drive.stop();
+	 }
+	 
+	 public void roughTerrain(){
+		 Timer overTimer = new Timer();
+		 overTimer.start();
+		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
+		 m_drive.stop();
+	 }
+	 
+	 public void moat(){
+		 Timer overTimer = new Timer();
+		 overTimer.start();
+		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
+		 m_drive.stop();
+	 }
+	 
+	 public void ramparts(){
+		 Timer overTimer = new Timer();
+		 overTimer.start();
+		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
 		 m_drive.stop();
 	 }
 }

@@ -16,7 +16,6 @@ public class Arm extends MotionControlledSystem {
     private ArmPosition m_position;
     private double m_semiManualPosition;
     private boolean m_limitFound;
-    private EdgeTrigger m_limitFoundEdge;
     private Timer m_findLimitWatchdog;
     private ArmEncoder m_encoder;
     
@@ -25,7 +24,6 @@ public class Arm extends MotionControlledSystem {
         m_encoder = new ArmEncoder(RobotMap.ArmEncoderA, RobotMap.ArmEncoderB);
         m_encoder.setDistancePerPulse(1.0 / (1024 * 4 / 360));
         m_backLimit = new DigitalInput(RobotMap.ArmBackLimit);
-        m_limitFoundEdge = new EdgeTrigger(false);
         m_findLimitWatchdog = new Timer();
         m_findLimitWatchdog.start();
         try {
@@ -34,6 +32,7 @@ public class Arm extends MotionControlledSystem {
 			e.printStackTrace();
 		}
         
+        super.periodic = new Notifier(this::Update);
         super.Controller = m_armPID;
         super.Motor = m_armMotor;
         super.Sensor = m_encoder;
@@ -78,14 +77,6 @@ public class Arm extends MotionControlledSystem {
         	super.setSetPoint(-10);
         	break;
         	
-        case PortcullisUp:
-        	super.setSetPoint(0);
-        	break;
-        
-        case PortcullisDown:
-        	super.setSetPoint(0);
-        	break;
-        
         }
     }
     
@@ -108,21 +99,34 @@ public class Arm extends MotionControlledSystem {
     	m_encoder.reset(offset);
     }
     
+    public boolean atBackLimit(){
+    	return !m_backLimit.get();
+    }
+    
+    public boolean getLimitFound(){
+    	return m_limitFound;
+    }
+    
     @Override
     public void Update(){
     	m_armPID.setGains(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0));
+    	SmartDashboard.putNumber("Raw Encoder", m_encoder.getRaw());
+    	SmartDashboard.putBoolean("Limit", atBackLimit());
     	if(!m_limitFound){
-    		if(!m_backLimit.get() && m_findLimitWatchdog.get() < 1){
+    		if(!DriverStation.getInstance().isEnabled()){
+    			m_findLimitWatchdog.reset();
+    		}
+    		if(!atBackLimit() && m_findLimitWatchdog.get() < 1){
     			super.setManual(true);
-    			super.setManualPower(-0.1);
+    			super.setManualPower(-0.05);
      		}
     		else{
     			super.setManual(false);
     			m_limitFound = true;
     		}
     	}
-    	if(m_backLimit.get())
-    		resetEncoder(120);
+    	if(atBackLimit())
+    		resetEncoder(SmartDashboard.getNumber("ArmOffset", 120));
     	super.Update();
     }
 }

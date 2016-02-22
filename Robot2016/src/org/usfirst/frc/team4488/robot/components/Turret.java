@@ -13,10 +13,10 @@ public class Turret extends MotionControlledSystem{
 	
 	public Turret(){
 		Motor = new Talon(RobotMap.TurretMotor);
-		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, 269.3);
+		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, SmartDashboard.getNumber("TurretOffset", 263.9));
 		SetpointTolerance = 1;
-		lowLimit = 15.0;
-		highLimit = 100.0;
+		lowLimit = 10.0;
+		highLimit = 95.0;
 		try {
 			Controller = new SimplePID(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0), -0.5, 0.5);
 		} catch (Exception e1) {
@@ -40,10 +40,10 @@ public class Turret extends MotionControlledSystem{
             setSetPoint(m_aimingAngle); //replace 123 with distance as reported by camera
             break;
         case Load:
-            setSetPoint(40);
+            setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 35));
             break;
         case Stored:
-        	setSetPoint(0);
+        	setSetPoint(-2);
             break;
 		}
 	}

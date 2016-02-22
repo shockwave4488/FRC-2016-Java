@@ -22,7 +22,6 @@ public class SystemsManagement
     private boolean m_defenseLow = false;
     private double m_armSemiManualPosition = 0;
     private boolean m_reset = false;
-    private boolean m_port = false;
     private Toggle m_intakeToggle;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
@@ -47,10 +46,6 @@ public class SystemsManagement
     
     public void setResetButton(boolean val){
     	m_reset = val;
-    }
-    
-    public void setPortButton(boolean val){
-    	m_port = val;
     }
     
     /// <summary>
@@ -121,6 +116,7 @@ public class SystemsManagement
                     Logger.addMessage("ShooterState set to Load from Idle",0);
                 }
                 if (m_shooter.hasBall()&& m_charge){
+                	m_shooter.resetRangeFinding();
                 	m_shooterState = ShooterState.Charge;
                 	Logger.addMessage("ShooterState set to Charge from Idle", 0);
                 	m_shootTimer.reset();
@@ -139,10 +135,9 @@ public class SystemsManagement
             case Charge:
                 ShooterCharge();
                 if(!m_shooter.AtRate()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 1 && m_shooter.turretAtPosition())
+                if (m_shoot && m_charge && m_shootTimer.get() > 2 && m_shooter.turretAtPosition())
                 {
                     m_shooterState = ShooterState.Shoot;
-
                 	m_shootTimer.reset();
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
                 }
@@ -187,10 +182,6 @@ public class SystemsManagement
                 {
                     m_manipulatorState = ManipulatorState.DefenseSemiManual;
                     Logger.addMessage("ManipulatorState set to SemiManual from Idle",0);
-                }
-                if (m_port)
-                {
-                	m_manipulatorState = ManipulatorState.DefensePortLow;
                 }
                 break;
 
@@ -254,21 +245,7 @@ public class SystemsManagement
                     Logger.addMessage("ManipulatorState set to Idle from SemiManual",0);
                 }
                 break;
-             
-            case DefensePortLow:
-            	ManipulatorDefensePortLow();
-            	if(m_manipulator.armAtPosition()&&m_port)
-            	{
-            		m_manipulatorState = ManipulatorState.DefensePortHigh;
-            	}
-            	
-            case DefensePortHigh:
-            	ManipulatorDefensePortHigh();
-            	if(m_manipulator.armAtPosition()&&m_port){
-            		m_manipulatorState = ManipulatorState.Idle;
-
-            	}
-        }
+                     }
     }
 
     /// <summary>
@@ -365,14 +342,5 @@ public class SystemsManagement
     private void ManipulatorDefenseSemiManual()
     {
         m_manipulator.semiManualDefense();
-    }
-    
-    private void ManipulatorDefensePortLow()
-    {
-    	m_manipulator.PortcullisDown();
-    }
-    private void ManipulatorDefensePortHigh()
-    {
-    	m_manipulator.PortcullisUp();
     }
 }
