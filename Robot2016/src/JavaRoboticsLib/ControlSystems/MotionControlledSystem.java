@@ -81,8 +81,9 @@ public abstract class MotionControlledSystem
     {
     	double power = m_manual ? m_manualPower : Controller.get(Sensor.pidGet());
     	
-    	if((Sensor.pidGet() < lowLimit && power < 0)||(Sensor.pidGet() > highLimit && power > 0)){
-    		power = 0;}
+    	if((Sensor.pidGet() < lowLimit && power < 0)||(Sensor.pidGet() > highLimit && power > 0) && !m_manual){
+    		power = 0;
+    	}
         Motor.set(power);
     }
 

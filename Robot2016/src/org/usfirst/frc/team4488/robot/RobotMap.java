@@ -30,5 +30,5 @@ public class RobotMap {
     public static final int ArmPotentiometer = 1;
     public static final int ArmEncoderA = 12;
     public static final int ArmEncoderB = 13;
-    public static final int ArmBackLimit = 5;
+    public static final int ArmBackLimit = 20;
 }

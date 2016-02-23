@@ -127,16 +127,18 @@ public class Robot extends IterativeRobot {
     	systems.setSemiManualPosition(c.getSemiManualPosition());
 
     	camlights.setLights(systems.getshooterState() == ShooterState.Charge  ? Relay.Value.kForward : Relay.Value.kReverse, SmartDashboard.getNumber("Cam Light Brightness", .5));
-    	
-
+    	    	
+    	if(c.getArmReset())
+    		manipulator.resetArm();
     	
     	systems.Update();
     	systems.Reset();
-    	if(c.getShootAlignButton())
+    	if(c.getShootAlignButton()){
     		smartDrive.turnToCamera();
-    	else
-    		driveHelper.Drive(c.getSpeed(), c.getTurn(), false, true);
-    	//System.out.println(Utility.getFPGATime());
+    	}
+    	else{
+    		driveHelper.Drive(c.getSpeed(), c.getTurn(), c.getQuickturn(), true);
+    	}    	
     }
     
     /**

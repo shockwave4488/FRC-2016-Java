@@ -3,6 +3,7 @@ package org.usfirst.frc.team4488.robot.components;
 import org.usfirst.frc.team4488.robot.RobotMap;
 import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
+import JavaRoboticsLib.WPIExtensions.RampMotor;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -12,7 +13,14 @@ public class Turret extends MotionControlledSystem{
 	private ShooterPosition m_position;
 	
 	public Turret(){
-		Motor = new Talon(RobotMap.TurretMotor);
+		try {
+			RampMotor temp = new RampMotor(Talon.class, RobotMap.TurretMotor);
+			temp.setMaxChange(0.2);
+			super.Motor = temp;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, SmartDashboard.getNumber("TurretOffset", 263.9));
 		SetpointTolerance = 1;
 		lowLimit = 10.0;
@@ -37,7 +45,7 @@ public class Turret extends MotionControlledSystem{
 		m_position = value;
 		switch(value){
 		case Aiming:
-            setSetPoint(m_aimingAngle); //replace 123 with distance as reported by camera
+            setSetPoint(m_aimingAngle); 
             break;
         case Load:
             setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 35));

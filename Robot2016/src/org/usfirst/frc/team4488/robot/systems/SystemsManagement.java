@@ -135,7 +135,7 @@ public class SystemsManagement
             case Charge:
                 ShooterCharge();
                 if(!m_shooter.AtRate()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 2 && m_shooter.turretAtPosition())
+                if (m_shoot && m_charge && m_shootTimer.get() > 2 && m_shooter.readyToShoot())
                 {
                     m_shooterState = ShooterState.Shoot;
                 	m_shootTimer.reset();

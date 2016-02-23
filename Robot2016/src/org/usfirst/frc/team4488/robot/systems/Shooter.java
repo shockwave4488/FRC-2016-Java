@@ -116,9 +116,9 @@ public class Shooter {
     public void setDistance(){
     	if(m_rangeSnapshot == 0){
     		m_turret.setAimingAngle(60);
-    		if(!m_turret.AtSetpoint())
+    		if(!(m_turret.AtSetpoint() && SmartDashboard.getBoolean("TargetFound", true)))
     			m_rangeWait.reset();
-    		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.5)
+    		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25)
     			m_rangeSnapshot = SmartDashboard.getNumber("Range", 8);
     	}
     	else{
@@ -143,6 +143,10 @@ public class Shooter {
     
     public boolean turretAtPosition(){
     	return m_turret.AtSetpoint();
+    }
+    
+    public boolean readyToShoot(){
+    	return m_turret.AtSetpoint() && m_rangeSnapshot != 0 && m_shooterWheels.atRate();
     }
 }
 

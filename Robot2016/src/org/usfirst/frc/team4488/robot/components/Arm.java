@@ -23,6 +23,7 @@ public class Arm extends MotionControlledSystem {
         m_armMotor = new Talon(RobotMap.ArmMotor);
         m_encoder = new ArmEncoder(RobotMap.ArmEncoderA, RobotMap.ArmEncoderB);
         m_encoder.setDistancePerPulse(1.0 / (1024 * 4 / 360));
+        m_encoder.setReverseDirection(false);
         m_backLimit = new DigitalInput(RobotMap.ArmBackLimit);
         m_findLimitWatchdog = new Timer();
         m_findLimitWatchdog.start();
@@ -37,7 +38,6 @@ public class Arm extends MotionControlledSystem {
         super.Motor = m_armMotor;
         super.Sensor = m_encoder;
         super.SetpointTolerance = 2;
-        
         m_limitFound = false;
         lowLimit = -20;
         highLimit = 110;
@@ -110,23 +110,30 @@ public class Arm extends MotionControlledSystem {
     @Override
     public void Update(){
     	m_armPID.setGains(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0));
-    	SmartDashboard.putNumber("Raw Encoder", m_encoder.getRaw());
     	SmartDashboard.putBoolean("Limit", atBackLimit());
+    	SmartDashboard.putBoolean("Arm Limit Found", m_limitFound);
     	if(!m_limitFound){
     		if(!DriverStation.getInstance().isEnabled()){
     			m_findLimitWatchdog.reset();
     		}
-    		if(!atBackLimit() && m_findLimitWatchdog.get() < 1){
+    		if(!atBackLimit() && m_findLimitWatchdog.get() < 1.5) {
     			super.setManual(true);
-    			super.setManualPower(-0.05);
+    			super.setManualPower(0.1);
      		}
     		else{
     			super.setManual(false);
     			m_limitFound = true;
+    			Logger.addMessage("Arm found limit");
     		}
     	}
     	if(atBackLimit())
     		resetEncoder(SmartDashboard.getNumber("ArmOffset", 120));
     	super.Update();
+    }
+    
+    public void resetArm(){
+    	Logger.addMessage("Arm Reset");
+    	m_limitFound = false;
+    	m_findLimitWatchdog.reset();
     }
 }

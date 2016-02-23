@@ -21,7 +21,7 @@ public class Manipulator
     public Manipulator(){       
         try {
 			m_arm = new Arm();
-	        m_arm.Start(0.05);
+	        m_arm.Start(0.02);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,5 +121,9 @@ public class Manipulator
     
     public void setArmSemiManualPosition(double value){
     	m_arm.setSemiManualPosition(value);
+    }
+    
+    public void resetArm(){
+    	m_arm.resetArm();
     }
 }

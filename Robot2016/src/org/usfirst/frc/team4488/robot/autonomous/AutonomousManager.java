@@ -73,7 +73,11 @@ public class AutonomousManager {
 	  * The code called based on action to perform after the breach, hupatrigh or low goal, or nothing.
 	  */
 	 public void run(){
-		 Thread thread = new Thread(() -> {chevalDeFrise();}); //To Add Later
+		 Thread thread = new Thread(() -> {
+			 driveAutonomous();
+			 portcullis();
+			 m_manip.stopIntake();
+			 }); //To Add Later
 		 m_drive.resetAll();
 		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
@@ -112,7 +116,6 @@ public class AutonomousManager {
 	 }
 	 
 	 public void chevalDeFrise(){
-		 driveAutonomous();
 		 m_drive.resetAll();
 		 wait(() -> driveAtPosition(0.8, 0.05), () -> m_drive.driveToDistance(2,  0.5));
 		 m_drive.stop();
@@ -125,7 +128,6 @@ public class AutonomousManager {
 	 }
 	 
 	 public void portcullis(){
-		 driveAutonomous();
 		 m_drive.resetAll();
 		 wait(() -> driveAtPosition(0.8,  0.05), () -> {m_drive.driveToDistance(2,  0.5); m_manip.lowDefense();});
 		 m_manip.setArmSemiManualPosition(-15);
@@ -168,6 +170,17 @@ public class AutonomousManager {
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
 		 m_drive.stop();
+	 }
+	 
+	 public void shoot(int position){
+		 double power = (position - 2.5) / 2.0;
+		 wait(() -> SmartDashboard.getBoolean("FoundTarget", false), () -> {
+			 m_shooter.Spin();
+			 m_drive.getDrive().setPowers(power, -power);
+			 });
+		 m_drive.stop();
+		 m_drive.resetAll();
+		 wait(() -> driveAtPosition((position - 2.5) * 5, 0.1), () -> m_drive.driveToDistance(5, .5));
 	 }
 }
 

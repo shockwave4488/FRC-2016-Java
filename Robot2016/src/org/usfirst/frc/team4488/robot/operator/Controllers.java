@@ -17,7 +17,6 @@ public class Controllers {
 	}
 	
 	public double getTurn(){
-
 		return m_primary.getRawAxis(4);
 	}
 	
@@ -34,11 +33,19 @@ public class Controllers {
 	}
 	
 	public boolean getShootAlignButton(){
+		return m_primary.getRawButton(10);
+	}
+	
+	public boolean getQuickturn() {
 		return m_primary.getRawButton(9);
 	}
 	
 	public boolean getReset(){
 		return m_secondary.getRawButton(8);
+	}
+	
+	public boolean getArmReset(){
+		return m_secondary.getRawButton(7);
 	}
 	
 	public boolean getAlignForwardButton(){
