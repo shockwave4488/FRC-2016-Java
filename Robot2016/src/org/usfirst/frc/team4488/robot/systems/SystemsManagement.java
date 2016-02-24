@@ -282,17 +282,19 @@ public class SystemsManagement
     	SmartDashboard.putNumber("ArmPotentiometer", (double)m_manipulator.getValues()[0]);
     	SmartDashboard.putString("ArmPosition", ((ArmPosition)m_manipulator.getValues()[1]).toString());
     	SmartDashboard.putNumber("ArmIntPosition", (double)m_manipulator.getValues()[2]);
-    	SmartDashboard.putString("ArmIsManual", m_manipulator.getValues()[3].toString());
-    	SmartDashboard.putString("IntakeBeamBreak", m_manipulator.getValues()[4].toString());
+    	SmartDashboard.putBoolean("ArmIsManual", (boolean)m_manipulator.getValues()[3]);
+    	SmartDashboard.putBoolean("IntakeBeamBreak", (boolean)m_manipulator.getValues()[4]);
     	SmartDashboard.putNumber("IntakePower", (double)m_manipulator.getValues()[5]);
     	//Shooter-based items being put onto the dashboard.
     	SmartDashboard.putString("ShooterState", "Shooter State:"+m_shooterState.toString()+"\n");
     	SmartDashboard.putNumber("CurrentRPMs", (double)m_shooter.getShooterVals()[0]);
     	SmartDashboard.putNumber("WheelsPowers", (double)m_shooter.getShooterVals()[1]);
-    	SmartDashboard.putString("Loaded", m_shooter.hasBall().toString());
+    	SmartDashboard.putBoolean("Loaded", m_shooter.hasBall());
     	SmartDashboard.putString("IndexerState", m_shooter.getShooterVals()[2].toString());
     	SmartDashboard.putNumber("TurretPotentiometer", m_shooter.TurretAngle());
     	SmartDashboard.putString("TurretState", m_shooter.TurretPosition().toString());
+    	//Camera-based items being put onto the dashboard
+    	
     }
     
 

@@ -100,14 +100,14 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
     	shooter.setShooterRPM(SmartDashboard.getNumber("Target Rate", 0));
     	systems.setChargeButton(c.getChargeButton());
-    	
     	systems.setLoadButton(c.getLoadButton());
     	systems.setShootButton(c.getShootButton());
     	systems.Update();
     	//driveHelper.Drive(c.getSpeed(), c.getTurn(), true, false);
     	Arm.set(Math.abs(c.getArmManual()) < 0.2 ? 0 : c.getArmManual());
     	Intake.set(c.getIntakeArmManual());
-    	
+    	//Function to transfer all programmed data values to the SmartDashboard
+    	systems.transmitToSD();
     	//System.out.println(Utility.getFPGATime());
     }
     
