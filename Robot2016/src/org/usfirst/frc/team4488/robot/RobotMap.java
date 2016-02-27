@@ -19,16 +19,16 @@ public class RobotMap {
     public static final int ArmMotor = 9;
     public static final int IntakeMotor = 2;
   
-    public static final int ShooterLeftCounter = 10;
-    public static final int ShooterRightCounter = 11;
+    public static final int ShooterLeftCounter = 10; //MXP 0
+    public static final int ShooterRightCounter = 11; //MXP 1
     public static final int TurretPotentiometer = 0;
-    public static final int IndexerBeamBreak = 22;
+    public static final int IndexerBeamBreak = 22; //MXP 8
 
     //Constants having to do with the Arm and Intake systems.
     
-    public static final int IntakeBeamBreak = 18;
+    public static final int IntakeBeamBreak = 18; //MXP 4
     public static final int ArmPotentiometer = 1;
-    public static final int ArmEncoderA = 12;
-    public static final int ArmEncoderB = 13;
-    public static final int ArmBackLimit = 20;
+    public static final int ArmEncoderA = 12; //MXP 2
+    public static final int ArmEncoderB = 13; //MXP 3
+    public static final int ArmBackLimit = 20; // MXP 6
 }

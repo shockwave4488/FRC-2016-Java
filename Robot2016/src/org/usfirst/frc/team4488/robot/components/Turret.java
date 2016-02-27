@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4488.robot.components;
 
+import java.util.function.Function;
+
 import org.usfirst.frc.team4488.robot.RobotMap;
 import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
@@ -11,6 +13,40 @@ public class Turret extends MotionControlledSystem{
 	
 	private double m_aimingAngle;	
 	private ShooterPosition m_position;
+	
+	private class feedForwardPID implements MotionController{
+		private SimplePID m_pid;
+		private Function<Double, Double> ffFunction;
+		
+		public feedForwardPID(double p, double i, double d, Function<Double, Double> f, double minvalue, double maxvalue){
+			try {
+				m_pid = new SimplePID(p, i, d, minvalue, maxvalue);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			ffFunction = f;
+		}
+		
+		public void setFunction(Function<Double, Double> function){
+			ffFunction = function;
+		}
+		
+		@Override
+		public double get(double input) {
+			return m_pid.get(input) + ffFunction.apply(input);
+		}
+
+		@Override
+		public double getSetPoint() {
+			return m_pid.getSetPoint();
+		}
+
+		@Override
+		public void setSetPoint(double value) {
+			m_pid.setSetPoint(value);			
+		}
+		
+	}
 	
 	public Turret(){
 		try {
@@ -26,7 +62,13 @@ public class Turret extends MotionControlledSystem{
 		lowLimit = 10.0;
 		highLimit = 95.0;
 		try {
-			Controller = new SimplePID(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0), -0.5, 0.5);
+			Controller = new feedForwardPID(
+					SmartDashboard.getNumber("TurretP", 0), 
+					SmartDashboard.getNumber("TurretI", 0), 
+					SmartDashboard.getNumber("TurretD", 0), 
+					this::feedForward, 
+					-0.5, 0.5
+					);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -69,9 +111,14 @@ public class Turret extends MotionControlledSystem{
 	
 	@Override
 	public void Update(){
-		((SimplePID)Controller).setGains(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
-		if(getAngle() > 65)
-			((SimplePID)Controller).setP(SmartDashboard.getNumber("TurretP", 0) / 2.0);
+		//((SimplePID)Controller).setGains(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
+		//if(getAngle() > 65)
+		//	((SimplePID)Controller).setP(SmartDashboard.getNumber("TurretP", 0) / 2.0);
 		super.Update();
+	}
+	
+	private double feedForward(double setpoint){
+		//return Math.cos(setpoint * (Math.PI / 180.0)) * 0.2;
+		return 0.01;
 	}
 }

@@ -13,6 +13,7 @@ import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
@@ -127,13 +128,19 @@ public class Robot extends IterativeRobot {
     	systems.setSemiManualPosition(c.getSemiManualPosition());
 
     	camlights.setLights(systems.getshooterState() == ShooterState.Charge  ? Relay.Value.kForward : Relay.Value.kReverse, SmartDashboard.getNumber("Cam Light Brightness", .5));
-    	    	
+    	
+    	if (shooter.readyToShoot()){
+    		c.vibratePrimary(0.7);
+    		c.vibrateSecondary(0.7);
+    	}
+    	
     	if(c.getArmReset())
     		manipulator.resetArm();
     	
     	systems.Update();
     	systems.Reset();
     	if(c.getShootAlignButton()){
+    		drive.BreakModeAll();
     		smartDrive.turnToCamera();
     	}
     	else{

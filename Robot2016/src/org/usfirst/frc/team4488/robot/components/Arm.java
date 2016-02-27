@@ -21,7 +21,7 @@ public class Arm extends MotionControlledSystem {
     
     public Arm() {
         m_armMotor = new Talon(RobotMap.ArmMotor);
-        m_encoder = new ArmEncoder(RobotMap.ArmEncoderA, RobotMap.ArmEncoderB);
+        m_encoder = new ArmEncoder(RobotMap.ArmEncoderB, RobotMap.ArmEncoderA);
         m_encoder.setDistancePerPulse(1.0 / (1024 * 4 / 360));
         m_encoder.setReverseDirection(false);
         m_backLimit = new DigitalInput(RobotMap.ArmBackLimit);
@@ -41,7 +41,6 @@ public class Arm extends MotionControlledSystem {
         m_limitFound = false;
         lowLimit = -20;
         highLimit = 110;
-        Motor.setInverted(true);
         Logger.addMessage("Arm Initialized", 1);
     }
     		

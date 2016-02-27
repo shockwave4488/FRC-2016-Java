@@ -37,7 +37,7 @@ public class Controllers {
 	}
 	
 	public boolean getQuickturn() {
-		return m_primary.getRawButton(9);
+		return m_primary.getRawButton(5);
 	}
 	
 	public boolean getReset(){
@@ -75,7 +75,7 @@ public class Controllers {
 		m_primary.setRumble(RumbleType.kLeftRumble, (float)amnt);
 		m_primary.setRumble(RumbleType.kRightRumble, (float)amnt);
 	}
-	public void vibrateSecondary(double amnt,RumbleType vibrate){
+	public void vibrateSecondary(double amnt){
 		m_secondary.setRumble(RumbleType.kLeftRumble, (float)amnt);
 		m_secondary.setRumble(RumbleType.kRightRumble, (float)amnt);
 	}

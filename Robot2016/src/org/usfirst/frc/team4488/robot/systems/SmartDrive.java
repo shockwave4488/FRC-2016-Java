@@ -13,7 +13,10 @@ public class SmartDrive {
 	public SmartDrive(Drive drive){
 		m_drive = drive;
 		try {
-			m_turnController = new SimplePID(0.25, 0, 0, -0.35, 0.35);
+			m_turnController = new SimplePID(0.25, 0, 0, -0.15, 0.15);
+			m_turnController.setContinuous(true);
+			m_turnController.setMaxInput(360);
+			m_turnController.setMinInput(0);
 			m_driveController = new SimplePID(0.2, 0, 0, -0.5, 0.5);
 			m_straightController = new SimplePID(0, 0, 0, -0.1, 0.1);
 		} catch (Exception e) {

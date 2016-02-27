@@ -5,6 +5,7 @@ import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
 
+import JavaRoboticsLib.Utility.InputFilter;
 import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +17,7 @@ public class Shooter {
     private Turret m_turret;
     
     private double m_rangeSnapshot;
+    private InputFilter m_rangeFilter;
     private Timer m_rangeWait;
 
     /// <summary>
@@ -26,6 +28,7 @@ public class Shooter {
         m_shooterWheels = new ShooterWheels();
         m_indexer = new Indexer();
         m_turret = new Turret();
+        m_rangeFilter = new InputFilter();
         m_rangeWait = new Timer();
         m_rangeWait.start();
     }
@@ -108,6 +111,7 @@ public class Shooter {
     public void resetRangeFinding(){
     	m_rangeSnapshot = 0;
     	m_rangeWait.reset();
+    	m_rangeFilter.reInitialize(0);
     }
     
     /*
@@ -116,16 +120,23 @@ public class Shooter {
     public void setDistance(){
     	if(m_rangeSnapshot == 0){
     		m_turret.setAimingAngle(60);
-    		if(!(m_turret.AtSetpoint() && SmartDashboard.getBoolean("TargetFound", true)))
+    		if(!(m_turret.AtSetpoint() && SmartDashboard.getBoolean("TargetFound", true))){
     			m_rangeWait.reset();
+    			m_rangeFilter.reInitialize(0);
+    		}
+    		else
+    			m_rangeFilter.get(SmartDashboard.getNumber("Range", 8));
+    			
     		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25)
-    			m_rangeSnapshot = SmartDashboard.getNumber("Range", 8);
+    			m_rangeSnapshot = m_rangeFilter.get();
     	}
     	else{
         	double angle = Math.atan(18 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
         	m_turret.setAimingAngle(angle);
         	SmartDashboard.putNumber("target Angle", angle);
     	}
+    	*/
+    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
     	m_shooterWheels.setShooterRPM(5500);
     }
     
