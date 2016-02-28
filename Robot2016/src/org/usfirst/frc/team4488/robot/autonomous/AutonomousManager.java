@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4488.robot.autonomous;
 
+import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.systems.*;
 
 import JavaRoboticsLib.Utility.Logger;
@@ -18,12 +19,14 @@ public class AutonomousManager {
 	
 	 private Manipulator m_manip;
 	 private Shooter m_shooter;
+	 private SystemsManagement m_systems;
 	 private SmartDrive m_drive;
 	
-	 public AutonomousManager(SmartDrive drive, Shooter shooter, Manipulator manip){
+	 public AutonomousManager(SmartDrive drive, Shooter shooter, Manipulator manip, SystemsManagement systems){
 		 m_manip = manip;
 		 m_shooter = shooter;
 		 m_drive = drive;
+		 m_systems = systems;
 		 m_position = new SendableChooser();
 		 m_position.addDefault("Do Nothing", 0);
 		 m_position.addObject("Position 1", 1); 
@@ -75,14 +78,15 @@ public class AutonomousManager {
 	 public void run(){
 		 Thread thread = new Thread(() -> {
 			 driveAutonomous();
-			 portcullis();
+			 lowBar();
 			 m_manip.stopIntake();
+			 shoot(3);
 			 }); //To Add Later
 		 m_drive.resetAll();
-		 thread.run();
 		 Logger.addMessage("Starting Autonomous");
+		 thread.run();
 		 
-		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous()){
+		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled()){
 			 try {
 				Thread.sleep(20);
 			} catch (InterruptedException e) {
@@ -94,6 +98,7 @@ public class AutonomousManager {
 	 }
 	 
 	 public void driveAutonomous(){
+		 wait(m_manip::armReady, () -> {});
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
 		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, 0));
@@ -109,7 +114,7 @@ public class AutonomousManager {
 	 public void lowBar(){
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
-		 wait(() -> driveAtPosition(7, 0.1), () -> m_drive.driveToDistance(10,  0.1));
+		 wait(() -> driveAtPosition(12, 0.1), () -> m_drive.driveToDistance(12,  0.1));
 		 m_drive.stop();
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
@@ -173,14 +178,74 @@ public class AutonomousManager {
 	 }
 	 
 	 public void shoot(int position){
-		 double power = (position - 2.5) / 2.0;
-		 wait(() -> SmartDashboard.getBoolean("FoundTarget", false), () -> {
-			 m_shooter.Spin();
+		 /*
+		 double distance = m_drive.getDrive().getLinearDistance();
+		 wait(() -> driveAtPosition(2.8 + distance, 0.1), () -> m_drive.driveToDistance(3 + distance, 0));
+		 m_drive.stop();
+		 
+		 m_shooter.resetRangeFinding();
+		 m_shooter.setDistance();
+		 Logger.addMessage("Raising Turret");
+		 m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
+		 wait(() -> m_shooter.turretAtPosition(), () -> {});
+		 Logger.addMessage("Done Raising Turret");
+		 
+		 Logger.addMessage("Looking for Target");
+		 double power = position > 3 ? 0.2 : -0.2;
+		 wait(() -> SmartDashboard.getBoolean("TargetFound", false), () -> {
+			 m_shooter.StopWheels();
 			 m_drive.getDrive().setPowers(power, -power);
 			 });
 		 m_drive.stop();
-		 m_drive.resetAll();
-		 wait(() -> driveAtPosition((position - 2.5) * 5, 0.1), () -> m_drive.driveToDistance(5, .5));
+		 m_shooter.resetRangeFinding();
+		 wait(() -> false, () -> m_shooter.setDistance());
+ 
+		 /*
+		 Logger.addMessage("Turning to Target");
+		 wait(() -> m_drive.atCamera(0.05), m_drive::turnToCamera);
+		 
+		 m_drive.stop();
+		 Logger.addMessage("Closing in");
+		 Timer rangeTimer = new Timer();
+		 rangeTimer.start();
+		 wait(() -> m_shooter.readyToShoot(), () -> m_shooter.Spin());
+		 m_drive.stop();
+		 m_shooter.Shoot();
+		 
+		 Logger.addMessage("Ready to Shoot");
+		 double range = SmartDashboard.getNumber("Range", 8);
+		 if(range > 10){
+			 m_drive.getDrive().resetEncoders();
+			 wait(() -> driveAtPosition(10.0 - range, 1.0), () -> m_drive.driveToDistance(10 - range, 0));
+		 }
+		 m_drive.stop();
+		 */
+		 double heading = m_drive.getDrive().getAngle();
+		 double[] setpoint = new double[]{0};
+		 
+		 switch(position){
+		 case 2 : setpoint[0] = 
+		 case 3 : setpoint[0] = 25;  
+		 }
+		 
+		 wait(() -> driveAtAngle(setpoint[0] + heading, 1), () -> m_drive.turnToAngle(setpoint[0] + heading + 50));
+		 double dist = m_drive.getDrive().getLinearDistance();
+		 wait(() -> driveAtPosition(6 + dist, 0.1), () -> m_drive.driveToDistance(6 + dist, 0));
+		 m_drive.stop();
+		 m_systems.setChargeButton(true);
+		 wait(() -> m_shooter.readyToShoot(), m_systems::Update);
+		 Timer alignTimer = new Timer();
+		 alignTimer.start();
+		 wait(() -> alignTimer.get() > 3, () -> {m_drive.turnToCamera(); m_systems.Update();});
+		 m_drive.stop();
+		 /*
+		 m_systems.setChargeButton(false);
+		 wait(() -> m_systems.getShooterState() == ShooterState.Idle, () -> m_systems.Update());
+		 m_systems.setChargeButton(true);
+		 */
+		 wait(() -> m_systems.getShooterState() == ShooterState.Shoot, () -> {m_systems.Update(); m_systems.setShootButton(true);});
+		 m_systems.setShootButton(false);
+		 wait(() -> false, () -> m_systems.Update());
 	 }
 }
 

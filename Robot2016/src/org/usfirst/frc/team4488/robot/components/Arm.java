@@ -41,6 +41,7 @@ public class Arm extends MotionControlledSystem {
         m_limitFound = false;
         lowLimit = -20;
         highLimit = 110;
+        setPosition(ArmPosition.High);
         Logger.addMessage("Arm Initialized", 1);
     }
     		

@@ -48,6 +48,10 @@ public class Manipulator
     		return false;
     	return m_arm.armAngle() > position - tolerance && m_arm.armAngle() < position + tolerance;
     }
+    
+    public boolean armReady() {
+    	return m_arm.getLimitFound();
+    }
 
     /// <summary>
     /// spins intake and moves arm 

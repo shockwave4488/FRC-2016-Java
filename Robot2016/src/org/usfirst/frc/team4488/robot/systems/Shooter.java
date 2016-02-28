@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4488.robot.systems;
 
+import org.usfirst.frc.team4488.robot.components.CameraLights;
 import org.usfirst.frc.team4488.robot.components.Indexer;
 import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
@@ -7,6 +8,7 @@ import org.usfirst.frc.team4488.robot.components.Turret;
 
 import JavaRoboticsLib.Utility.InputFilter;
 import JavaRoboticsLib.Utility.Logger;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -15,6 +17,7 @@ public class Shooter {
 	private ShooterWheels m_shooterWheels;
     private Indexer m_indexer;
     private Turret m_turret;
+	private CameraLights m_lights;
     
     private double m_rangeSnapshot;
     private InputFilter m_rangeFilter;
@@ -28,6 +31,8 @@ public class Shooter {
         m_shooterWheels = new ShooterWheels();
         m_indexer = new Indexer();
         m_turret = new Turret();
+        m_lights = new CameraLights();
+        
         m_rangeFilter = new InputFilter();
         m_rangeWait = new Timer();
         m_rangeWait.start();
@@ -62,8 +67,7 @@ public class Shooter {
     /// </summary>
     public void Spin(){
         m_shooterWheels.Spin();
-        m_indexer.stop();
-        m_turret.Update();
+        m_indexer.stop();        
     }
 
     /// <summary>
@@ -72,8 +76,7 @@ public class Shooter {
     public void Shoot(){
         //if (m_shooterWheels.atRate()){
         	m_indexer.shoot();
-        	m_shooterWheels.Spin();
-            m_turret.Update();
+        	m_shooterWheels.Spin();     
 
     	/*}
         else{
@@ -87,8 +90,6 @@ public class Shooter {
     public void StopWheels(){
     	m_shooterWheels.Stop();
     	m_indexer.stop();
-        m_turret.Update();
-
     }
 
     /// <summary>
@@ -97,7 +98,6 @@ public class Shooter {
     public void load(){
         m_shooterWheels.Load();
         m_indexer.load();
-        m_turret.Update();
     }
 
     /// <summary>
@@ -106,6 +106,7 @@ public class Shooter {
     /// <param name="position">Turret position@param
     public void MoveTurretPosition(ShooterPosition position){
     	m_turret.setPosition(position);
+    	m_lights.setLights(position == ShooterPosition.Aiming ? Relay.Value.kForward : Relay.Value.kReverse, SmartDashboard.getNumber("Cam Light Brightness", .5));
     }
     
     public void resetRangeFinding(){
@@ -117,7 +118,7 @@ public class Shooter {
     /*
      * This tells the shooter how far it is from the goal, so that it can automatically aim accordingly.
      */
-    public void setDistance(){
+    public void setDistance(){  	
     	if(m_rangeSnapshot == 0){
     		m_turret.setAimingAngle(60);
     		if(!(m_turret.AtSetpoint() && SmartDashboard.getBoolean("TargetFound", true))){
@@ -127,16 +128,20 @@ public class Shooter {
     		else
     			m_rangeFilter.get(SmartDashboard.getNumber("Range", 8));
     			
-    		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25)
+    		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25){
     			m_rangeSnapshot = m_rangeFilter.get();
+    			double angle = Math.atan(18 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
+            	m_turret.setAimingAngle(angle);
+            	SmartDashboard.putNumber("target Angle", angle);
+    		}
     	}
     	else{
         	double angle = Math.atan(18 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
         	m_turret.setAimingAngle(angle);
         	SmartDashboard.putNumber("target Angle", angle);
     	}
-    	*/
-    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
+    	
+    	//m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
     	m_shooterWheels.setShooterRPM(5500);
     }
     
@@ -159,6 +164,12 @@ public class Shooter {
     public boolean readyToShoot(){
     	return m_turret.AtSetpoint() && m_rangeSnapshot != 0 && m_shooterWheels.atRate();
     }
+    
+    public boolean turretAtShootAngle(){
+    	if(m_rangeSnapshot == 0)return false;
+    	return m_turret.AtSetpoint() && m_turret.getPosition() == ShooterPosition.Aiming;
+    }
+    
 }
 
 

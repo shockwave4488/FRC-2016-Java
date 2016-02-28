@@ -39,7 +39,6 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private SystemsManagement systems;
-	private CameraLights camlights;
 	
 	private SendableChooser m_position, m_defense, m_action;
         /**
@@ -57,8 +56,10 @@ public class Robot extends IterativeRobot {
     	systems = new SystemsManagement(shooter, manipulator);
     	driveHelper = new DriveHelper(drive, 0.1, 0.075, 0.6, 0.6, 0.75, 0.2);
     	smartDrive = new SmartDrive(drive);
-    	camlights = new CameraLights();
-    	autonManager = new AutonomousManager(smartDrive, shooter, manipulator);
+    	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
+
+    	shooter.setTurretManual(false);
+    	manipulator.setArmManual(false);
 
     }
     
@@ -118,17 +119,13 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {  	
     	allPeriodic();
     	
-    	shooter.setDistance();
-
     	systems.setChargeButton(c.getChargeButton());    	
     	systems.setResetButton(c.getReset());
-    	systems.setShootButton(c.getShootButton());
+    	systems.setShootButton(c.getShootButton() && smartDrive.atCamera(1));
     	systems.setIntakeButton(c.getIntakeButton());
     	systems.setDefenseLowButton(c.getLowDefenseButton());
     	systems.setSemiManualPosition(c.getSemiManualPosition());
-
-    	camlights.setLights(systems.getshooterState() == ShooterState.Charge  ? Relay.Value.kForward : Relay.Value.kReverse, SmartDashboard.getNumber("Cam Light Brightness", .5));
-    	
+  	
     	if (shooter.readyToShoot()){
     		c.vibratePrimary(0.7);
     		c.vibrateSecondary(0.7);
@@ -144,6 +141,7 @@ public class Robot extends IterativeRobot {
     		smartDrive.turnToCamera();
     	}
     	else{
+    		drive.UnBreakModeAll();
     		driveHelper.Drive(c.getSpeed(), c.getTurn(), c.getQuickturn(), true);
     	}    	
     }
@@ -159,7 +157,6 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledPeriodic(){
     	allPeriodic();
-    	camlights.setLights(Relay.Value.kForward, .5);
     	drive.BreakModeAll();
     }
 }

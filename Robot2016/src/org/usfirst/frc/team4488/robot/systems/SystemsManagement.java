@@ -9,6 +9,7 @@ import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.FlowControl.Toggle;
 import JavaRoboticsLib.Utility.*;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team4488.robot.operator.*;
@@ -94,7 +95,7 @@ public class SystemsManagement
     /// <summary>
     /// The state the <see cref="Shooter"/> is currently in
     /// </summary>
-    public ShooterState getshooterState(){
+    public ShooterState getShooterState(){
     	return m_shooterState;
     }
 
@@ -150,7 +151,7 @@ public class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (!m_shoot && m_shootTimer.get() > 1)
+                if (/*!m_shoot &&*/ m_shootTimer.get() > 1)
                 {
                     m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);
@@ -269,6 +270,7 @@ public class SystemsManagement
     /// Spins shooter wheels and aims with turret
     /// </summary>
     private void ShooterCharge(){
+    	m_shooter.setDistance();
         m_shooter.Spin();
         m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
     }

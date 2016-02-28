@@ -74,6 +74,10 @@ public class Turret extends MotionControlledSystem{
 		}
 		Motor.setInverted(true);
 		Logger.addMessage("Turret Initialized", 1);
+		
+		m_aimingAngle = 60;
+		super.periodic = new Notifier(this::Update);
+		super.Start(0.02);
 	}
 	
 	public ShooterPosition getPosition(){
@@ -115,10 +119,11 @@ public class Turret extends MotionControlledSystem{
 		//if(getAngle() > 65)
 		//	((SimplePID)Controller).setP(SmartDashboard.getNumber("TurretP", 0) / 2.0);
 		super.Update();
+		SmartDashboard.putNumber("TurretPot", getAngle());
 	}
 	
 	private double feedForward(double setpoint){
-		//return Math.cos(setpoint * (Math.PI / 180.0)) * 0.2;
-		return 0.01;
+		//return 0.01;
+		return 0;
 	}
 }

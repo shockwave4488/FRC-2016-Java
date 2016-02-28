@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4488.robot.components;
 
+import org.usfirst.frc.team4488.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -8,8 +10,8 @@ public class CameraLights {
 	private AnalogOutput m_analog;
 	
 	public CameraLights(){
-		m_relay = new Relay(0);
-		m_analog = new AnalogOutput(0);
+		m_relay = new Relay(RobotMap.CameraRelay);
+		m_analog = new AnalogOutput(RobotMap.CameraLightValue);
 	}
 
 	public void setLights(Relay.Value value, double brightness){
