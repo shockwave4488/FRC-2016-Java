@@ -24,6 +24,10 @@ public class Controllers {
 		return m_secondary.getRawButton(5);
 	}
 	
+	public boolean getBatterChargeButton(){
+		return m_secondary.getRawAxis(2) > 0.75;
+	}
+	
 	public boolean getShootButton(){
 		return m_secondary.getRawButton(6) || m_primary.getRawButton(6);
 	}
@@ -46,14 +50,6 @@ public class Controllers {
 	
 	public boolean getArmReset(){
 		return m_secondary.getRawButton(7);
-	}
-	
-	public boolean getAlignForwardButton(){
-		return m_primary.getRawButton(5);
-	}
-	
-	public boolean getAlignReverseButton(){
-		return m_primary.getRawButton(6);
 	}
 	
 	public boolean getPortculisDefenseButton(){

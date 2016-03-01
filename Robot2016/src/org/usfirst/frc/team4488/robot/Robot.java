@@ -30,7 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	
-	private Controllers c;
+	private Controllers controllers;
 	private Drive drive;
 	private DriveHelper driveHelper;
 	private SmartDrive smartDrive;
@@ -39,7 +39,7 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private SystemsManagement systems;
-	
+		
 	private SendableChooser m_position, m_defense, m_action;
         /**
      * This function is run when the robot is first started up and should be
@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
     	Logger.setPrintToConsole(true);
     	Logger.setSmartDashboardName("Logger");
-    	c = new Controllers();
+    	controllers = new Controllers();
     	drive = new Drive();
     	shooter = new Shooter();
     	manipulator = new Manipulator();
@@ -57,7 +57,7 @@ public class Robot extends IterativeRobot {
     	driveHelper = new DriveHelper(drive, 0.1, 0.075, 0.6, 0.6, 0.75, 0.2);
     	smartDrive = new SmartDrive(drive);
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
-
+    	
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
 
@@ -119,30 +119,34 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {  	
     	allPeriodic();
     	
-    	systems.setChargeButton(c.getChargeButton());    	
-    	systems.setResetButton(c.getReset());
-    	systems.setShootButton(c.getShootButton() && smartDrive.atCamera(1));
-    	systems.setIntakeButton(c.getIntakeButton());
-    	systems.setDefenseLowButton(c.getLowDefenseButton());
-    	systems.setSemiManualPosition(c.getSemiManualPosition());
+    	shooter.setBatterShot(controllers.getBatterChargeButton());
+    	
+    	systems.setChargeButton(controllers.getChargeButton() || controllers.getBatterChargeButton()); 
+    	systems.setShootButton(controllers.getShootButton()); //&& (controllers.getBatterChargeButton() || smartDrive.atCamera(1)));
+    	systems.setIntakeButton(controllers.getIntakeButton());
+    	systems.setDefenseLowButton(controllers.getLowDefenseButton());
+    	systems.setSemiManualPosition(controllers.getSemiManualPosition());
   	
     	if (shooter.readyToShoot()){
-    		c.vibratePrimary(0.7);
-    		c.vibrateSecondary(0.7);
+    		controllers.vibratePrimary(0.7);
+    		controllers.vibrateSecondary(0.7);
     	}
     	
-    	if(c.getArmReset())
+    	if(controllers.getArmReset())
     		manipulator.resetArm();
     	
+    	if(controllers.getReset())
+    		systems.Reset();
+    	
     	systems.Update();
-    	systems.Reset();
-    	if(c.getShootAlignButton()){
+    	
+    	if(controllers.getShootAlignButton()){
     		drive.BreakModeAll();
     		smartDrive.turnToCamera();
     	}
     	else{
     		drive.UnBreakModeAll();
-    		driveHelper.Drive(c.getSpeed(), c.getTurn(), c.getQuickturn(), true);
+    		driveHelper.Drive(controllers.getSpeed(), controllers.getTurn(), controllers.getQuickturn(), true);
     	}    	
     }
     

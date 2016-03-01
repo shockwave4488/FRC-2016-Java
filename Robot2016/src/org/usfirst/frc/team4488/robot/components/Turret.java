@@ -51,7 +51,8 @@ public class Turret extends MotionControlledSystem{
 	public Turret(){
 		try {
 			RampMotor temp = new RampMotor(Talon.class, RobotMap.TurretMotor);
-			temp.setMaxChange(0.2);
+			temp.setMaxAccel(0.1);
+			temp.setMaxDecel(0.05);
 			super.Motor = temp;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -77,7 +78,7 @@ public class Turret extends MotionControlledSystem{
 		
 		m_aimingAngle = 60;
 		super.periodic = new Notifier(this::Update);
-		super.Start(0.02);
+		super.Start(0.01);
 	}
 	
 	public ShooterPosition getPosition(){
@@ -91,7 +92,7 @@ public class Turret extends MotionControlledSystem{
 		m_position = value;
 		switch(value){
 		case Aiming:
-            setSetPoint(m_aimingAngle); 
+            setSetPoint(m_aimingAngle + SmartDashboard.getNumber("Angle Offset", 0)); 
             break;
         case Load:
             setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 35));
@@ -124,6 +125,6 @@ public class Turret extends MotionControlledSystem{
 	
 	private double feedForward(double setpoint){
 		//return 0.01;
-		return 0;
+		return getAngle() * 0.00075;//getAngle() > 50 ? 0.01 : 0;
 	}
 }

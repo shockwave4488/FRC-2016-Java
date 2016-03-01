@@ -40,7 +40,7 @@ public class Arm extends MotionControlledSystem {
         super.SetpointTolerance = 2;
         m_limitFound = false;
         lowLimit = -20;
-        highLimit = 110;
+        highLimit = SmartDashboard.getNumber("ArmOffset", 120);
         setPosition(ArmPosition.High);
         Logger.addMessage("Arm Initialized", 1);
     }
@@ -54,11 +54,11 @@ public class Arm extends MotionControlledSystem {
         switch (value)
         {
         case High:
-            super.setSetPoint(110);
+            super.setSetPoint(SmartDashboard.getNumber("ArmOffset", 120));
             break;
 
         case Load:
-            super.setSetPoint(110);
+            super.setSetPoint(SmartDashboard.getNumber("ArmOffset", 120));
             break;
             
         case SemiManual:

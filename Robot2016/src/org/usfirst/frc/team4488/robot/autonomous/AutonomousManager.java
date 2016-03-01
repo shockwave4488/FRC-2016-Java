@@ -224,8 +224,8 @@ public class AutonomousManager {
 		 double[] setpoint = new double[]{0};
 		 
 		 switch(position){
-		 case 2 : setpoint[0] = 
-		 case 3 : setpoint[0] = 25;  
+		 //case 2 : setpoint[0] = 
+		 //case 3 : setpoint[0] = 25;  
 		 }
 		 
 		 wait(() -> driveAtAngle(setpoint[0] + heading, 1), () -> m_drive.turnToAngle(setpoint[0] + heading + 50));

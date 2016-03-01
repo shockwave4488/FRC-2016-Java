@@ -17,12 +17,13 @@ public class SystemsManagement
 {
     private Shooter m_shooter;
     private Manipulator m_manipulator;
+    private LEDController m_leds;
+    
     private boolean m_charge = false;
     private boolean m_shoot = false;
     private boolean m_intake = false;
     private boolean m_defenseLow = false;
     private double m_armSemiManualPosition = 0;
-    private boolean m_reset = false;
     private Toggle m_intakeToggle;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
@@ -43,10 +44,6 @@ public class SystemsManagement
     /// </summary>
     public void setShootButton(boolean val){
     	m_shoot = val;
-    }
-    
-    public void setResetButton(boolean val){
-    	m_reset = val;
     }
     
     /// <summary>
@@ -82,6 +79,7 @@ public class SystemsManagement
     	m_manipTimer.start();
         m_manipulator = manipulator;
         m_intakeToggle = new Toggle();
+        m_leds = new LEDController();
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 
@@ -117,6 +115,7 @@ public class SystemsManagement
                     Logger.addMessage("ShooterState set to Load from Idle",0);
                 }
                 if (m_shooter.hasBall()&& m_charge){
+                	m_leds.setLEDs(LEDState.Charge);
                 	m_shooter.resetRangeFinding();
                 	m_shooterState = ShooterState.Charge;
                 	Logger.addMessage("ShooterState set to Charge from Idle", 0);
@@ -135,17 +134,19 @@ public class SystemsManagement
                 
             case Charge:
                 ShooterCharge();
-                if(!m_shooter.AtRate()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 2)//&& m_shooter.readyToShoot())
+                if(!m_shooter.readyToShoot()) m_shootTimer.reset();
+                if (m_shoot && m_charge && m_shootTimer.get() > 1)//&& m_shooter.readyToShoot())
                 {
+                	m_leds.setLEDs(LEDState.Shoot);
                     m_shooterState = ShooterState.Shoot;
                 	m_shootTimer.reset();
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
                 }
                 if (!m_charge)
                 {
-                    m_shooterState = ShooterState.Load;
-                    Logger.addMessage("ShooterState set to Load from Charge",0);
+                	m_leds.setLEDs(LEDState.Null);
+                    m_shooterState = ShooterState.Idle;
+                    Logger.addMessage("ShooterState set to Idle from Charge",0);
                 }
                 break;
 
@@ -153,6 +154,7 @@ public class SystemsManagement
                 ShooterShoot();
                 if (/*!m_shoot &&*/ m_shootTimer.get() > 1)
                 {
+                	m_leds.setLEDs(LEDState.Null);
                     m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Shoot",0);
                 }
@@ -166,6 +168,7 @@ public class SystemsManagement
                 ManipulatorIdle();
                 if (m_intakeToggle.getState() && !m_shooter.hasBall())
                 {
+                	m_leds.setLEDs(LEDState.Feed);
                     m_manipulatorState = ManipulatorState.Intake;
                     Logger.addMessage("ManipulatorState set to Intake from Idle",0);
                 }
@@ -195,6 +198,7 @@ public class SystemsManagement
                 }
                 if (!m_intakeToggle.getState())
                 {
+                	m_leds.setLEDs(LEDState.Null);
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Intake",0);
                 }
@@ -216,6 +220,7 @@ public class SystemsManagement
                 {
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Load",0);
+                    m_leds.setLEDs(LEDState.Null);
                 } 
                 break;
 
@@ -324,10 +329,8 @@ public class SystemsManagement
     }
     
     public void Reset(){
-    	if(m_reset){
     		m_shooterState = ShooterState.Idle;
     		m_manipulatorState = ManipulatorState.Idle;
-    	}
     }
 
     /// <summary>

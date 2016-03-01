@@ -19,6 +19,7 @@ public class Shooter {
     private Turret m_turret;
 	private CameraLights m_lights;
     
+	private boolean m_batterShot;
     private double m_rangeSnapshot;
     private InputFilter m_rangeFilter;
     private Timer m_rangeWait;
@@ -36,13 +37,18 @@ public class Shooter {
         m_rangeFilter = new InputFilter();
         m_rangeWait = new Timer();
         m_rangeWait.start();
+        m_batterShot = false;
     }
     
-    public Boolean hasBall(){
+    public void setBatterShot(boolean value){
+    	m_batterShot = value;
+    }
+    
+    public boolean hasBall(){
     	return m_indexer.ballInShooter();
     }
     
-    public Boolean AtRate(){
+    public boolean AtRate(){
     	return m_shooterWheels.atRate();
     }
     
@@ -118,8 +124,11 @@ public class Shooter {
     /*
      * This tells the shooter how far it is from the goal, so that it can automatically aim accordingly.
      */
-    public void setDistance(){  	
-    	if(m_rangeSnapshot == 0){
+    public void setDistance(){ 
+    	if(m_batterShot){
+    		m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 62.5));
+    	}
+    	else if(m_rangeSnapshot == 0){
     		m_turret.setAimingAngle(60);
     		if(!(m_turret.AtSetpoint() && SmartDashboard.getBoolean("TargetFound", true))){
     			m_rangeWait.reset();
@@ -130,13 +139,13 @@ public class Shooter {
     			
     		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25){
     			m_rangeSnapshot = m_rangeFilter.get();
-    			double angle = Math.atan(18 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
+    			double angle = Math.atan(16 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
             	m_turret.setAimingAngle(angle);
             	SmartDashboard.putNumber("target Angle", angle);
     		}
-    	}
+    	} 
     	else{
-        	double angle = Math.atan(18 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
+        	double angle = Math.atan(16 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
         	m_turret.setAimingAngle(angle);
         	SmartDashboard.putNumber("target Angle", angle);
     	}
@@ -162,12 +171,17 @@ public class Shooter {
     }
     
     public boolean readyToShoot(){
-    	return m_turret.AtSetpoint() && m_rangeSnapshot != 0 && m_shooterWheels.atRate();
+    	if(!m_batterShot)
+    		return m_turret.AtSetpoint() && m_rangeSnapshot != 0 && m_shooterWheels.atRate();
+    	else
+    		return m_turret.AtSetpoint() && m_shooterWheels.atRate();
     }
     
     public boolean turretAtShootAngle(){
-    	if(m_rangeSnapshot == 0)return false;
-    	return m_turret.AtSetpoint() && m_turret.getPosition() == ShooterPosition.Aiming;
+    	if(m_rangeSnapshot == 0 && !m_batterShot)
+    		return false;
+    	else
+    		return m_turret.AtSetpoint() && m_turret.getPosition() == ShooterPosition.Aiming;
     }
     
 }
