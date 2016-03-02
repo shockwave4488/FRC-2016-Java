@@ -12,14 +12,14 @@ public class LEDController {
 	private static final HashMap<LEDState, Byte> byteMapping = new HashMap<LEDState, Byte>();
 	
 	static {
-		byteMapping.put(LEDState.Null, (byte) 0);
-		byteMapping.put(LEDState.Shoot, (byte) 1);
-		byteMapping.put(LEDState.Feed, (byte) 2);
-		byteMapping.put(LEDState.Charge, (byte) 3);		
+		byteMapping.put(LEDState.Null, (byte) '0');
+		byteMapping.put(LEDState.Shoot, (byte) '1');
+		byteMapping.put(LEDState.Feed, (byte) '2');
+		byteMapping.put(LEDState.Charge, (byte) '3');		
 	}
 	
 	public LEDController(){
-		//m_arduinoPort = new SerialPort(1, Port.kOnboard);
+		//m_arduinoPort = new SerialPort(9600, Port.kUSB);
 		setLEDs(LEDState.Null);
 	}
 	

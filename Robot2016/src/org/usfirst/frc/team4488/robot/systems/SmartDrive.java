@@ -18,7 +18,10 @@ public class SmartDrive {
 			m_turnController.setMaxInput(360);
 			m_turnController.setMinInput(0);
 			m_driveController = new SimplePID(0.2, 0, 0, -0.5, 0.5);
-			m_straightController = new SimplePID(0, 0, 0, -0.1, 0.1);
+			m_straightController = new SimplePID(0.01, 0, 0, -0.1, 0.1);
+			m_straightController.setContinuous(true);
+			m_straightController.setMaxInput(360);
+			m_straightController.setMinInput(0);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,6 +41,13 @@ public class SmartDrive {
 	public boolean atCamera(double tolerance){
 		double setpoint = SmartDashboard.getNumber("AzimuthX", m_drive.getAngle());
 		return m_drive.getAngle() > (setpoint - tolerance) && m_drive.getAngle() < (setpoint + tolerance);
+	}
+	
+	public void driveToDistance(double distance){
+		m_driveController.setSetPoint(distance);
+		double power = m_driveController.get(m_drive.getLinearDistance());
+		m_drive.setPowers(power, power);
+		
 	}
 	
 	public void driveToDistance(double distance, double heading){

@@ -138,6 +138,7 @@ public class Shooter {
     			m_rangeFilter.get(SmartDashboard.getNumber("Range", 8));
     			
     		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25){
+    			Logger.addMessage("Range Found");
     			m_rangeSnapshot = m_rangeFilter.get();
     			double angle = Math.atan(16 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
             	m_turret.setAimingAngle(angle);

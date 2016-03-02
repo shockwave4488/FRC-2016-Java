@@ -88,8 +88,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
     	Logger.resetTimer();
     	drive.BreakModeAll();
-    	autonManager.run();
-    	
+    	autonManager.run(this::allPeriodic);    	
     }
 
     /**
