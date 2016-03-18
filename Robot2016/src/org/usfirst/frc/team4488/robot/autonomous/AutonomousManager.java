@@ -15,7 +15,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousManager {
+	
+	public final String challenge = "challenge";
+	public final String lowBar = "lowBar";
+	public final String moat = "moat";
+	public final String roughTerrain = "roughTerrain";
+	public final String ramparts = "ramparts";
+	public final String rockWall = "rockWall";
+	public final String chevalDeFrise = "chevalDeFrise";
+	public final String portcullis = "portcullis";
+	public final String none = "none";
+	
+	public final String shoot = "shoot";
+	
+	public final double[] lastHeading = new double[1];
+	 
 	 private SendableChooser m_position, m_defense, m_action;
+	 private Thread m_thread;
 	
 	 private Manipulator m_manip;
 	 private Shooter m_shooter;
@@ -36,24 +52,28 @@ public class AutonomousManager {
 		 m_position.addObject("Position 5", 5);
 		 m_position.addObject("Spy Bot", 6);
 		 m_defense = new SendableChooser();
-		 m_defense.addDefault("Challenge", AutonDefense.Challenge);
-		 m_defense.addObject("Low Bar", AutonDefense.LowBar);
-		 m_defense.addObject("Moat", AutonDefense.Moat);
-		 m_defense.addObject("Rough Terrain", AutonDefense.RoughTerrain);
-		 m_defense.addObject("Ramparts", AutonDefense.Ramparts);
-		 m_defense.addObject("Rock Wall", AutonDefense.RockWall);
-		 m_defense.addObject("Cheval De Frise", AutonDefense.ChevalDeFrise);
+		 m_defense.addDefault("Challenge", challenge);
+		 m_defense.addObject("Low Bar", lowBar);
+		 m_defense.addObject("Moat", moat);
+		 m_defense.addObject("Rough Terrain", roughTerrain);
+		 m_defense.addObject("Ramparts", ramparts);
+		 m_defense.addObject("Rock Wall", rockWall);
+		 m_defense.addObject("Cheval De Frise", chevalDeFrise);
+		 m_defense.addObject("Portcullis", portcullis);
 		 m_action = new SendableChooser();
-		 m_action.addDefault("No Action", AutonAction.None);
-		 m_action.addObject("High Goal", AutonAction.HighGoal);
-		 m_action.addObject("Low Goal", AutonAction.LowGoal);
+		 m_action.addDefault("No Action", none);
+		 m_action.addObject("High Goal", shoot);
+		 
+		 SmartDashboard.putData("Autonomous Position", m_position);
+		 SmartDashboard.putData("Autonomous Defense", m_defense);
+		 SmartDashboard.putData("Autonomous Action", m_action);
 	 }
 	 
 	 public void wait(Supplier<Boolean> expression, Runnable periodic) {
 		 while(!expression.get() && DriverStation.getInstance().isAutonomous()){
 			 periodic.run();
 			 try {
-				Thread.sleep(20);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -73,36 +93,73 @@ public class AutonomousManager {
 	  * The routine is a melding of three parts:
 	  * The code called based on what defense is being breached
 	  * The code called based on position of the bot, spot 1, spot 2, spybot, etc.
-	  * The code called based on action to perform after the breach, hupatrigh or low goal, or nothing.
+	  * The code called based on action to perform after the breach, high or low goal, or nothing.
 	  */
-	 public void run(Runnable periodic){
-		 Thread thread = new Thread(() -> {
-			 driveAutonomous();
-			 chevalDeFrise();
+	 public void start(){
+		 m_thread = new Thread(() -> {
+			 if((int)m_position.getSelected() == 0)
+				 return;
+			 else
+				 driveAutonomous();
+			 
+			 switch((String)m_defense.getSelected()){
+			 case portcullis:
+				 portcullis();
+				 break;
+			 case chevalDeFrise:
+				 chevalDeFrise();
+				 break;
+			 case rockWall:
+				 rockWall();
+				 break;
+			 case roughTerrain:
+				 roughTerrain();
+				 break;
+			 case ramparts:
+				 ramparts();
+				 break;
+			 case moat:
+				 moat();
+				 break;
+			 case lowBar:
+				 lowBar();
+				 break;
+			 default:
+				 break;
+			 }
+			 
 			 m_manip.stopIntake();
-			 shoot(4);
+			 			 
+			 driveToShoot((int)m_position.getSelected());
+			 
+			 if(((String)m_action.getSelected()).equals(shoot))
+				 shoot();
+			 
 			 }); //To Add Later
 		 m_drive.resetAll();
 		 Logger.addMessage("Starting Autonomous");
-		 thread.run();
-		 
-		 while(thread.isAlive() && DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled()){
-			 try {
-				Thread.sleep(20);
-				periodic.run();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		 }
+		 m_thread.start();
 		 
 		 Logger.addMessage("Ending Autonomous" + (DriverStation.getInstance().isAutonomous() ? " Early" : ""));
+	 }
+	 
+	 public void check(){	 
+		 if(!(m_thread.isAlive() && DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled())){
+			m_thread.interrupt();
+		 }
+	 }
+	 
+	 public void kill(){
+		 if(m_thread != null && m_thread.isAlive())
+			 m_thread.interrupt();
 	 }
 	 
 	 public void driveAutonomous(){
 		 wait(m_manip::armReady, () -> {});
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
-		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3));
+		 lastHeading[0] = m_drive.getDrive().getAngle();
+		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, lastHeading[0]));
 		 m_drive.stop();
 	 }
 	 
@@ -172,7 +229,7 @@ public class AutonomousManager {
 		 m_drive.stop();
 	 }
 	 
-	 public void shoot(int position){
+	 public void driveToShoot(int position){
 		 /*
 		 double distance = m_drive.getDrive().getLinearDistance();
 		 wait(() -> driveAtPosition(2.8 + distance, 0.1), () -> m_drive.driveToDistance(3 + distance, 0));
@@ -218,30 +275,43 @@ public class AutonomousManager {
 		 double[] args = new double[]{0, 0, 0};
 		 
 		 switch(position){
-		 	case 1: //LOW BAR
+		 	case 0: //DOES NOTHING, SHOULD NEVER RUN
+		 		break;
+		 	case 1: //LOW BAR, ASSUMED
+			 	args[0] = 20;
+			 	args[1] = 9.5;
+			 	args[2] = 50;
 			 	break;
-		 	case 2 : 
-		 		args[0] = -25;
+		 	case 2 : //ASSUMED
+		 		args[0] = -10;
+		 		args[1] = 9.5;
+		 		args[2] = 60;
 		 		break;
-		 	case 3 : 
-		 		args[0] = 25;  
+		 	case 3 : //ASSUMED
+		 		args[0] = 0;
+		 		args[1] = 5;
+		 		args[2] = 0; 
 		 		break;
-		 	case 4:
+		 	case 4: //TESTED, NOT WORKING
 		 		args[0] = -5;
 		 		args[1] = 5;
-		 		args[2] = 5;
+		 		args[2] = 0;
 		 		break;
-		 	case 5 :
+		 	case 5 : //TESTED, WORKING
 		 		args[0] = 10;
 		 		args[1] = 9.5;
-		 		args[2] = -60;
+		 		args[2] = -50;
+		 		break;
+		 	case 6: //SPY BOT, ASSUMED
+		 		args[0] = 5;
+		 		args[1] = 5;
+		 		args[2] = -5;
 		 		break;
 		 }
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 double[] heading = {m_drive.getDrive().getAngle()};
-		 wait(() -> driveAtAngle(args[0] + heading[0], 3), () -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[0]), -0.4 * Math.signum(args[0])));
+		 wait(() -> driveAtAngle(args[0] + lastHeading[0], 3), () -> m_drive.turnToAngle(args[0] + lastHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[0]), -0.4 * Math.signum(args[0])));
 		 m_drive.stop();
 		 
 		 //Drive
@@ -252,10 +322,11 @@ public class AutonomousManager {
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 wait(() -> driveAtAngle(args[2] + heading[0], 2), () -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
-		 m_drive.stop();
-		 
-		 //Charge and Shoot
+		 wait(() -> driveAtAngle(args[2] + lastHeading[0], 2), () -> m_drive.turnToAngle(args[2] + lastHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
+		 m_drive.stop();		 
+	 }
+	 
+	 public void shoot(){
 		 Logger.addMessage("Shooting");
 		 m_systems.setChargeButton(true);
 		 wait(() -> m_shooter.readyToShoot(), m_systems::Update);

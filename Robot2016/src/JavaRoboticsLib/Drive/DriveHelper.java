@@ -39,7 +39,7 @@ public class DriveHelper {
 
     turn = handleDeadband(turn, m_turnDeadZone);
     throttle = handleDeadband(throttle, m_speedDeadZone);
-    isQuickTurn |= Math.abs(throttle) < 0.075;
+    isQuickTurn |= throttle == 0;
 
     //double negInertia = turn - m_oldTurn;
     //m_oldTurn = turn;

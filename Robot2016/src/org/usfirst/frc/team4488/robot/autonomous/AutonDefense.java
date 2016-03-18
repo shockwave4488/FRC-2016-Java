@@ -9,6 +9,7 @@ public enum AutonDefense {
 	Ramparts,
 	RockWall,
 	ChevalDeFrise,
+	Portcullis,
 	Challenge,	
 }
 

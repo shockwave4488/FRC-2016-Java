@@ -163,8 +163,18 @@ public class ShooterWheel {
     }
     
     private double feedForward(){
-    	double rate = getShooterSpeed() / 6000;
+    	//6000 for practice
+    	//6500 for competition
+    	final double maxRPM = 6500;
+    	return (getShooterSpeed() * 0.96) / maxRPM + 0.04;
+    	/*
+    	double rate = 0;
+    	if(getShooterSpeed() > 4500)
+    		rate = getShooterSpeed() / 6000;
+    	else
+    		rate = getShooterSpeed() / 7000;
     	SmartDashboard.putNumber("High", rate);
     	return rate;
+    	*/
     }
 }

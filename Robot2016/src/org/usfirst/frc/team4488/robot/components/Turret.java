@@ -1,7 +1,6 @@
 package org.usfirst.frc.team4488.robot.components;
 
 import java.util.function.Function;
-
 import org.usfirst.frc.team4488.robot.RobotMap;
 import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
@@ -13,6 +12,7 @@ public class Turret extends MotionControlledSystem{
 	
 	private double m_aimingAngle;	
 	private ShooterPosition m_position;
+	private Timer m_oscillateTimer;
 	
 	private class feedForwardPID implements MotionController{
 		private SimplePID m_pid;
@@ -76,7 +76,10 @@ public class Turret extends MotionControlledSystem{
 		Motor.setInverted(true);
 		Logger.addMessage("Turret Initialized", 1);
 		
+		m_oscillateTimer = new Timer();
+		m_oscillateTimer.start();
 		m_aimingAngle = 60;
+				
 		super.periodic = new Notifier(this::Update);
 		super.Start(0.01);
 	}
@@ -95,7 +98,7 @@ public class Turret extends MotionControlledSystem{
             setSetPoint(m_aimingAngle + SmartDashboard.getNumber("Angle Offset", 0)); 
             break;
         case Load:
-            setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 35));
+            setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 35) + Math.sin(m_oscillateTimer.get() * Math.PI * 2) * 3);
             break;
         case Stored:
         	setSetPoint(-2);
@@ -119,12 +122,20 @@ public class Turret extends MotionControlledSystem{
 		//((SimplePID)Controller).setGains(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
 		//if(getAngle() > 65)
 		//	((SimplePID)Controller).setP(SmartDashboard.getNumber("TurretP", 0) / 2.0);
+		if(getAngle() > 140){ //something went REALLY wrong
+			super.setManual(true);
+			super.setManualPower(0);
+			return;
+		}
 		super.Update();
 		SmartDashboard.putNumber("TurretPot", getAngle());
 	}
 	
 	private double feedForward(double setpoint){
-		//return 0.01;
-		return getAngle() * 0.00075;//getAngle() > 50 ? 0.01 : 0;
+		//return 0.01; None
+		//return getAngle() * 0.00075; Surgical Tubing
+		//Practice return getAngle() > 50 ? 0.01 : 0; //Delrin Block
+		return getAngle() > 50 ? 0.01 : 0;
+		//return 0;
 	}
 }

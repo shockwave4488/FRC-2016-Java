@@ -17,7 +17,7 @@ public class SmartDrive {
 			m_turnController.setContinuous(true);
 			m_turnController.setMaxInput(360);
 			m_turnController.setMinInput(0);
-			m_driveController = new SimplePID(0.2, 0, 0, -0.5, 0.5);
+			m_driveController = new SimplePID(0.225, 0, 0, -0.5, 0.5);
 			m_straightController = new SimplePID(0.01, 0, 0, -0.1, 0.1);
 			m_straightController.setContinuous(true);
 			m_straightController.setMaxInput(360);
@@ -31,14 +31,24 @@ public class SmartDrive {
 		return m_drive;
 	}
 	
+	public void batterBrake(double in){
+		double power = in > 0.2 ? in : 0.2;
+	}
+	
 	public void turnToCamera(){
+		turnToCamera(0);
+	}
+	
+	public void turnToCamera(double linearPower){
+		SmartDashboard.putNumber("Gyro", m_drive.getAngle());
 		m_turnController.setP(SmartDashboard.getNumber("DriveP", 0.25));
 		m_turnController.setSetPoint(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()));
 		double power = m_turnController.get(m_drive.getAngle());
-		m_drive.setPowers(power, -power);
+		m_drive.setPowers(linearPower + power, linearPower - power);
 	}
 	
 	public boolean atCamera(double tolerance){
+		SmartDashboard.putNumber("Gyro", m_drive.getAngle());
 		double setpoint = SmartDashboard.getNumber("AzimuthX", m_drive.getAngle());
 		return m_drive.getAngle() > (setpoint - tolerance) && m_drive.getAngle() < (setpoint + tolerance);
 	}

@@ -36,6 +36,10 @@ public class Controllers {
 		return m_secondary.getRawButton(1);
 	}
 	
+	public boolean getBatterBrakeButton(){
+		return m_primary.getRawButton(9);
+	}
+	
 	public boolean getShootAlignButton(){
 		return m_primary.getRawButton(10);
 	}
@@ -62,6 +66,10 @@ public class Controllers {
 	
 	public double getSemiManualPosition(){
 		return m_secondary.getRawAxis(3);
+	}
+	
+	public boolean getShooterTestButton(){
+		return m_primary.getRawButton(1);
 	}
 	
 	/*

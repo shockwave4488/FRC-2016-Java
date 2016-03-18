@@ -206,7 +206,7 @@ public class SystemsManagement
 
             case Store:
                 ManipulatorStore();
-                if (m_shooter.turretAtPosition() && m_manipulator.getArmAngle() > 20)
+                if (m_shooter.turretAtPosition() && m_shooter.TurretAngle() > 20)
                 {
                     m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);
@@ -329,8 +329,9 @@ public class SystemsManagement
     }
     
     public void Reset(){
-    		m_shooterState = ShooterState.Idle;
-    		m_manipulatorState = ManipulatorState.Idle;
+    	Logger.addMessage("State Reset");
+    	m_shooterState = ShooterState.Idle;
+    	m_manipulatorState = ManipulatorState.Idle;
     }
 
     /// <summary>

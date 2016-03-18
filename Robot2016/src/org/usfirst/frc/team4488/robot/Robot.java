@@ -54,7 +54,8 @@ public class Robot extends IterativeRobot {
     	shooter = new Shooter();
     	manipulator = new Manipulator();
     	systems = new SystemsManagement(shooter, manipulator);
-    	driveHelper = new DriveHelper(drive, 0.1, 0.075, 0.6, 0.6, 0.75, 0.2);
+    	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 0.6, 0.6, 0.75, 0.2); //Xbox 360
+    	driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
     	smartDrive = new SmartDrive(drive);
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	
@@ -88,7 +89,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
     	Logger.resetTimer();
     	drive.BreakModeAll();
-    	autonManager.run(this::allPeriodic);    	
+    	autonManager.start();    	
     }
 
     /**
@@ -97,7 +98,7 @@ public class Robot extends IterativeRobot {
     @Override
 	public void autonomousPeriodic() {
     	allPeriodic();
-    	drive.BreakModeAll();
+    	autonManager.check();
     }
 
     @Override
@@ -106,6 +107,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopInit(){
     	Logger.addMessage("Starting Teleop");
+    	autonManager.kill();
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
         drive.UnBreakModeAll();
@@ -130,6 +132,10 @@ public class Robot extends IterativeRobot {
     		controllers.vibratePrimary(0.7);
     		controllers.vibrateSecondary(0.7);
     	}
+    	else{
+    		controllers.vibratePrimary(0);
+    		controllers.vibrateSecondary(0);
+    	}
     	
     	if(controllers.getArmReset())
     		manipulator.resetArm();
@@ -141,7 +147,11 @@ public class Robot extends IterativeRobot {
     	
     	if(controllers.getShootAlignButton()){
     		drive.BreakModeAll();
-    		smartDrive.turnToCamera();
+    		smartDrive.turnToCamera(controllers.getSpeed());
+    	}
+    	else if(controllers.getBatterBrakeButton()){
+    		drive.BreakModeAll();
+    		smartDrive.batterBrake(controllers.getSpeed());
     	}
     	else{
     		drive.UnBreakModeAll();
@@ -155,6 +165,10 @@ public class Robot extends IterativeRobot {
     @Override
 	public void testPeriodic() {
     	allPeriodic();
+    	if(controllers.getShooterTestButton())
+    		shooter.startShootTest();
+    	else
+    		shooter.stopShootTest();
     }
     
     @Override

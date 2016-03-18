@@ -107,6 +107,7 @@ public class Logger
          
         _messages.add(toAdd);
         updateSmartDashboard();
+    	
     }
 
     public static void addMessage(String message){
@@ -123,6 +124,7 @@ public class Logger
                 s.append(t + "\n");
             }
             return s.toString();
+    	
     }
 
     /**

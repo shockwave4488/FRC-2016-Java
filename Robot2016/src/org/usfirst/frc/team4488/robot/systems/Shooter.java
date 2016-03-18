@@ -6,6 +6,7 @@ import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
 
+import JavaRoboticsLib.ControlSystems.SetPointProfile;
 import JavaRoboticsLib.Utility.InputFilter;
 import JavaRoboticsLib.Utility.Logger;
 import edu.wpi.first.wpilibj.Relay;
@@ -23,6 +24,7 @@ public class Shooter {
     private double m_rangeSnapshot;
     private InputFilter m_rangeFilter;
     private Timer m_rangeWait;
+	private SetPointProfile m_rangeTable;
 
     /// <summary>
     /// Initializes Shooter member variables.
@@ -38,6 +40,13 @@ public class Shooter {
         m_rangeWait = new Timer();
         m_rangeWait.start();
         m_batterShot = false;
+        m_rangeTable = new SetPointProfile();
+        m_rangeTable.add(4.62, 60);
+        m_rangeTable.add(5.583, 55);
+        m_rangeTable.add(6.78, 52);
+        m_rangeTable.add(7.575, 51);
+        m_rangeTable.add(8.36, 50.5);
+        m_rangeTable.add(9.13, 50);
     }
     
     public void setBatterShot(boolean value){
@@ -126,7 +135,7 @@ public class Shooter {
      */
     public void setDistance(){ 
     	if(m_batterShot){
-    		m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 62.5));
+    		m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
     	}
     	else if(m_rangeSnapshot == 0){
     		m_turret.setAimingAngle(60);
@@ -140,6 +149,7 @@ public class Shooter {
     		if(m_turret.AtSetpoint() && m_turret.getAngle() > 45 && m_rangeWait.get() > 0.25){
     			Logger.addMessage("Range Found");
     			m_rangeSnapshot = m_rangeFilter.get();
+    			//double angle = m_rangeTable.get(m_rangeSnapshot);
     			double angle = Math.atan(16 / (6.184 + m_rangeSnapshot)) * (180.0 / Math.PI);
             	m_turret.setAimingAngle(angle);
             	SmartDashboard.putNumber("target Angle", angle);
@@ -152,7 +162,16 @@ public class Shooter {
     	}
     	
     	//m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
-    	m_shooterWheels.setShooterRPM(5500);
+    	m_shooterWheels.setShooterRPM(m_batterShot ? 5500 : 5500);
+    }
+    
+    public void startShootTest(){
+    	this.MoveTurretPosition(ShooterPosition.Aiming);
+    	m_turret.setAimingAngle(50);
+    }
+    
+    public void stopShootTest(){
+    	this.MoveTurretPosition(ShooterPosition.Stored);
     }
     
     public double getShooterRPM(){
@@ -175,7 +194,7 @@ public class Shooter {
     	if(!m_batterShot)
     		return m_turret.AtSetpoint() && m_rangeSnapshot != 0 && m_shooterWheels.atRate();
     	else
-    		return m_turret.AtSetpoint() && m_shooterWheels.atRate();
+    		return m_shooterWheels.atRate();
     }
     
     public boolean turretAtShootAngle(){
