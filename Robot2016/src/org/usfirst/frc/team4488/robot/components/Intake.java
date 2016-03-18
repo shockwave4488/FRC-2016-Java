@@ -69,7 +69,7 @@ public class Intake
      * Pushes the ball into the shooter (Kiss pass)
      */
     public void load(){
-    	m_intakeMotor.set(1);
+    	m_intakeMotor.set(0.5);
     }
     
     /**

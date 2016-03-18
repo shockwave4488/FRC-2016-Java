@@ -72,6 +72,10 @@ public class Controllers {
 		return m_primary.getRawButton(1);
 	}
 	
+	public boolean getLowGoalIntakeButton(){
+		return m_secondary.getRawButton(2);
+	}
+	
 	/*
 	 * This function vibrates the primary controller
 	 */

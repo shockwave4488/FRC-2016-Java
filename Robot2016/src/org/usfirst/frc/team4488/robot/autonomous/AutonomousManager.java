@@ -28,7 +28,7 @@ public class AutonomousManager {
 	
 	public final String shoot = "shoot";
 	
-	public final double[] lastHeading = new double[1];
+	public final double[] firstHeading = new double[1];
 	 
 	 private SendableChooser m_position, m_defense, m_action;
 	 private Thread m_thread;
@@ -158,8 +158,8 @@ public class AutonomousManager {
 		 wait(m_manip::armReady, () -> {});
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
-		 lastHeading[0] = m_drive.getDrive().getAngle();
-		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, lastHeading[0]));
+		 firstHeading[0] = m_drive.getDrive().getAngle();
+		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, firstHeading[0]));
 		 m_drive.stop();
 	 }
 	 
@@ -305,24 +305,25 @@ public class AutonomousManager {
 		 	case 6: //SPY BOT, ASSUMED
 		 		args[0] = 5;
 		 		args[1] = 5;
-		 		args[2] = -5;
+		 		args[2] = -10;
 		 		break;
 		 }
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 wait(() -> driveAtAngle(args[0] + lastHeading[0], 3), () -> m_drive.turnToAngle(args[0] + lastHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[0]), -0.4 * Math.signum(args[0])));
+		 wait(() -> driveAtAngle(args[0] + firstHeading[0], 3), () -> m_drive.turnToAngle(args[0] + firstHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[0]), -0.4 * Math.signum(args[0])));
 		 m_drive.stop();
 		 
 		 //Drive
 		 Logger.addMessage("Driving");
+		 double heading = m_drive.getDrive().getAngle();
 		 double dist = m_drive.getDrive().getLinearDistance();
-		 wait(() -> driveAtPosition(args[1] + dist, 0.1), () -> m_drive.driveToDistance(args[1] + dist));
+		 wait(() -> driveAtPosition(args[1] + dist, 0.1), () -> m_drive.driveToDistance(args[1] + dist, heading));
 		 m_drive.stop();
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 wait(() -> driveAtAngle(args[2] + lastHeading[0], 2), () -> m_drive.turnToAngle(args[2] + lastHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
+		 wait(() -> driveAtAngle(args[2] + firstHeading[0], 2), () -> m_drive.turnToAngle(args[2] + firstHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
 		 m_drive.stop();		 
 	 }
 	 

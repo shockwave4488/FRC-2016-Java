@@ -124,7 +124,8 @@ public class Robot extends IterativeRobot {
     	
     	systems.setChargeButton(controllers.getChargeButton() || controllers.getBatterChargeButton()); 
     	systems.setShootButton(controllers.getShootButton()); //&& (controllers.getBatterChargeButton() || smartDrive.atCamera(1)));
-    	systems.setIntakeButton(controllers.getIntakeButton());
+    	systems.setIntakeButton(controllers.getIntakeButton() || controllers.getLowGoalIntakeButton());
+    	systems.setLowGoalIntake(controllers.getLowGoalIntakeButton());
     	systems.setDefenseLowButton(controllers.getLowDefenseButton());
     	systems.setSemiManualPosition(controllers.getSemiManualPosition());
   	

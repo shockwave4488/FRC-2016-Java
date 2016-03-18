@@ -8,4 +8,5 @@ public enum ManipulatorState {
 	Shoot,
 	DefenseLow,
 	DefenseSemiManual,
+	Output
 }

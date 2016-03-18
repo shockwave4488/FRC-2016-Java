@@ -73,8 +73,9 @@ public class Manipulator
     /// outputs ball
     /// </summary>
     public void outputIntake(){
-        m_intake.output();
         m_arm.setPosition(ArmPosition.Intake);
+    	if(m_arm.AtSetpoint())
+    		m_intake.output();
     }
 
     /// <summary>

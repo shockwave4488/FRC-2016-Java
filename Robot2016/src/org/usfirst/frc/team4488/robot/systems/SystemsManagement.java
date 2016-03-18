@@ -22,6 +22,7 @@ public class SystemsManagement
     private boolean m_charge = false;
     private boolean m_shoot = false;
     private boolean m_intake = false;
+    private boolean m_lowGoalIntake = false;
     private boolean m_defenseLow = false;
     private double m_armSemiManualPosition = 0;
     private Toggle m_intakeToggle;
@@ -65,10 +66,14 @@ public class SystemsManagement
     	m_manipulator.setArmSemiManualPosition(110.0 - (value * 130.0));
     }
     
+    public void setLowGoalIntake(boolean value){
+    	m_lowGoalIntake = value || m_lowGoalIntake;
+    }
+    
     /// <summary>
     /// Creates all managed systems (<see cref="Shooter"/>, <see cref="Manipulator"/>)
     /// </summary>
-    public SystemsManagement(Shooter shooter, Manipulator manipulator)//, Manipulator manipulator)
+    public SystemsManagement(Shooter shooter, Manipulator manipulator)
     {
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
@@ -109,7 +114,7 @@ public class SystemsManagement
         {
             case Idle:
                 ShooterIdle();
-                if (!m_shooter.hasBall() && m_manipulatorState == ManipulatorState.Store)
+                if (!m_shooter.hasBall() && m_manipulatorState == ManipulatorState.Store && !m_lowGoalIntake)
                 {
                     m_shooterState = ShooterState.Load;
                     Logger.addMessage("ShooterState set to Load from Idle",0);
@@ -198,6 +203,7 @@ public class SystemsManagement
                 }
                 if (!m_intakeToggle.getState())
                 {
+                	m_lowGoalIntake = false;
                 	m_leds.setLEDs(LEDState.Null);
                     m_manipulatorState = ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from Intake",0);
@@ -206,10 +212,13 @@ public class SystemsManagement
 
             case Store:
                 ManipulatorStore();
-                if (m_shooter.turretAtPosition() && m_shooter.TurretAngle() > 20)
+                if (m_shooter.turretAtPosition() && m_shooter.TurretAngle() > 30 && !m_lowGoalIntake)
                 {
                     m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);
+                }
+                if(m_shoot && m_lowGoalIntake){
+                	m_manipulatorState = ManipulatorState.Output;
                 }
                 break;
 
@@ -251,7 +260,19 @@ public class SystemsManagement
                     Logger.addMessage("ManipulatorState set to Idle from SemiManual",0);
                 }
                 break;
-                     }
+                
+            case Output:
+            	ManipulatorOutput();
+            	if(!m_shoot && m_manipulator.HasBall()){
+            		m_manipulatorState = ManipulatorState.Store;
+            	}
+            	if(!m_shoot && !m_manipulator.HasBall()){
+            		m_manipulatorState = ManipulatorState.Idle;
+            		m_intakeToggle.force(false);
+            		m_lowGoalIntake = false;
+            	}
+            	break;
+          }
     }
 
     /// <summary>
@@ -293,6 +314,7 @@ public class SystemsManagement
     /// </summary>
     private void ManipulatorIdle()
     {
+    	m_lowGoalIntake = false;
         m_manipulator.stopIntake();
     }
 
@@ -348,5 +370,9 @@ public class SystemsManagement
     private void ManipulatorDefenseSemiManual()
     {
         m_manipulator.semiManualDefense();
+    }
+    
+    private void ManipulatorOutput(){
+    	m_manipulator.outputIntake();
     }
 }
