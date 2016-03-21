@@ -29,7 +29,7 @@ public class Arm extends MotionControlledSystem {
         m_findLimitWatchdog = new Timer();
         m_findLimitWatchdog.start();
         try {
-			m_armPID = new SimplePID(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0), -0.75, 0.75);
+			m_armPID = new SimplePID(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0), -1, 1);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,7 +46,7 @@ public class Arm extends MotionControlledSystem {
         Logger.addMessage("Arm Initialized", 1);
     }
     		
-    /*
+    /**
      * This moves the arm to the position requested as the input of the program.
      */
     public void setPosition(ArmPosition value){
@@ -81,7 +81,7 @@ public class Arm extends MotionControlledSystem {
         }
     }
     
-    /*
+    /**
      * Returns the current position of the arm
      */
     public ArmPosition getPosition(){
@@ -110,7 +110,6 @@ public class Arm extends MotionControlledSystem {
     
     @Override
     public void Update(){
-    	m_armPID.setGains(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0));
     	SmartDashboard.putBoolean("Limit", atBackLimit());
     	SmartDashboard.putBoolean("Arm Limit Found", m_limitFound);
     	if(!m_limitFound){
@@ -127,8 +126,17 @@ public class Arm extends MotionControlledSystem {
     			Logger.addMessage("Arm found limit");
     		}
     	}
+    	
     	if(atBackLimit())
     		resetEncoder(SmartDashboard.getNumber("ArmOffset", 120));
+    	
+    	/*
+    	if(super.Sensor.pidGet() > 50)
+    		m_armPID.setGains(SmartDashboard.getNumber("Arm P",0) / 10, SmartDashboard.getNumber("Arm I",0) / 5, SmartDashboard.getNumber("Arm D",0) / 5);
+    	    	else
+    		m_armPID.setGains(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0));
+    		*/
+    	    	
     	super.Update();
     }
     

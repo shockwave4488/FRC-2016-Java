@@ -12,15 +12,12 @@ import org.usfirst.frc.team4488.robot.RobotMap;
 import JavaRoboticsLib.Utility.*;
 import JavaRoboticsLib.ControlSystems.SimplePID;
 
-/// <summary>
-/// Shooter Wheel class, consisting of one shooter wheel and accompanying encoder
-/// </summary>
 public class ShooterWheel {
 	private Talon m_shooterWheel;
     private Counter m_shooterCounter;
     private SimplePID m_pid;
     private final double m_accelerationThreshold = 100;
-    private final double m_tolerance = 0.1;
+    private final double m_tolerance = 0.2;
     private double m_oldPosition;
     private double m_oldTime;
     private double m_rateBuffer;
@@ -39,9 +36,6 @@ public class ShooterWheel {
     	return getShooterSpeed() * (1.0 + m_tolerance);
     }
 
-    /// <summary>
-    /// Gets current rate from counter of shooter wheels
-    /// </summary>
     public double getRate(){
        synchronized(lockObject){
     	   return m_rateBuffer;
@@ -60,10 +54,6 @@ public class ShooterWheel {
     	}
     }
 
-    
-    /// <summary>
-    /// Gets and sets m_shooterSpeed
-    /// </summary>
     public double getShooterSpeed(){
        synchronized(lockObject){
     	return m_shooterSpeed;
@@ -77,9 +67,6 @@ public class ShooterWheel {
     	}
     }    
 
-    /// <summary>
-    /// Gets and sets Load boolean
-    /// </summary>
     public boolean getLoad(){
     	synchronized(lockObject){
     	return m_load;
@@ -92,9 +79,6 @@ public class ShooterWheel {
     	}
     }
     
-    /// <summary>
-    /// Gets and sets Spin boolean
-    /// </summary>
     public boolean getSpin(){
        synchronized(lockObject){
     	return m_spin;
@@ -107,9 +91,6 @@ public class ShooterWheel {
         }
     }
     
-    /// <summary>
-    /// Initializes ShooterWheel member variables using input channels
-    /// </summary>
     public ShooterWheel(int motorChannel, int counterChannel){
         m_shooterWheel = new Talon(motorChannel);
         m_shooterCounter = new Counter(counterChannel);
@@ -122,16 +103,13 @@ public class ShooterWheel {
         	m_shooterWheel.setInverted(true);
         }
     }
-
-    /// <summary>
-    /// Spins shooter wheel
-    /// </summary>
+    
     public void SpinWheel(){    	
     	if(m_shooterWheel.getChannel() == RobotMap.ShooterMotorRight){
-        	//System.out.println("RIGHTY " + getRate());
+        	System.out.println("RIGHTY " + getRate());
     	}
     	else{
-    		//System.out.println("LEFTY " + getRate());
+    		System.out.println("LEFTY " + getRate());
     	}
  		SmartDashboard.putNumber("Current Rate", getRate() );
  		
@@ -152,10 +130,6 @@ public class ShooterWheel {
         updateRate();
     }
   
-    /// <summary>
-    /// Checks if wheel rate is within tolerance of 95% of desired RPM
-    /// </summary>
-    /// <returns>True if within tolerance, false otherwise</returns>
     public boolean atRate(){
     	synchronized(lockObject){
     	return (getRate() > getLowTolerance() && getRate() < getHighTolerance());
@@ -165,8 +139,8 @@ public class ShooterWheel {
     private double feedForward(){
     	//6000 for practice
     	//6500 for competition
-    	final double maxRPM = 6500;
-    	return (getShooterSpeed() * 0.96) / maxRPM + 0.04;
+    	final double maxRPM = 6400;
+    	return getShooterSpeed() / maxRPM;
     	/*
     	double rate = 0;
     	if(getShooterSpeed() > 4500)

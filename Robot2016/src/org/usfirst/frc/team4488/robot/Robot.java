@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
 	private SystemsManagement systems;
 		
 	private SendableChooser m_position, m_defense, m_action;
-        /**
+     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
@@ -80,6 +80,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Turn Distance", drive.getTurnDistance());
     	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
+    	SmartDashboard.putNumber("Compass", drive.getCompass());
     }
     
     @Override
@@ -166,7 +167,7 @@ public class Robot extends IterativeRobot {
     @Override
 	public void testPeriodic() {
     	allPeriodic();
-    	if(controllers.getShooterTestButton())
+    	if(controllers.getShooterLightButton())
     		shooter.startShootTest();
     	else
     		shooter.stopShootTest();

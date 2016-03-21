@@ -15,9 +15,6 @@ public class Manipulator
 	return m_intake.ballInIntake();
     }
     
-    /// <summary>
-    /// Manipulator constructor.
-    /// </summary>
     public Manipulator(){       
         try {
 			m_arm = new Arm();
@@ -53,62 +50,40 @@ public class Manipulator
     	return m_arm.getLimitFound();
     }
 
-    /// <summary>
-    /// spins intake and moves arm 
-    /// </summary>
     public void spinIntake(){
         m_intake.intakeBall();
         m_arm.setPosition(ArmPosition.Intake);
     }
 
-    /// <summary>
-    /// stops intake motors and moves arm up
-    /// </summary>
     public void stopIntake(){
         m_intake.off();
         m_arm.setPosition(ArmPosition.High);
     }
     
-    /// <summary>
-    /// outputs ball
-    /// </summary>
     public void outputIntake(){
         m_arm.setPosition(ArmPosition.Intake);
     	if(m_arm.AtSetpoint())
     		m_intake.output();
     }
 
-    /// <summary>
-    /// loads ball
-    /// </summary>
     public void loadIntake()
-    {
-        
+    {        
        m_arm.setPosition(ArmPosition.Load);
        m_intake.load();     
     }
 
-    /// <summary>
-    /// shoots ball
-    /// </summary>
     public void shoot()
     {
         m_intake.off();
         m_arm.setPosition(ArmPosition.Shoot);
     }
 
-    /// <summary>
-    /// moves arm down for low defenses and stops intake motor
-    /// </summary>
     public void lowDefense()
     {
         m_intake.off();
         m_arm.setPosition(ArmPosition.Low);
     }
 
-    /// <summary>
-    /// moves arm up for high defenses and stops intake motor
-    ///  </summary>
     public void semiManualDefense()
     {
         m_intake.off();

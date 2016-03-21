@@ -80,7 +80,11 @@ public class Drive implements TankDrive{
 	}
 	
 	public double getAngle(){
-		return m_navx.getFusedHeading();
+		return m_navx.getYaw();
+	}
+	
+	public double getCompass(){
+		return m_navx.getCompassHeading();
 	}
 	
 	public void resetAngle(){

@@ -158,6 +158,9 @@ public class AutonomousManager {
 		 wait(m_manip::armReady, () -> {});
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
+		 Timer t = new Timer();
+		 t.start();
+		 wait(() -> t.get() > 0.05, () -> {});
 		 firstHeading[0] = m_drive.getDrive().getAngle();
 		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, firstHeading[0]));
 		 m_drive.stop();
@@ -166,7 +169,7 @@ public class AutonomousManager {
 	 public void lowBar(){
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
-		 wait(() -> driveAtPosition(12, 0.1), () -> m_drive.driveToDistance(12));
+		 wait(() -> driveAtPosition(12, 0.1), () -> m_drive.driveToDistance(12, firstHeading[0]));
 		 m_drive.stop();
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
@@ -174,27 +177,27 @@ public class AutonomousManager {
 	 
 	 public void chevalDeFrise(){
 		 m_drive.resetAll();
-		 wait(() -> driveAtPosition(0.8, 0.05), () -> m_drive.driveToDistance(2));
+		 wait(() -> driveAtPosition(1.1, 0.05), () -> m_drive.driveToDistance(2));
 		 m_drive.stop();
 		 m_manip.lowDefense();
 		 
 		 wait(() -> m_manip.armAtPosition(7, 2) || m_manip.armAtPosition(), m_manip::lowDefense);
-		 wait(() -> driveAtPosition(1.5, 0.1), () -> m_drive.driveToDistance(5));
+		 wait(() -> driveAtPosition(2.0, 0.1), () -> m_drive.driveToDistance(5));
 		 wait(() -> driveAtPosition(7, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
 		 m_drive.stop();
 	 }
 	 
 	 public void portcullis(){
 		 m_manip.setArmSemiManualPosition(-15);
-		 m_drive.resetAll();
+		 m_drive.getDrive().resetEncoders();
 		 wait(() -> driveAtPosition(2.5,  0.05), () -> {m_drive.getDrive().setPowers(0.3,  0.3); m_manip.semiManualDefense();});
 		 
 		 m_drive.getDrive().setPowers(.05, .05);
 		 m_manip.setArmSemiManualPosition(40);
-		 m_drive.resetAll();
+		 m_drive.getDrive().resetEncoders();
 		 wait(() -> m_manip.armAtPosition(30, 1), () -> m_manip.semiManualDefense());
-		 wait(() -> driveAtPosition(6, .25), () -> {
-			 m_drive.driveToDistance(10); 
+		 wait(() -> driveAtPosition(5, .25), () -> {
+			 m_drive.driveToDistance(10, firstHeading[0]); 
 			 m_manip.setArmSemiManualPosition(70);
 			 m_manip.semiManualDefense();
 		 });		
@@ -280,27 +283,27 @@ public class AutonomousManager {
 		 	case 1: //LOW BAR, ASSUMED
 			 	args[0] = 20;
 			 	args[1] = 9.5;
-			 	args[2] = 50;
+			 	args[2] = 70;
 			 	break;
 		 	case 2 : //ASSUMED
-		 		args[0] = -10;
+		 		args[0] = 60;
 		 		args[1] = 9.5;
-		 		args[2] = 60;
+		 		args[2] = 10;
 		 		break;
 		 	case 3 : //ASSUMED
-		 		args[0] = 0;
-		 		args[1] = 5;
+		 		args[0] = 45;
+		 		args[1] = 3;
 		 		args[2] = 0; 
 		 		break;
 		 	case 4: //TESTED, NOT WORKING
-		 		args[0] = -5;
-		 		args[1] = 5;
+		 		args[0] = 0;
+		 		args[1] = 3;
 		 		args[2] = 0;
 		 		break;
 		 	case 5 : //TESTED, WORKING
-		 		args[0] = 10;
+		 		args[0] = -60;
 		 		args[1] = 9.5;
-		 		args[2] = -50;
+		 		args[2] = -10;
 		 		break;
 		 	case 6: //SPY BOT, ASSUMED
 		 		args[0] = 5;

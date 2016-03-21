@@ -2,8 +2,7 @@ package org.usfirst.frc.team4488.robot;
 
 import edu.wpi.first.wpilibj.SPI;
 
-public class RobotMap {	
-	//Constants having to do with the drive system.
+public class RobotMap {
     public static final int DriveMotorLeftM = 1;
     public static final int DriveMotorLeft2 = 2;
     public static final int DriveMotorLeft3 = 3;

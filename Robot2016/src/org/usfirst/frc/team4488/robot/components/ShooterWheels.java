@@ -10,11 +10,8 @@ public class ShooterWheels {
      private ShooterWheel m_left;
      private Notifier m_periodic;
 
-     /// <summary>
-     /// Gets and sets RPM for both shooter wheels
-     /// </summary>
      public double getShooterRPM() {
-    	 return m_left.getShooterSpeed() + m_right.getShooterSpeed();
+    	 return (m_left.getShooterSpeed() + m_right.getShooterSpeed()) / 2.0;
      }
      
      public void setShooterRPM(double RPM) {
@@ -22,9 +19,6 @@ public class ShooterWheels {
          m_left.setShooterSpeed(RPM);
      }
      
-     /// <summary>
-     /// Constructor for ShooterWheels, with updating Notifier
-     /// </summary>
      public ShooterWheels(){
           m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter);
           m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter);
@@ -32,25 +26,15 @@ public class ShooterWheels {
          m_periodic.startPeriodic(.010);
      }
 
-     /// <summary>
-     /// Checks both wheels if the ball was shot
-     /// </summary>
-     /// <returns>True is was shot, false if not</returns>
      public boolean atRate(){
     	return (m_left.atRate()&&m_right.atRate()); 
      }
 
-     /// <summary>
-     /// Sets both wheels to load
-     /// </summary>
      public void Load() {
          m_left.setLoad(true);
          m_right.setLoad(true);
      }
 
-     /// <summary>
-     /// Sets both wheels to spin
-     /// </summary>
      public void Spin(){
     	 m_left.setLoad(false);
          m_right.setLoad(false);
@@ -58,9 +42,6 @@ public class ShooterWheels {
          m_right.setSpin(true);
      }
 
-     /// <summary>
-     /// Stops both wheels
-     /// </summary>
      public void Stop()
      {
     	 m_left.setLoad(false);

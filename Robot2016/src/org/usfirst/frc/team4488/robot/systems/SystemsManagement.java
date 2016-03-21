@@ -1,18 +1,11 @@
-
-
 package org.usfirst.frc.team4488.robot.systems;
-/// <summary>
-/// Controls all non-drive systems through a state machine
-/// </summary>
-import org.usfirst.frc.team4488.robot.components.*;
 
+import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.FlowControl.Toggle;
 import JavaRoboticsLib.Utility.*;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team4488.robot.operator.*;
 public class SystemsManagement
 {
     private Shooter m_shooter;
@@ -32,31 +25,18 @@ public class SystemsManagement
     private Timer m_shootTimer;
     private Timer m_manipTimer;   
 
-    /// <summary>
-    /// Button to start spinning the shooter
-    /// </summary>
     public void setChargeButton(boolean val){
     	m_charge = val;
     }
     
-    
-    /// <summary>
-    /// Button to shoot the ball
-    /// </summary>
     public void setShootButton(boolean val){
     	m_shoot = val;
     }
     
-    /// <summary>
-    /// Button to move the manipulator and start
-    /// </summary>
     public void setIntakeButton(boolean val){
     	m_intake = val;
     }
 
-    /// <summary>
-    /// Button to move the manipulator down to handle defenses
-    /// </summary>
     public void setDefenseLowButton(boolean val){
     	m_defenseLow = val;
     }
@@ -70,9 +50,6 @@ public class SystemsManagement
     	m_lowGoalIntake = value || m_lowGoalIntake;
     }
     
-    /// <summary>
-    /// Creates all managed systems (<see cref="Shooter"/>, <see cref="Manipulator"/>)
-    /// </summary>
     public SystemsManagement(Shooter shooter, Manipulator manipulator)
     {
         m_shooterState = ShooterState.Idle;
@@ -88,23 +65,14 @@ public class SystemsManagement
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 
-    /// <summary>
-    /// The state the <see cref="Manipulator"/> is currently in
-    /// </summary>
     public ManipulatorState getManipulatorState(){
     	return m_manipulatorState;
     }
 
-    /// <summary>
-    /// The state the <see cref="Shooter"/> is currently in
-    /// </summary>
     public ShooterState getShooterState(){
     	return m_shooterState;
     }
 
-    /// <summary>
-    /// Runs the <see cref="SystemsManagement"/>
-    /// </summary>
     public void Update(){        
         SmartDashboard.putString("Shooter State", m_shooterState.toString());
         SmartDashboard.putString("Manipulator State", m_manipulatorState.toString());
@@ -140,7 +108,7 @@ public class SystemsManagement
             case Charge:
                 ShooterCharge();
                 if(!m_shooter.readyToShoot()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 1)//&& m_shooter.readyToShoot())
+                if (m_shoot && m_charge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
                 {
                 	m_leds.setLEDs(LEDState.Shoot);
                     m_shooterState = ShooterState.Shoot;
@@ -275,76 +243,48 @@ public class SystemsManagement
           }
     }
 
-    /// <summary>
-    /// Stops all wheels and sets turret down
-    /// </summary>
     private void ShooterIdle()
     {
         m_shooter.StopWheels();
         m_shooter.MoveTurretPosition(ShooterPosition.Stored);
     }
 
-    /// <summary>
-    /// Puts turret at load position and sets wheels to load if shooter has no ball. Stops all wheels and sets turret down if shooter has ball
-    /// </summary>
     private void ShooterLoad(){
        m_shooter.load();
        m_shooter.MoveTurretPosition(ShooterPosition.Load);        
     }
 
-    /// <summary>
-    /// Spins shooter wheels and aims with turret
-    /// </summary>
     private void ShooterCharge(){
     	m_shooter.setDistance();
         m_shooter.Spin();
         m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
     }
 
-    /// <summary>
-    /// Shoots ball
-    /// </summary>
     private void ShooterShoot(){
     	m_shooter.Shoot();
     }
 
-
-    /// <summary>
-    /// Sets manipulator to inside the frame perimiter and waits
-    /// </summary>
     private void ManipulatorIdle()
     {
     	m_lowGoalIntake = false;
         m_manipulator.stopIntake();
     }
 
-    /// <summary>
-    /// Moves manipulator down and runs wheels inwards
-    /// </summary>
     private void ManipulatorIntake()
     {
         m_manipulator.spinIntake();
     }
 
-    /// <summary>
-    /// Leaves manipulator down and waits with the ball
-    /// </summary>
     private void ManipulatorStore()
     {
         m_manipulator.stopIntake();
     }
 
-    /// <summary>
-    /// Moves the Manipulator back to pass the ball to the shooter
-    /// </summary>
     private void ManipulatorLoad()
     {
         m_manipulator.loadIntake();
     }
 
-    /// <summary>
-    /// Moves the Manipulator out of the way of the shooter
-    /// </summary>
     private void ManipulatorShoot()
     {
         m_manipulator.shoot();
@@ -356,17 +296,11 @@ public class SystemsManagement
     	m_manipulatorState = ManipulatorState.Idle;
     }
 
-    /// <summary>
-    /// Moves the manipulator down to deal with defenses
-    /// </summary>
     private void ManipulatorDefenseLow()
     {
         m_manipulator.lowDefense();
     }
 
-    /// <summary>
-    /// moves the manipulator up to deal with defenses
-    /// </summary>
     private void ManipulatorDefenseSemiManual()
     {
         m_manipulator.semiManualDefense();

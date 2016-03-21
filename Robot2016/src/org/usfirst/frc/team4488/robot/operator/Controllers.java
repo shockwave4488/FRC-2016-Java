@@ -68,15 +68,19 @@ public class Controllers {
 		return m_secondary.getRawAxis(3);
 	}
 	
-	public boolean getShooterTestButton(){
+	public boolean getShooterLightButton(){
 		return m_primary.getRawButton(1);
+	}
+	
+	public boolean getShooterManualButton(){
+		return m_primary.getRawButton(2);
 	}
 	
 	public boolean getLowGoalIntakeButton(){
 		return m_secondary.getRawButton(2);
 	}
 	
-	/*
+	/**
 	 * This function vibrates the primary controller
 	 */
 	public void vibratePrimary(double amnt){
