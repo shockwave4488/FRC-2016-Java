@@ -81,6 +81,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
     	SmartDashboard.putNumber("Compass", drive.getCompass());
+    	SmartDashboard.putNumber("AlignError", SmartDashboard.getNumber("AzimuthX", 0) - drive.getAngle());
     }
     
     @Override

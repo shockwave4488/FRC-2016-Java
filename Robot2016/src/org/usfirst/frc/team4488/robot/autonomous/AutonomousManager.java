@@ -45,11 +45,14 @@ public class AutonomousManager {
 		 m_systems = systems;
 		 m_position = new SendableChooser();
 		 m_position.addDefault("Do Nothing", 0);
-		 m_position.addObject("Position 1", 1); 
-		 m_position.addObject("Position 2", 2); 
-		 m_position.addObject("Position 3", 3); 
-		 m_position.addObject("Position 4", 4); 
-		 m_position.addObject("Position 5", 5);
+		 m_position.addObject("Position 1", 1); //LOW BAR
+		 m_position.addObject("Position 2C", 2);
+		 m_position.addObject("Position 2L", 7);
+		 m_position.addObject("Position 3A", 3);
+		 m_position.addObject("Position 3B", 8);
+		 m_position.addObject("Position 4", 4);
+		 m_position.addObject("Position 5C", 9);
+		 m_position.addObject("Position 5R", 5);
 		 m_position.addObject("Spy Bot", 6);
 		 m_defense = new SendableChooser();
 		 m_defense.addDefault("Challenge", challenge);
@@ -280,27 +283,27 @@ public class AutonomousManager {
 		 switch(position){
 		 	case 0: //DOES NOTHING, SHOULD NEVER RUN
 		 		break;
-		 	case 1: //LOW BAR, ASSUMED
+		 	case 1: //LOW BAR, WORKING
 			 	args[0] = 20;
 			 	args[1] = 9.5;
 			 	args[2] = 70;
 			 	break;
-		 	case 2 : //ASSUMED
+		 	case 2 : //2C, WORKING
 		 		args[0] = 60;
 		 		args[1] = 9.5;
 		 		args[2] = 10;
 		 		break;
-		 	case 3 : //ASSUMED
-		 		args[0] = 45;
-		 		args[1] = 3;
+		 	case 3 : //3A, WORKING
+		 		args[0] = 20;
+		 		args[1] = 5;
 		 		args[2] = 0; 
 		 		break;
-		 	case 4: //TESTED, NOT WORKING
+		 	case 4: //4, ASSUMED
 		 		args[0] = 0;
 		 		args[1] = 3;
 		 		args[2] = 0;
 		 		break;
-		 	case 5 : //TESTED, WORKING
+		 	case 5 : //5R, ASSUMED
 		 		args[0] = -60;
 		 		args[1] = 9.5;
 		 		args[2] = -10;
@@ -309,6 +312,21 @@ public class AutonomousManager {
 		 		args[0] = 5;
 		 		args[1] = 5;
 		 		args[2] = -10;
+		 		break;
+		 	case 7: //2L, WORKING
+		 		args[0] = 0;
+		 		args[1] = 10;
+		 		args[2] = 60;
+		 		break;
+		 	case 8: //3B, WORKING
+		 		args[0] = 0;
+		 		args[1] = 5;
+		 		args[2] = 35;
+		 		break;
+		 	case 9: //5C, ASSUMED
+		 		args[1] = -60;
+		 		args[2] = 9.5;
+		 		args[3] = -10;
 		 		break;
 		 }
 		 

@@ -42,6 +42,7 @@ public class Shooter {
         m_batterShot = false;
         
         m_rpmProfile = new SetPointProfile();
+        /* PRACTICE
         m_rpmProfile.add(5.15, 3000);
         m_rpmProfile.add(6.1, 2500);
         m_rpmProfile.add(7.53, 2500);
@@ -54,8 +55,29 @@ public class Shooter {
         m_rpmProfile.add(12.5, 2800);
         m_rpmProfile.add(13.1, 2800);
         m_rpmProfile.add(13.45, 3000);
+        */
+        /* OLD COMPETITION
+        m_rpmProfile.add(4.8, 2500);
+        m_rpmProfile.add(6.08, 2000);
+        m_rpmProfile.add(9.56, 2500);
+        m_rpmProfile.add(10.18,  2600);
+        m_rpmProfile.add(12.14, 2600);
+        m_rpmProfile.add(12.82, 2650);
+        */
+        m_rpmProfile.add(4.8, 2000);
+        m_rpmProfile.add(6.08, 2000);
+        m_rpmProfile.add(6.83, 2100);
+        m_rpmProfile.add(7.48, 2150);
+        m_rpmProfile.add(8.36, 2250);
+        m_rpmProfile.add(8.90, 2300);
+        m_rpmProfile.add(9.56, 2400);
+        m_rpmProfile.add(10.18, 2500);
+        m_rpmProfile.add(10.91, 2600);
+        m_rpmProfile.add(12.14, 2600);
+        m_rpmProfile.add(12.82, 2650);
         
         m_angleProfile = new SetPointProfile();
+        /* PRACTICE
         m_angleProfile.add(5.15, 56);
         m_angleProfile.add(6.1, 56);
         m_angleProfile.add(7.53, 53);
@@ -68,6 +90,33 @@ public class Shooter {
         m_angleProfile.add(12.5, 46);
         m_angleProfile.add(13.1, 46);
         m_angleProfile.add(13.45, 44);
+        */
+        /* OLD COMPETITION
+        m_angleProfile.add(4.8, 63);
+        m_angleProfile.add(6.08, 65);
+        m_angleProfile.add(6.83, 57);
+        m_angleProfile.add(7.48, 55);
+        m_angleProfile.add(8.36, 53);
+        m_angleProfile.add(8.90, 52);
+        m_angleProfile.add(9.56, 51);
+        m_angleProfile.add(10.18, 49);
+        m_angleProfile.add(10.91, 48.5);
+        m_angleProfile.add(11.55, 48.5);
+        m_angleProfile.add(12.14, 48);
+        m_angleProfile.add(12.82, 48);
+        */
+        m_angleProfile.add(4.8, 68);
+        m_angleProfile.add(6.08, 65);
+        m_angleProfile.add(6.83, 63);
+        m_angleProfile.add(7.48, 60.75);
+        m_angleProfile.add(8.36, 57);
+        m_angleProfile.add(8.90, 54);
+        m_angleProfile.add(9.56, 53);
+        m_angleProfile.add(10.18, 49);
+        m_angleProfile.add(10.91, 48.5);
+        m_angleProfile.add(11.55, 48.5);
+        m_angleProfile.add(12.14, 48);
+        m_angleProfile.add(12.82, 48);
     }
     
     public void setBatterShot(boolean value){
@@ -174,22 +223,22 @@ public class Shooter {
     public void setDistance(){
     	if(m_batterShot){
     		m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
-    		m_shooterWheels.setShooterRPM(4500);
+    		m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 2500));
     	}
     	else{
     		
     		//double distance = SmartDashboard.getNumber("Range", 8.175); //M4
     		//double dragFactor = 1.014 + (distance - 5) * 0.008 / 75; //M6
     		//double targetHeight = 8.083 - (8 + 17 * Math.sin(m_turret.getAngle() * (Math.PI / 180.0)))/12; //M7
-    		double angle = SmartDashboard.getNumber("Angle Setpoint", 60);//Math.atan(2 * targetHeight / distance) * (180.0 / Math.PI); //A2
+    		//double angle = SmartDashboard.getNumber("Angle Setpoint", 60);//Math.atan(2 * targetHeight / distance) * (180.0 / Math.PI); //A2
     		//double launchSpeed = dragFactor * Math.sqrt(2 * 32.174 * targetHeight + distance * distance * 32.174 / (2 * targetHeight)); //A1
-    		double rpm = SmartDashboard.getNumber("Shooting Scalar", 3000);//launchSpeed * (180.0 / Math.PI) * 2.5; //A4
+    		//double rpm = SmartDashboard.getNumber("Shooting Scalar", 3000);//launchSpeed * (180.0 / Math.PI) * 2.5; //A4
     		
-    		/*
+    		
     		double range = SmartDashboard.getNumber("Range", 8.2);
     		double angle = Math.abs(m_angleProfile.get(range));
     		double rpm = Math.abs(m_rpmProfile.get(range));
-    		*/
+    		
     		
     		m_rangeSnapshot = 1;
     		m_turret.setAimingAngle(angle);

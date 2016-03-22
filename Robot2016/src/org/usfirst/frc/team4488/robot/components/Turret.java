@@ -33,6 +33,7 @@ public class Turret extends MotionControlledSystem{
 		
 		@Override
 		public double get(double input) {
+			m_pid.setGains(SmartDashboard.getNumber("TurretP", 0.05), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
 			return m_pid.get(input) + ffFunction.apply(input);
 		}
 
@@ -126,6 +127,9 @@ public class Turret extends MotionControlledSystem{
 			super.setManual(true);
 			super.setManualPower(0);
 			return;
+		}
+		else{
+			super.setManual(false);
 		}
 		super.Update();
 		SmartDashboard.putNumber("TurretPot", getAngle());
