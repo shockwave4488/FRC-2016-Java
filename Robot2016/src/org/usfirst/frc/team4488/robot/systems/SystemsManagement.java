@@ -185,6 +185,16 @@ public class SystemsManagement
                     m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);
                 }
+                if (m_defenseLow)
+                {
+                    m_manipulatorState = ManipulatorState.DefenseLow;
+                    Logger.addMessage("ManipulatorState set to DefenseLow from Idle",0);
+                }
+                if (m_armSemiManualPosition > 0.05)
+                {
+                    m_manipulatorState = ManipulatorState.DefenseSemiManual;
+                    Logger.addMessage("ManipulatorState set to SemiManual from Idle",0);
+                }
                 if(m_shoot && m_lowGoalIntake){
                 	m_manipulatorState = ManipulatorState.Output;
                 }
@@ -214,7 +224,7 @@ public class SystemsManagement
                 ManipulatorDefenseLow();
                 if (!m_defenseLow)
                 {
-                    m_manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = m_manipulator.IntakeHasBall() ? ManipulatorState.Store : ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from DefenseLow",0);
                 }
                
@@ -224,7 +234,7 @@ public class SystemsManagement
                 ManipulatorDefenseSemiManual();
                 if (m_armSemiManualPosition < 0.05)
                 {
-                    m_manipulatorState = ManipulatorState.Idle;
+                    m_manipulatorState = m_manipulator.IntakeHasBall() ? ManipulatorState.Store : ManipulatorState.Idle;
                     Logger.addMessage("ManipulatorState set to Idle from SemiManual",0);
                 }
                 break;

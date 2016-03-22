@@ -293,20 +293,20 @@ public class AutonomousManager {
 		 		args[1] = 9.5;
 		 		args[2] = 10;
 		 		break;
-		 	case 3 : //3A, WORKING
+		 	case 3 : //3C, WORKING
 		 		args[0] = 20;
 		 		args[1] = 5;
 		 		args[2] = 0; 
 		 		break;
-		 	case 4: //4, ASSUMED
+		 	case 4: //4, WORKING
 		 		args[0] = 0;
 		 		args[1] = 3;
 		 		args[2] = 0;
 		 		break;
-		 	case 5 : //5R, ASSUMED
-		 		args[0] = -60;
-		 		args[1] = 9.5;
-		 		args[2] = -10;
+		 	case 5 : //5R, WORKING
+		 		args[0] = 15;
+		 		args[1] = 9;
+		 		args[2] = -50;
 		 		break;
 		 	case 6: //SPY BOT, ASSUMED
 		 		args[0] = 5;
@@ -318,15 +318,15 @@ public class AutonomousManager {
 		 		args[1] = 10;
 		 		args[2] = 60;
 		 		break;
-		 	case 8: //3B, WORKING
+		 	case 8: //3L, WORKING
 		 		args[0] = 0;
 		 		args[1] = 5;
 		 		args[2] = 35;
 		 		break;
-		 	case 9: //5C, ASSUMED
-		 		args[1] = -60;
-		 		args[2] = 9.5;
-		 		args[3] = -10;
+		 	case 9: //5C, WORKING
+		 		args[0] = -50;
+		 		args[1] = 5.5;
+		 		args[2] = -10;
 		 		break;
 		 }
 		 

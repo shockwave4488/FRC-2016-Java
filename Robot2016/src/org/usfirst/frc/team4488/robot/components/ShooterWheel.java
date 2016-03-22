@@ -106,10 +106,10 @@ public class ShooterWheel {
     
     public void SpinWheel(){    	
     	if(m_shooterWheel.getChannel() == RobotMap.ShooterMotorRight){
-        	System.out.println("RIGHTY " + getRate());
+        	//System.out.println("RIGHTY " + getRate());
     	}
     	else{
-    		System.out.println("LEFTY " + getRate());
+    		//System.out.println("LEFTY " + getRate());
     	}
  		SmartDashboard.putNumber("Current Rate", getRate() );
  		
