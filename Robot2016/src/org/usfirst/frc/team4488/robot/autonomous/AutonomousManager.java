@@ -180,7 +180,7 @@ public class AutonomousManager {
 	 
 	 public void chevalDeFrise(){
 		 m_drive.resetAll();
-		 wait(() -> driveAtPosition(1.1, 0.05), () -> m_drive.driveToDistance(2));
+		 wait(() -> driveAtPosition(1.0, 0.05), () -> m_drive.driveToDistance(2));
 		 m_drive.stop();
 		 m_manip.lowDefense();
 		 

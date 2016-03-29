@@ -154,7 +154,7 @@ public class Robot extends IterativeRobot {
     	}
     	else if(controllers.getBatterBrakeButton()){
     		drive.BreakModeAll();
-    		smartDrive.batterBrake(controllers.getSpeed());
+    		//smartDrive.batterBrake(controllers.getSpeed());
     	}
     	else{
     		drive.UnBreakModeAll();
