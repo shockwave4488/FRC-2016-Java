@@ -122,16 +122,15 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {  	
     	allPeriodic();
     	
-    	shooter.setBatterShot(controllers.getBatterChargeButton());
-    	
-    	systems.setChargeButton(controllers.getChargeButton() || controllers.getBatterChargeButton()); 
+    	systems.setBatterChargeButton(controllers.getBatterChargeButton());
+    	systems.setChargeButton(controllers.getChargeButton()); 
     	systems.setShootButton(controllers.getShootButton()); //&& (controllers.getBatterChargeButton() || smartDrive.atCamera(1)));
     	systems.setIntakeButton(controllers.getIntakeButton() || controllers.getLowGoalIntakeButton());
     	systems.setLowGoalIntake(controllers.getLowGoalIntakeButton());
     	systems.setDefenseLowButton(controllers.getLowDefenseButton());
     	systems.setSemiManualPosition(controllers.getSemiManualPosition());
   	
-    	if (shooter.readyToShoot()){
+    	if (shooter.readyToShoot() && smartDrive.atCamera(0.5)){
     		controllers.vibratePrimary(0.7);
     		controllers.vibrateSecondary(0.7);
     	}
