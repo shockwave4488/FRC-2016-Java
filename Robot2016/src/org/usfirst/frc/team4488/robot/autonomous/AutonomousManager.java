@@ -303,7 +303,7 @@ public class AutonomousManager {
 		 		args[1] = 3;
 		 		args[2] = 0;
 		 		break;
-		 	case 5 : //5R, WORKING
+		 	case 5 : //5D, WORKING
 		 		args[0] = 15;
 		 		args[1] = 9;
 		 		args[2] = -50;
@@ -328,6 +328,11 @@ public class AutonomousManager {
 		 		args[1] = 5.5;
 		 		args[2] = -10;
 		 		break;
+		 }
+		 
+		 if(position == 5){ //5 Delay
+			 Timer timer = new Timer();
+			 wait(() -> timer.get() > 5, () -> {});
 		 }
 		 
 		 //Turn
