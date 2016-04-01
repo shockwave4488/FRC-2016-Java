@@ -221,12 +221,13 @@ public class Shooter {
     */
     
     public void setDistance(){
+    	/*
     	if(m_batterShot){
     		m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 60));
     		m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 2500));
     	}
     	else{
-    		
+    		*/
     		//double distance = SmartDashboard.getNumber("Range", 8.175); //M4
     		//double dragFactor = 1.014 + (distance - 5) * 0.008 / 75; //M6
     		//double targetHeight = 8.083 - (8 + 17 * Math.sin(m_turret.getAngle() * (Math.PI / 180.0)))/12; //M7
@@ -243,8 +244,13 @@ public class Shooter {
     		m_rangeSnapshot = 1;
     		m_turret.setAimingAngle(angle);
     		m_shooterWheels.setShooterRPM(rpm);
-    	}
+    	//}
     	SmartDashboard.putNumber("target Angle", m_turret.getSetPoint());
+    }
+    
+    public void batterShot(){
+    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 69));
+    	m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 1812));
     }
     
     public void startShootTest(){
@@ -285,10 +291,7 @@ public class Shooter {
     }
     
     public boolean readyToShoot(){
-    	if(!m_batterShot)
-    		return m_turret.AtSetpoint() && m_rangeSnapshot != 0 && m_shooterWheels.atRate();
-    	else
-    		return m_shooterWheels.atRate();
+    	return m_turret.AtSetpoint() && m_shooterWheels.atRate();
     }
     
     public boolean turretAtShootAngle(){

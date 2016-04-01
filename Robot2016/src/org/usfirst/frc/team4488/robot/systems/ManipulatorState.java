@@ -6,6 +6,7 @@ public enum ManipulatorState {
 	Store,
 	Load,
 	Shoot,
+	BatterShot,
 	DefenseLow,
 	DefenseSemiManual,
 	Output

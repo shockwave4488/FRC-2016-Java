@@ -89,6 +89,11 @@ public class Manipulator
         m_intake.off();
         m_arm.setPosition(ArmPosition.SemiManual);
     } 
+    
+    public void batterCharge(){
+    	m_intake.off();
+    	m_arm.setPosition(ArmPosition.BatterShoot);
+    }
      
     public void setArmManual(boolean value){
     	m_arm.setManual(value);

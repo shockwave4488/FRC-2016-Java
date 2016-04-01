@@ -9,5 +9,6 @@ public enum ArmPosition
     Intake,
     Load,
     Shoot,
+    BatterShoot,
     SemiManual,
 }

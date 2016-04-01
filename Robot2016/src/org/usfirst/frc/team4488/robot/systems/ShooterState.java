@@ -5,5 +5,6 @@ public enum ShooterState {
 	Idle,
     Load,
     Charge,
+    BatterCharge,
     Shoot,
 }
