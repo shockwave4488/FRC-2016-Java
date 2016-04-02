@@ -52,7 +52,7 @@ public class AutonomousManager {
 		 m_position.addObject("Position 3B", 8);
 		 m_position.addObject("Position 4", 4);
 		 m_position.addObject("Position 5C", 9);
-		 m_position.addObject("Position 5R", 5);
+		 m_position.addObject("Position 5D", 5);
 		 m_position.addObject("Spy Bot", 6);
 		 m_defense = new SendableChooser();
 		 m_defense.addDefault("Challenge", challenge);

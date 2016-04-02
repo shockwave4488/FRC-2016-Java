@@ -249,6 +249,7 @@ public class Shooter {
     }
     
     public void batterShot(){
+		m_rangeSnapshot = 1;
     	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 69));
     	m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 1812));
     }

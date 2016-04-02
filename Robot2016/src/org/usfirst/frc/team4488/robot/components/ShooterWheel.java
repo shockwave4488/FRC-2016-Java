@@ -17,7 +17,7 @@ public class ShooterWheel {
     private Counter m_shooterCounter;
     private SimplePID m_pid;
     private final double m_accelerationThreshold = 100;
-    private final double m_tolerance = 0.05;
+    private final double m_tolerance = 0.025;
     private double m_oldPosition;
     private double m_oldTime;
     private double m_rateBuffer;

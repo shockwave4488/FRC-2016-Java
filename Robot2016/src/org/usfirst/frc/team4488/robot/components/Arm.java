@@ -75,7 +75,7 @@ public class Arm extends MotionControlledSystem {
             break;
             
         case BatterShoot:
-        	super.setSetPoint(22);
+        	super.setSetPoint(19);
         	break;
             
         case Low:

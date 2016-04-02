@@ -96,8 +96,8 @@ public class SystemsManagement
                 if (m_shooter.hasBall() && (m_charge || m_batterCharge)){
                 	m_leds.setLEDs(LEDState.Charge);
                 	m_shooter.resetRangeFinding();
-                	m_shooterState = m_batterCharge ? ShooterState.Charge : ShooterState.BatterCharge;
-                	Logger.addMessage("ShooterState set to Charge from Idle", 0);
+                	m_shooterState = m_batterCharge ? ShooterState.BatterCharge : ShooterState.Charge;
+                	Logger.addMessage("ShooterState set to " + (m_batterCharge ? "Batter" : "") + "Charge from Idle", 0);
                 	m_shootTimer.reset();
                 }
                 break;
@@ -141,18 +141,18 @@ public class SystemsManagement
             case BatterCharge:
             	ShooterBatterCharge();
                 if(!m_shooter.readyToShoot()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
+                if (m_shoot && m_batterCharge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
                 {
                 	m_leds.setLEDs(LEDState.Shoot);
                     m_shooterState = ShooterState.Shoot;
                 	m_shootTimer.reset();
-                    Logger.addMessage("ShooterState set to Shoot from Charge",0);
+                    Logger.addMessage("ShooterState set to Shoot from BatterCharge",0);
                 }
-                if (!m_charge)
+                if (!m_batterCharge)
                 {
                 	m_leds.setLEDs(LEDState.Null);
                     m_shooterState = ShooterState.Idle;
-                    Logger.addMessage("ShooterState set to Idle from Charge",0);
+                    Logger.addMessage("ShooterState set to Idle from BatterCharge",0);
                 }
             	
 		default:
@@ -173,7 +173,7 @@ public class SystemsManagement
                 if ((m_charge || m_batterCharge) && m_shooter.hasBall())
                 {
                     m_manipulatorState = m_batterCharge ? ManipulatorState.BatterShot : ManipulatorState.Shoot;
-                    Logger.addMessage("ManipulatorState set to Shoot from Idle",0);
+                    Logger.addMessage("ManipulatorState set to " + (m_batterCharge ? "Batter" : "") + "Shoot from Idle",0);
                 }
                 if (m_defenseLow)
                 {
@@ -352,12 +352,10 @@ public class SystemsManagement
     private void ManipulatorOutput(){
     	m_manipulator.outputIntake();
     }
-    
-    private void ManipulatorBatterCharge(){
-    	m_manipulator.batterCharge();
-    }
-    
+        
     private void ShooterBatterCharge(){
-    	m_shooter;
+    	m_shooter.batterShot();        
+    	m_shooter.Spin();
+        m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
     }
 }

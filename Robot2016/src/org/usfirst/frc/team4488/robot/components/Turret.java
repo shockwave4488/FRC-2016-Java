@@ -60,7 +60,7 @@ public class Turret extends MotionControlledSystem{
 			e.printStackTrace();
 		}
 		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, SmartDashboard.getNumber("TurretOffset", 263.9));
-		SetpointTolerance = 0.5;//1;
+		SetpointTolerance = 1;
 		lowLimit = 10.0;
 		highLimit = 95.0;
 		try {
