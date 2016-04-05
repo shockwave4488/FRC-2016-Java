@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4488.robot.components;
 
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Utility;
@@ -25,6 +26,8 @@ public class ShooterWheel {
     private final Object lockObject = new Object();
     
     private double m_shooterSpeed;
+    
+    private boolean m_purge;
     private boolean m_load;
     private boolean m_spin;
         
@@ -54,6 +57,18 @@ public class ShooterWheel {
     	}
     }
 
+    public void setDeJam(boolean val){
+    	synchronized(lockObject){
+    		m_purge = val;
+    	}
+    }
+    
+    public boolean getPurge(){
+    	synchronized(lockObject){
+    		return m_purge;
+    	}
+    }
+    
     public double getShooterSpeed(){
        synchronized(lockObject){
     	return m_shooterSpeed;
@@ -88,6 +103,8 @@ public class ShooterWheel {
     public void setSpin(boolean value){
         synchronized(lockObject){   
     	m_spin = value;
+    	if(!value)
+    		m_pid.resetIntegral();
         }
     }
     
@@ -105,11 +122,11 @@ public class ShooterWheel {
     }
     
     public void SpinWheel(){    	
-    	if(m_shooterWheel.getChannel() == RobotMap.ShooterMotorRight){
-        	//System.out.println("RIGHTY " + getRate());
+    	if(m_shooterWheel.getChannel() == RobotMap.ShooterMotorRight && getRate() != 0){
+        	System.out.println("RIGHTY " + getRate());
     	}
-    	else{
-    		//System.out.println("LEFTY " + getRate());
+    	else if(getRate() != 0){
+    		System.out.println("LEFTY " + getRate());
     	}
  		SmartDashboard.putNumber("Current Rate", getRate() );
  		
@@ -117,7 +134,10 @@ public class ShooterWheel {
  		double speed = m_pid.get(getRate()) + feedForward();
  		SmartDashboard.putNumber("Power", speed);
  		
-        if (getLoad()){
+ 		if(getPurge()){
+ 			m_shooterWheel.set(-1.0);
+ 		}
+ 		else if (getLoad()){
             m_shooterWheel.set(-0.3);
         }
         else if (getSpin()){
@@ -140,6 +160,7 @@ public class ShooterWheel {
     	//6000 for practice
     	//6500 for competition
     	final double maxRPM = 6400;
+    	//double voltageCompensation = 12.5 / ControllerPower.get
     	return getShooterSpeed() / maxRPM;
     	/*
     	double rate = 0;

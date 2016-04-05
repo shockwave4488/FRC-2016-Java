@@ -30,9 +30,22 @@ public class ShooterWheels {
     	return (m_left.atRate()&&m_right.atRate()); 
      }
 
+     public void deJam(){
+    	 m_left.setDeJam(true);
+    	 m_right.setDeJam(true);
+    	 m_left.setLoad(false);
+    	 m_right.setLoad(false);
+    	 m_left.setSpin(false);
+    	 m_right.setSpin(false);
+     }
+     
      public void Load() {
          m_left.setLoad(true);
          m_right.setLoad(true);
+         m_left.setSpin(false);
+         m_right.setSpin(false);
+    	 m_left.setDeJam(false);
+    	 m_right.setDeJam(false);
      }
 
      public void Spin(){
@@ -40,6 +53,8 @@ public class ShooterWheels {
          m_right.setLoad(false);
     	 m_left.setSpin(true);
          m_right.setSpin(true);
+    	 m_left.setDeJam(false);
+    	 m_right.setDeJam(false);
      }
 
      public void Stop()
@@ -48,5 +63,7 @@ public class ShooterWheels {
          m_right.setLoad(false);
          m_left.setSpin(false);
          m_right.setSpin(false);
+    	 m_left.setDeJam(false);
+    	 m_right.setDeJam(false);
      }
 }

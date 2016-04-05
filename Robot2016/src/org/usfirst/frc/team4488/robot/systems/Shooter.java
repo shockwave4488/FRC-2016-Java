@@ -42,7 +42,9 @@ public class Shooter {
         m_batterShot = false;
         
         m_rpmProfile = new SetPointProfile();
-        /* PRACTICE
+        
+        /*
+        //PRACTCICE
         m_rpmProfile.add(5.15, 3000);
         m_rpmProfile.add(6.1, 2500);
         m_rpmProfile.add(7.53, 2500);
@@ -56,6 +58,7 @@ public class Shooter {
         m_rpmProfile.add(13.1, 2800);
         m_rpmProfile.add(13.45, 3000);
         */
+        
         /* OLD COMPETITION
         m_rpmProfile.add(4.8, 2500);
         m_rpmProfile.add(6.08, 2000);
@@ -64,6 +67,8 @@ public class Shooter {
         m_rpmProfile.add(12.14, 2600);
         m_rpmProfile.add(12.82, 2650);
         */
+        
+        //NEW COMPETITION
         m_rpmProfile.add(4.8, 2000);
         m_rpmProfile.add(6.08, 2000);
         m_rpmProfile.add(6.83, 2100);
@@ -75,9 +80,11 @@ public class Shooter {
         m_rpmProfile.add(10.91, 2600);
         m_rpmProfile.add(12.14, 2600);
         m_rpmProfile.add(12.82, 2650);
+
         
         m_angleProfile = new SetPointProfile();
-        /* PRACTICE
+        /*
+        //RACTICE
         m_angleProfile.add(5.15, 56);
         m_angleProfile.add(6.1, 56);
         m_angleProfile.add(7.53, 53);
@@ -91,6 +98,7 @@ public class Shooter {
         m_angleProfile.add(13.1, 46);
         m_angleProfile.add(13.45, 44);
         */
+        
         /* OLD COMPETITION
         m_angleProfile.add(4.8, 63);
         m_angleProfile.add(6.08, 65);
@@ -105,6 +113,8 @@ public class Shooter {
         m_angleProfile.add(12.14, 48);
         m_angleProfile.add(12.82, 48);
         */
+        
+        //COMPETITION
         m_angleProfile.add(4.8, 68);
         m_angleProfile.add(6.08, 65);
         m_angleProfile.add(6.83, 63);
@@ -117,6 +127,7 @@ public class Shooter {
         m_angleProfile.add(11.55, 48.5);
         m_angleProfile.add(12.14, 48);
         m_angleProfile.add(12.82, 48);
+        
     }
     
     public void setBatterShot(boolean value){
@@ -300,6 +311,11 @@ public class Shooter {
     		return false;
     	else
     		return m_turret.AtSetpoint() && m_turret.getPosition() == ShooterPosition.Aiming;
+    }
+    
+    public void deJam(){
+    	m_shooterWheels.deJam();
+    	m_indexer.load();
     }
     
 }

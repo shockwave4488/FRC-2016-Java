@@ -80,6 +80,10 @@ public class Controllers {
 		return m_secondary.getRawButton(2);
 	}
 	
+	public boolean getPurgeButton(){
+		return m_secondary.getRawButton(7);
+	}
+	
 	/**
 	 * This function vibrates the primary controller
 	 */

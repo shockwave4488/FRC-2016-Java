@@ -98,7 +98,7 @@ public class Logger
     * Adds a message at the current time
     */
     public static void addMessage(String message, int messageLevel) {
-        if (messageLevel < _level)
+        if (messageLevel < _level || true)
             return ;
          
         TimeStampedMessage toAdd = new TimeStampedMessage(message);

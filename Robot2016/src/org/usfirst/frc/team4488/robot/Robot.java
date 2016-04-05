@@ -122,6 +122,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {  	
     	allPeriodic();
     	
+    	systems.setPurgeButton(controllers.getPurgeButton());
     	systems.setBatterChargeButton(controllers.getBatterChargeButton());
     	systems.setChargeButton(controllers.getChargeButton()); 
     	systems.setShootButton(controllers.getShootButton()); //&& (controllers.getBatterChargeButton() || smartDrive.atCamera(1)));

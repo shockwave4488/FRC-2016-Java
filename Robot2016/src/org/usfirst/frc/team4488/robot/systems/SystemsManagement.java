@@ -18,6 +18,7 @@ public class SystemsManagement
     private boolean m_lowGoalIntake = false;
     private boolean m_defenseLow = false;
     private boolean m_batterCharge = false;
+    private boolean m_purge = false;
     
     private double m_armSemiManualPosition = 0;
     private Toggle m_intakeToggle;
@@ -27,6 +28,10 @@ public class SystemsManagement
     private Timer m_shootTimer;
     private Timer m_manipTimer;   
 
+    public void setPurgeButton(boolean val){
+    	m_purge = val;
+    }
+    
     public void setBatterChargeButton(boolean val){
     	m_batterCharge = val;
     }
@@ -84,6 +89,9 @@ public class SystemsManagement
         SmartDashboard.putString("Manipulator State", m_manipulatorState.toString());
         m_intakeToggle.setState(m_intake);
         
+        if(m_purge && !m_shooter.hasBall())
+        	m_shooter.deJam();
+        else
     	switch (m_shooterState)
         {
             case Idle:
@@ -131,7 +139,7 @@ public class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (/*!m_shoot &&*/ m_shootTimer.get() > 0.5)
+                if (/*!m_shoot &&*/ m_shootTimer.get() > 0.25)
                 {
                 	m_leds.setLEDs(LEDState.Null);
                     m_shooterState = ShooterState.Idle;

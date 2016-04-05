@@ -304,9 +304,9 @@ public class AutonomousManager {
 		 		args[2] = 0;
 		 		break;
 		 	case 5 : //5D, WORKING
-		 		args[0] = 15;
-		 		args[1] = 9;
-		 		args[2] = -50;
+		 		args[0] = -50;
+		 		args[1] = 5.5;
+		 		args[2] = -10;
 		 		break;
 		 	case 6: //SPY BOT, ASSUMED
 		 		args[0] = 5;
@@ -332,7 +332,8 @@ public class AutonomousManager {
 		 
 		 if(position == 5){ //5 Delay
 			 Timer timer = new Timer();
-			 wait(() -> timer.get() > 5, () -> {});
+			 timer.start();
+			 wait(() -> timer.get() > 3.5, () -> {});
 		 }
 		 
 		 //Turn
