@@ -18,7 +18,7 @@ public class ShooterWheel {
     private Counter m_shooterCounter;
     private SimplePID m_pid;
     private final double m_accelerationThreshold = 100;
-    private final double m_tolerance = 0.025;
+    private final double m_tolerance = 0.05;
     private double m_oldPosition;
     private double m_oldTime;
     private double m_rateBuffer;
@@ -47,11 +47,13 @@ public class ShooterWheel {
     
     private void updateRate(){
     	synchronized(lockObject){
-    		double dx = m_shooterCounter.getDistance() - m_oldPosition;
-    		double dt = ((double)Utility.getFPGATime() / 1000000.0) - m_oldTime;
+    		double distance = m_shooterCounter.getDistance();
+    		double time = (double)Utility.getFPGATime() / 1000000.0;
+    		double dx = distance - m_oldPosition;
+    		double dt = time - m_oldTime;
     		//System.out.println("DT " + dt);
-    		m_oldTime = (double)Utility.getFPGATime() / 1000000.0;
-    		m_oldPosition = m_shooterCounter.getDistance();
+    		m_oldTime = time;
+    		m_oldPosition = distance;
     		double rate = dx / dt; //rotations per second
     		m_rateBuffer = rate * 60;
     	}
@@ -123,10 +125,10 @@ public class ShooterWheel {
     
     public void SpinWheel(){    	
     	if(m_shooterWheel.getChannel() == RobotMap.ShooterMotorRight && getRate() != 0){
-        	System.out.println("RIGHTY " + getRate());
+        	//System.out.println("RIGHTY " + getRate());
     	}
     	else if(getRate() != 0){
-    		System.out.println("LEFTY " + getRate());
+    		//System.out.println("LEFTY " + getRate());
     	}
  		SmartDashboard.putNumber("Current Rate", getRate() );
  		

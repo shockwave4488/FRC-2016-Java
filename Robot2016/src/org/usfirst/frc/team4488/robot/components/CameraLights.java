@@ -4,6 +4,7 @@ import org.usfirst.frc.team4488.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CameraLights {
 	private Relay m_relay;
@@ -15,6 +16,7 @@ public class CameraLights {
 	}
 
 	public void setLights(Relay.Value value, double brightness){
+		SmartDashboard.putBoolean("LightsOn", value != Relay.Value.kOff);
 		m_relay.set(value);
 		m_analog.setVoltage((brightness *2) + 0.5 );
 	}

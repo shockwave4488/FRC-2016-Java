@@ -54,8 +54,8 @@ public class Robot extends IterativeRobot {
     	shooter = new Shooter();
     	manipulator = new Manipulator();
     	systems = new SystemsManagement(shooter, manipulator);
-    	//driveHelper = new DriveHelper(drive, 0.2, 0.2, 0.6, 0.6, 0.75, 0.2); //Xbox 360
-    	driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
+    	driveHelper = new DriveHelper(drive, 0.2, 0.2, 0.6, 0.6, 0.75, 0.2); //Xbox 360
+    	//driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
     	smartDrive = new SmartDrive(drive);
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	
@@ -82,6 +82,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
     	SmartDashboard.putNumber("Compass", drive.getCompass());
     	SmartDashboard.putNumber("AlignError", SmartDashboard.getNumber("AzimuthX", 0) - drive.getAngle());
+    	SmartDashboard.putNumber("TurnToCam Constant", 1.5);
     }
     
     @Override
@@ -150,7 +151,7 @@ public class Robot extends IterativeRobot {
     	
     	if(controllers.getShootAlignButton()){
     		drive.BreakModeAll();
-    		smartDrive.turnToCamera(controllers.getSpeed());
+    		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 ? controllers.getSpeed() : 0);
     	}
     	else if(controllers.getBatterBrakeButton()){
     		drive.BreakModeAll();
@@ -177,6 +178,8 @@ public class Robot extends IterativeRobot {
     @Override
     public void disabledPeriodic(){
     	allPeriodic();
+
+		SmartDashboard.putBoolean("LightsOn", false);
     	drive.BreakModeAll();
     }
 }

@@ -286,7 +286,7 @@ public class AutonomousManager {
 		 	case 1: //LOW BAR, WORKING
 			 	args[0] = 20;
 			 	args[1] = 9.5;
-			 	args[2] = 70;
+			 	args[2] = 79.9;
 			 	break;
 		 	case 2 : //2C, WORKING
 		 		args[0] = 60;

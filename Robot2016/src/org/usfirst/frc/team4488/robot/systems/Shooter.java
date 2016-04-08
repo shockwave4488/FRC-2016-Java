@@ -77,7 +77,7 @@ public class Shooter {
         m_rpmProfile.add(8.90, 2300);
         m_rpmProfile.add(9.56, 2400);
         m_rpmProfile.add(10.18, 2500);
-        m_rpmProfile.add(10.91, 2600);
+        m_rpmProfile.add(10.91, 2550);
         m_rpmProfile.add(12.14, 2600);
         m_rpmProfile.add(12.82, 2650);
 
@@ -116,6 +116,20 @@ public class Shooter {
         
         //COMPETITION
         m_angleProfile.add(4.8, 68);
+        m_angleProfile.add(6.08, 65);//
+        m_angleProfile.add(6.83, 62.5);
+        m_angleProfile.add(7.48, 60.75);
+        m_angleProfile.add(8.36, 57.25);//
+        m_angleProfile.add(8.90, 52);
+        m_angleProfile.add(9.56, 51);
+        m_angleProfile.add(10.18, 49);
+        m_angleProfile.add(10.91, 46);
+        m_angleProfile.add(11.55, 45.75);
+        m_angleProfile.add(12.14, 45.5);
+        m_angleProfile.add(12.82, 46);
+        
+       /* OLD NEW COMPETITION
+        m_angleProfile.add(4.8, 68);
         m_angleProfile.add(6.08, 65);
         m_angleProfile.add(6.83, 63);
         m_angleProfile.add(7.48, 60.75);
@@ -126,7 +140,7 @@ public class Shooter {
         m_angleProfile.add(10.91, 48.5);
         m_angleProfile.add(11.55, 48.5);
         m_angleProfile.add(12.14, 48);
-        m_angleProfile.add(12.82, 48);
+        m_angleProfile.add(12.82, 48);*/
         
     }
     

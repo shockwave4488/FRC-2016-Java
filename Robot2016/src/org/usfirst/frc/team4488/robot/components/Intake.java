@@ -47,7 +47,7 @@ public class Intake
      * Spins the intake only if there is no ball in the intake. If there is, the intake is not spun.
      */
     public void intakeBall(){
-    	if(m_sensorTrigger.getRisingUpdate(m_armBallSensor.get()))
+    	if(m_sensorTrigger.getRisingUpdate(!m_armBallSensor.get()))
     		m_waitTimer.reset();
     	
     	if(ballInIntake()){
@@ -80,6 +80,6 @@ public class Intake
     }
     
     public void hold(){
-    	m_intakeMotor.set(m_waitTimer.get() > 0.030 ? 0 : 1);
+    	m_intakeMotor.set(m_waitTimer.get() > 0.030 ? 0 : 0.8);
     }
 }

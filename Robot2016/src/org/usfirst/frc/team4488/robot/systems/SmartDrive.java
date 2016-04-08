@@ -13,7 +13,7 @@ public class SmartDrive {
 	public SmartDrive(Drive drive){
 		m_drive = drive;
 		try {
-			m_turnController = new SimplePID(SmartDashboard.getNumber("DriveP", 0.25), 0, 0, -0.3, 0.3);
+			m_turnController = new SimplePID(SmartDashboard.getNumber("DriveP", 0.045), 0, SmartDashboard.getNumber("DriveD", 0), -0.3, 0.3);
 			m_turnController.setContinuous(true);
 			m_turnController.setMaxInput(360);
 			m_turnController.setMinInput(0);
@@ -40,8 +40,8 @@ public class SmartDrive {
 	
 	public void turnToCamera(double linearPower){
 		SmartDashboard.putNumber("Gyro", m_drive.getAngle());
-		m_turnController.setP(SmartDashboard.getNumber("DriveP", 0.25));
-		double offset = Math.asin(-(13.25 / 12.0) / SmartDashboard.getNumber("Range", 8)) * (180.0 / Math.PI) + 1.5;
+		m_turnController.setGains(SmartDashboard.getNumber("DriveP", 0.045), 0, SmartDashboard.getNumber("DriveD", 0));
+		double offset = Math.asin(-(13.25 / 12.0) / SmartDashboard.getNumber("Range", 8)) * (180.0 / Math.PI) + SmartDashboard.getNumber("TurnToCam Constant", 1.5);
 		m_turnController.setSetPoint(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()) + offset);
 		double power = m_turnController.get(m_drive.getAngle());
 		m_drive.setPowers(linearPower + power, linearPower - power);
@@ -70,7 +70,9 @@ public class SmartDrive {
 	}
 	
 	public void turnToAngle(double angle){
-		m_turnController.setP(SmartDashboard.getNumber("DriveP", 0.25));
+		if(m_turnController.getSetPoint() != angle)
+			m_turnController.resetIntegral();
+		m_turnController.setGains(SmartDashboard.getNumber("DriveP", 0.045), 0, SmartDashboard.getNumber("DriveD", 0));
 		m_turnController.setSetPoint(angle);
 		double power = m_turnController.get(m_drive.getAngle());
 		m_drive.setPowers(power,  -power);
