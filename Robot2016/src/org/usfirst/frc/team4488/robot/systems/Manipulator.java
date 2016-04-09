@@ -61,9 +61,16 @@ public class Manipulator
     }
     
     public void outputIntake(){
+    	//System.out.println("Out");
         m_arm.setPosition(ArmPosition.Intake);
-    	if(m_arm.AtSetpoint())
+    	//if(m_arm.AtSetpoint())
     		m_intake.output();
+    }
+    
+    public void readyOutput(){
+    	//System.out.println("Ready");
+    	m_arm.setPosition(ArmPosition.Intake);
+    	m_intake.off();
     }
 
     public void loadIntake()

@@ -228,7 +228,7 @@ public class SystemsManagement
                     m_manipulatorState = ManipulatorState.DefenseSemiManual;
                     Logger.addMessage("ManipulatorState set to SemiManual from Idle",0);
                 }
-                if(m_shoot && m_lowGoalIntake){
+                if(m_charge && m_lowGoalIntake){
                 	m_manipulatorState = ManipulatorState.Output;
                 }
                 break;
@@ -274,10 +274,10 @@ public class SystemsManagement
                 
             case Output:
             	ManipulatorOutput();
-            	if(!m_shoot && m_manipulator.HasBall()){
+            	if(!m_charge && m_manipulator.HasBall()){
             		m_manipulatorState = ManipulatorState.Store;
             	}
-            	if(!m_shoot && !m_manipulator.HasBall()){
+            	if(!m_charge && !m_manipulator.HasBall()){
             		m_manipulatorState = ManipulatorState.Idle;
             		m_intakeToggle.force(false);
             		m_lowGoalIntake = false;
@@ -358,7 +358,10 @@ public class SystemsManagement
     }
     
     private void ManipulatorOutput(){
-    	m_manipulator.outputIntake();
+    	if(m_shoot)
+    		m_manipulator.outputIntake();
+    	else
+    		m_manipulator.readyOutput();
     }
         
     private void ShooterBatterCharge(){

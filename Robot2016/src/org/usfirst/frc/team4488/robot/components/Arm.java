@@ -29,7 +29,7 @@ public class Arm extends MotionControlledSystem {
         m_findLimitWatchdog = new Timer();
         m_findLimitWatchdog.start();
         try {
-			m_armPID = new SimplePID(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0), -1, 1);
+			m_armPID = new SimplePID(SmartDashboard.getNumber("Arm P",0), SmartDashboard.getNumber("Arm I",0), SmartDashboard.getNumber("Arm D",0), -0.5, 0.5);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -67,7 +67,7 @@ public class Arm extends MotionControlledSystem {
             break;
             
         case Intake:
-            super.setSetPoint(22);
+            super.setSetPoint(20);
             break;
             
         case Shoot:

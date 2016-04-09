@@ -100,12 +100,15 @@ public class AutonomousManager {
 	  */
 	 public void start(){
 		 m_thread = new Thread(() -> {
+			 /*
 			 if((int)m_position.getSelected() == 0)
 				 return;
 			 else
 				 driveAutonomous();
-			 
-			 switch((String)m_defense.getSelected()){
+				 */
+			 //switch(
+			 driveAutonomous();
+			 switch(lowBar){
 			 case portcullis:
 				 portcullis();
 				 break;
@@ -131,11 +134,24 @@ public class AutonomousManager {
 				 break;
 			 }
 			 
+			 /*
+			  * m_position.addDefault("Do Nothing", 0);
+		 m_position.addObject("Position 1", 1); //LOW BAR
+		 m_position.addObject("Position 2C", 2);
+		 m_position.addObject("Position 2L", 7);
+		 m_position.addObject("Position 3A", 3);
+		 m_position.addObject("Position 3B", 8);
+		 m_position.addObject("Position 4", 4);
+		 m_position.addObject("Position 5C", 9);
+		 m_position.addObject("Position 5D", 5);
+			  */
+			 
 			 m_manip.stopIntake();
 			 			 
-			 driveToShoot((int)m_position.getSelected());
+			 //driveToShoot((int)m_position.getSelected());
+			 driveToShoot(1);
 			 
-			 if(((String)m_action.getSelected()).equals(shoot))
+			 if(true)//((String)m_action.getSelected()).equals(shoot))
 				 shoot();
 			 
 			 }); //To Add Later
@@ -170,23 +186,30 @@ public class AutonomousManager {
 	 }
 	 
 	 public void lowBar(){
+		 System.out.println("1");
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
-		 wait(() -> driveAtPosition(12, 0.1), () -> m_drive.driveToDistance(12, firstHeading[0]));
+		 System.out.println("2");
+		 wait(() -> driveAtPosition(12, 0.25), () -> m_drive.driveToDistance(12, firstHeading[0]));
+		 System.out.println("3");
 		 m_drive.stop();
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
+		 
 	 }
 	 
 	 public void chevalDeFrise(){
 		 m_drive.resetAll();
-		 wait(() -> driveAtPosition(1.0, 0.05), () -> m_drive.driveToDistance(2));
+		 System.out.println("1");
+		 wait(() -> driveAtPosition(1.1, 0.05), () -> m_drive.driveToDistance(2));
 		 m_drive.stop();
 		 m_manip.lowDefense();
 		 
 		 wait(() -> m_manip.armAtPosition(7, 2) || m_manip.armAtPosition(), m_manip::lowDefense);
+		 System.out.println("2");
 		 wait(() -> driveAtPosition(2.0, 0.1), () -> m_drive.driveToDistance(5));
-		 wait(() -> driveAtPosition(7, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
+		 System.out.println("3");
+		 wait(() -> driveAtPosition(7.5, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
 		 m_drive.stop();
 	 }
 	 
