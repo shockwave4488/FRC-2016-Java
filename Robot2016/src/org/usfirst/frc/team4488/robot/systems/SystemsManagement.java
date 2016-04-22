@@ -1,5 +1,8 @@
 package org.usfirst.frc.team4488.robot.systems;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import org.usfirst.frc.team4488.robot.components.*;
 import JavaRoboticsLib.FlowControl.Toggle;
 import JavaRoboticsLib.Utility.*;
@@ -24,6 +27,7 @@ public class SystemsManagement
     private Toggle m_intakeToggle;
     private ManipulatorState m_manipulatorState;
     private ShooterState m_shooterState;
+    private PrintWriter m_logFile;
     
     private Timer m_shootTimer;
     private Timer m_manipTimer;   
@@ -73,6 +77,14 @@ public class SystemsManagement
         m_manipulator = manipulator;
         m_intakeToggle = new Toggle();
         m_leds = new LEDController();
+        try {
+			m_logFile = new PrintWriter("/home/lvuser/Shooting.txt");
+		} catch (FileNotFoundException e) {
+			//java pls
+		}
+        m_logFile.println("-------- New Session --------");
+        m_logFile.println("And Again");
+        
         Logger.addMessage("SystemsManagement Initialized", 0);
     }
 
@@ -124,6 +136,7 @@ public class SystemsManagement
                 if(!m_shooter.readyToShoot()) m_shootTimer.reset();
                 if (m_shoot && m_charge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
                 {
+                	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
                 	m_leds.setLEDs(LEDState.Shoot);
                     m_shooterState = ShooterState.Shoot;
                 	m_shootTimer.reset();
@@ -151,6 +164,7 @@ public class SystemsManagement
                 if(!m_shooter.readyToShoot()) m_shootTimer.reset();
                 if (m_shoot && m_batterCharge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
                 {
+                	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
                 	m_leds.setLEDs(LEDState.Shoot);
                     m_shooterState = ShooterState.Shoot;
                 	m_shootTimer.reset();
@@ -368,5 +382,9 @@ public class SystemsManagement
     	m_shooter.batterShot();        
     	m_shooter.Spin();
         m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
+    }
+    
+    public void disabledInit(){
+    	m_logFile.close();
     }
 }

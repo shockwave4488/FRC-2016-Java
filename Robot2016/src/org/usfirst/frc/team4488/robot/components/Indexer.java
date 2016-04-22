@@ -2,6 +2,7 @@ package org.usfirst.frc.team4488.robot.components;
 
 import org.usfirst.frc.team4488.robot.RobotMap;
 import JavaRoboticsLib.Utility.Logger;
+import edu.wpi.first.wpilibj.ControllerPower;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -36,8 +37,9 @@ public class Indexer {
     /// Sets index wheel to push ball into shooter wheels
     /// </summary>
     public void shoot(){
-        m_leftIndexWheel.set(1);
-        m_rightIndexWheel.set(1);
+    	double power = 1;//12.5 / ControllerPower.getInputVoltage();
+        m_leftIndexWheel.set(power);
+        m_rightIndexWheel.set(power);
     }
 
     /// <summary>
@@ -56,6 +58,11 @@ public class Indexer {
     public void stop(){
         m_leftIndexWheel.set(0);
         m_rightIndexWheel.set(0);
+    }
+    
+    public void spin(){
+    	//m_leftIndexWheel.set(-0.1);
+    	//m_rightIndexWheel.set(0.1);
     }
 }
 

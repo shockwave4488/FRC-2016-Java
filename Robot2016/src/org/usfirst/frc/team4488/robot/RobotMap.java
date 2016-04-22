@@ -28,4 +28,6 @@ public class RobotMap {
     
     public static final int CameraRelay = 0;
     public static final int CameraLightValue = 0;
+    
+    public static final int PressureSensor = 1;
 }

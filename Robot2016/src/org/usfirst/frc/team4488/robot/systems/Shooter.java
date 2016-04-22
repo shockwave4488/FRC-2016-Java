@@ -4,6 +4,7 @@ import java.util.TreeMap;
 
 import org.usfirst.frc.team4488.robot.components.CameraLights;
 import org.usfirst.frc.team4488.robot.components.Indexer;
+import org.usfirst.frc.team4488.robot.components.PressureSensor;
 import org.usfirst.frc.team4488.robot.components.ShooterPosition;
 import org.usfirst.frc.team4488.robot.components.ShooterWheels;
 import org.usfirst.frc.team4488.robot.components.Turret;
@@ -21,6 +22,7 @@ public class Shooter {
     private Indexer m_indexer;
     private Turret m_turret;
 	private CameraLights m_lights;
+	private PressureSensor m_ballSensor;
     
 	private boolean m_batterShot;
     private double m_rangeSnapshot;
@@ -35,6 +37,7 @@ public class Shooter {
         m_indexer = new Indexer();
         m_turret = new Turret();
         m_lights = new CameraLights();
+        m_ballSensor = new PressureSensor();
         
         m_rangeFilter = new InputFilter();
         m_rangeWait = new Timer();
@@ -173,7 +176,7 @@ public class Shooter {
     
     public void Spin(){
         m_shooterWheels.Spin();
-        m_indexer.stop();        
+        m_indexer.spin();     
     }
 
     public void Shoot(){
@@ -195,6 +198,11 @@ public class Shooter {
     public void load(){
         m_shooterWheels.Load();
         m_indexer.load();
+        m_ballSensor.resetSnapshot();
+    }
+    
+    public void startLoad(){
+    	m_ballSensor.setNormal();
     }
 
     public void MoveTurretPosition(ShooterPosition position){
@@ -268,7 +276,7 @@ public class Shooter {
     		
     		m_rangeSnapshot = 1;
     		m_turret.setAimingAngle(angle);
-    		m_shooterWheels.setShooterRPM(rpm);
+    		m_shooterWheels.setShooterRPM(rpm + m_ballSensor.getRPMAdjust());// * m_ballSensor.getScalar());
     	//}
     	SmartDashboard.putNumber("target Angle", m_turret.getSetPoint());
     }
@@ -276,16 +284,19 @@ public class Shooter {
     public void batterShot(){
 		m_rangeSnapshot = 1;
     	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 69));
-    	m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 1812));
+    	m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 1812));// + m_ballSensor.getRPMAdjust());
     }
     
     public void startShootTest(){
     	this.MoveTurretPosition(ShooterPosition.Aiming);
-    	m_turret.setAimingAngle(50);
+    	this.Spin();
+    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 50));
+    	m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 3000));
     }
     
     public void stopShootTest(){
     	this.MoveTurretPosition(ShooterPosition.Stored);
+    	this.StopWheels();
     }
     
     public void shooterManualTest(){
@@ -332,6 +343,9 @@ public class Shooter {
     	m_indexer.load();
     }
     
+    public String getInfo(){
+    	return m_turret.getAngle() + ":" + m_shooterWheels.getShooterRPM() + ":" + SmartDashboard.getNumber("Range", -1) + ":" + m_ballSensor.getSnapshot();
+    }
 }
 
 

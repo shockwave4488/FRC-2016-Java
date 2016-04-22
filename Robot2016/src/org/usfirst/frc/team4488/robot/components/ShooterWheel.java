@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4488.robot.components;
 
+import edu.wpi.first.wpilibj.ControllerPower;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
@@ -162,8 +163,7 @@ public class ShooterWheel {
     	//6000 for practice
     	//6500 for competition
     	final double maxRPM = 6400;
-    	//double voltageCompensation = 12.5 / ControllerPower.get
-    	return getShooterSpeed() / maxRPM;
+    	return getShooterSpeed() * voltageCompensation / maxRPM;
     	/*
     	double rate = 0;
     	if(getShooterSpeed() > 4500)

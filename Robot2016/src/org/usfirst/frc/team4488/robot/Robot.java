@@ -182,4 +182,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("LightsOn", false);
     	drive.BreakModeAll();
     }
+    @Override
+    public void disabledInit(){
+     systems.disabledInit();
+    }
 }
