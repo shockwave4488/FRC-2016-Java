@@ -22,7 +22,7 @@ public class Arm extends MotionControlledSystem {
     public Arm() {
         m_armMotor = new Talon(RobotMap.ArmMotor);
         m_encoder = new ArmEncoder(RobotMap.ArmEncoderB, RobotMap.ArmEncoderA);
-        double reduction = 4;
+        double reduction = 2;
         m_encoder.setDistancePerPulse(1.0 / (1024 * reduction / 360));
         m_encoder.setReverseDirection(false);
         m_backLimit = new DigitalInput(RobotMap.ArmBackLimit);
@@ -67,7 +67,7 @@ public class Arm extends MotionControlledSystem {
             break;
             
         case Intake:
-            super.setSetPoint(20);
+            super.setSetPoint(28);
             break;
             
         case Shoot:

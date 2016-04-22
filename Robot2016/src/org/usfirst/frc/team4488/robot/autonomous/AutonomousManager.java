@@ -16,60 +16,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonomousManager {
 	
-	public final String challenge = "challenge";
-	public final String lowBar = "lowBar";
-	public final String moat = "moat";
-	public final String roughTerrain = "roughTerrain";
-	public final String ramparts = "ramparts";
-	public final String rockWall = "rockWall";
-	public final String chevalDeFrise = "chevalDeFrise";
-	public final String portcullis = "portcullis";
-	public final String none = "none";
-	
-	public final String shoot = "shoot";
-	
 	public final double[] firstHeading = new double[1];
 	 
-	 private SendableChooser m_position, m_defense, m_action;
 	 private Thread m_thread;
 	
 	 private Manipulator m_manip;
 	 private Shooter m_shooter;
 	 private SystemsManagement m_systems;
 	 private SmartDrive m_drive;
-	
+	 private AutonDecoder m_decoder;
+	 
 	 public AutonomousManager(SmartDrive drive, Shooter shooter, Manipulator manip, SystemsManagement systems){
 		 m_manip = manip;
 		 m_shooter = shooter;
 		 m_drive = drive;
 		 m_systems = systems;
-		 m_position = new SendableChooser();
-		 m_position.addDefault("Do Nothing", 0);
-		 m_position.addObject("Position 1", 1); //LOW BAR
-		 m_position.addObject("Position 2C", 2);
-		 m_position.addObject("Position 2L", 7);
-		 m_position.addObject("Position 3A", 3);
-		 m_position.addObject("Position 3B", 8);
-		 m_position.addObject("Position 4", 4);
-		 m_position.addObject("Position 5C", 9);
-		 m_position.addObject("Position 5D", 5);
-		 m_position.addObject("Spy Bot", 6);
-		 m_defense = new SendableChooser();
-		 m_defense.addDefault("Challenge", challenge);
-		 m_defense.addObject("Low Bar", lowBar);
-		 m_defense.addObject("Moat", moat);
-		 m_defense.addObject("Rough Terrain", roughTerrain);
-		 m_defense.addObject("Ramparts", ramparts);
-		 m_defense.addObject("Rock Wall", rockWall);
-		 m_defense.addObject("Cheval De Frise", chevalDeFrise);
-		 m_defense.addObject("Portcullis", portcullis);
-		 m_action = new SendableChooser();
-		 m_action.addDefault("No Action", none);
-		 m_action.addObject("High Goal", shoot);
+		 m_decoder = new AutonDecoder();
 		 
-		 SmartDashboard.putData("Autonomous Position", m_position);
-		 SmartDashboard.putData("Autonomous Defense", m_defense);
-		 SmartDashboard.putData("Autonomous Action", m_action);
 	 }
 	 
 	 public void wait(Supplier<Boolean> expression, Runnable periodic) {
@@ -91,6 +54,14 @@ public class AutonomousManager {
 		 return m_drive.getDrive().getAngle() > angle - tolerance && m_drive.getDrive().getAngle() < angle + tolerance;
 	 }
 	 
+	 public int getPosition(){
+		 return m_decoder.getPosition();
+	 }
+	 
+	 public String getDefense(){
+		 return m_decoder.getDefense().toString();
+	 }
+	 
 	 /*
 	  * Begins the autonomous routine, during the autonomous period of the match
 	  * The routine is a melding of three parts:
@@ -107,15 +78,17 @@ public class AutonomousManager {
 				 driveAutonomous();
 				 */
 			 //switch(
-			 driveAutonomous();
-			 switch(lowBar){
-			 case portcullis:
+			 //driveAutonomous();
+			 switch(m_decoder.getDefense()){
+			 case Portcullis:
+				 driveAutonomous();
 				 portcullis();
 				 break;
-			 case chevalDeFrise:
-				 chevalDeFrise();
+			 case ChevalDeFrise:
+				 driveAutonomous();
+				 chevalDeFrise(); 
 				 break;
-			 case rockWall:
+			 /*case rockWall:
 				 rockWall();
 				 break;
 			 case roughTerrain:
@@ -126,9 +99,13 @@ public class AutonomousManager {
 				 break;
 			 case moat:
 				 moat();
-				 break;
-			 case lowBar:
+				 break;*/
+			 case LowBar:
+				 driveAutonomous();
 				 lowBar();
+				 break;
+			 case Challenge:
+				 driveAutonomous();
 				 break;
 			 default:
 				 break;
@@ -151,7 +128,7 @@ public class AutonomousManager {
 			 //driveToShoot((int)m_position.getSelected());
 			 driveToShoot(1);
 			 
-			 if(true)//((String)m_action.getSelected()).equals(shoot))
+			 if((m_decoder.getDefense()!= AutonDefense.Challenge && m_decoder.getPosition()!=0))//((String)m_action.getSelected()).equals(shoot))
 				 shoot();
 			 
 			 }); //To Add Later
@@ -209,7 +186,7 @@ public class AutonomousManager {
 		 System.out.println("2");
 		 wait(() -> driveAtPosition(2.0, 0.1), () -> m_drive.driveToDistance(5));
 		 System.out.println("3");
-		 wait(() -> driveAtPosition(7.5, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
+		 wait(() -> driveAtPosition(8, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
 		 m_drive.stop();
 	 }
 	 
@@ -303,7 +280,7 @@ public class AutonomousManager {
 		 */
 		 double[] args = new double[]{0, 0, 0};
 		 
-		 switch(position){
+		 switch(m_decoder.getPosition()){
 		 	case 0: //DOES NOTHING, SHOULD NEVER RUN
 		 		break;
 		 	case 1: //LOW BAR, WORKING
@@ -314,42 +291,42 @@ public class AutonomousManager {
 		 	case 2 : //2C, WORKING
 		 		args[0] = 60;
 		 		args[1] = 9.5;
-		 		args[2] = 10;
+		 		args[2] = 15;
 		 		break;
 		 	case 3 : //3C, WORKING
 		 		args[0] = 20;
 		 		args[1] = 5;
-		 		args[2] = 0; 
+		 		args[2] = 35; 
 		 		break;
 		 	case 4: //4, WORKING
 		 		args[0] = 0;
 		 		args[1] = 3;
-		 		args[2] = 0;
+		 		args[2] = 5;
 		 		break;
 		 	case 5 : //5D, WORKING
 		 		args[0] = -50;
 		 		args[1] = 5.5;
-		 		args[2] = -10;
+		 		args[2] = -5;
 		 		break;
 		 	case 6: //SPY BOT, ASSUMED
 		 		args[0] = 5;
 		 		args[1] = 5;
-		 		args[2] = -10;
+		 		args[2] = -5;
 		 		break;
 		 	case 7: //2L, WORKING
 		 		args[0] = 0;
 		 		args[1] = 10;
-		 		args[2] = 60;
+		 		args[2] = 65;
 		 		break;
 		 	case 8: //3L, WORKING
 		 		args[0] = 0;
 		 		args[1] = 5;
-		 		args[2] = 35;
+		 		args[2] = 30;
 		 		break;
 		 	case 9: //5C, WORKING
 		 		args[0] = -50;
 		 		args[1] = 5.5;
-		 		args[2] = -10;
+		 		args[2] = -5;
 		 		break;
 		 }
 		 
@@ -383,7 +360,7 @@ public class AutonomousManager {
 		 wait(() -> m_shooter.readyToShoot(), m_systems::Update);
 		 Timer alignTimer = new Timer();
 		 alignTimer.start();
-		 wait(() -> alignTimer.get() > 2, () -> {m_drive.turnToCamera(); m_systems.Update();});
+		 wait(() -> alignTimer.get() > 2 && SmartDashboard.getBoolean("TargetFound", false)&& m_drive.atCamera(2), () -> {m_drive.turnToCamera(); m_systems.Update();});
 		 m_drive.stop();
 		 /*
 		 m_systems.setChargeButton(false);

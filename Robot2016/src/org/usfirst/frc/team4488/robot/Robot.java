@@ -2,6 +2,7 @@
 package org.usfirst.frc.team4488.robot;
 
 import org.usfirst.frc.team4488.robot.autonomous.AutonAction;
+import org.usfirst.frc.team4488.robot.autonomous.AutonDecoder;
 import org.usfirst.frc.team4488.robot.autonomous.AutonDefense;
 import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.components.CameraLights;
@@ -58,7 +59,6 @@ public class Robot extends IterativeRobot {
     	//driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
     	smartDrive = new SmartDrive(drive);
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
-    	
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
 
@@ -81,8 +81,9 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
     	SmartDashboard.putNumber("Compass", drive.getCompass());
-    	SmartDashboard.putNumber("AlignError", SmartDashboard.getNumber("AzimuthX", 0) - drive.getAngle());
-    	SmartDashboard.putNumber("TurnToCam Constant", 1.5);
+    	SmartDashboard.putNumber("AlignError", /*SmartDashboard.getNumber("AzimuthX", 0)*/smartDrive.getTurnSetpoint() - drive.getAngle());
+    	SmartDashboard.putNumber("Auton Position",autonManager.getPosition());
+    	SmartDashboard.putString("Auton Defense", autonManager.getDefense());
     }
     
     @Override
@@ -161,6 +162,9 @@ public class Robot extends IterativeRobot {
     		drive.UnBreakModeAll();
     		driveHelper.Drive(controllers.getSpeed(), controllers.getTurn(), controllers.getQuickturn(), true);
     	}    	
+    	
+    	if(controllers.getTurnResetButton())
+    		smartDrive.resetTurnIntegral();
     }
     
     /**

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4488.robot.operator;
 
+import JavaRoboticsLib.FlowControl.EdgeTrigger;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
 
@@ -7,9 +8,12 @@ public class Controllers {
 	private Joystick m_primary;
 	private Joystick m_secondary;
 	
+	private EdgeTrigger m_turnResetTrigger;
+	
 	public Controllers(){
 		m_primary = new Joystick(0);
 		m_secondary = new Joystick(1);
+		m_turnResetTrigger = new EdgeTrigger();
 	}
 	
 	public double getSpeed(){
@@ -82,6 +86,10 @@ public class Controllers {
 	
 	public boolean getPurgeButton(){
 		return m_secondary.getRawButton(7);
+	}
+	
+	public boolean getTurnResetButton(){
+		return m_turnResetTrigger.getRisingUpdate(m_primary.getRawButton(10));
 	}
 	
 	/**

@@ -86,7 +86,7 @@ public class Shooter {
 
         
         m_angleProfile = new SetPointProfile();
-        /*
+        
         //RACTICE
         m_angleProfile.add(5.15, 56);
         m_angleProfile.add(6.1, 56);
@@ -100,7 +100,7 @@ public class Shooter {
         m_angleProfile.add(12.5, 46);
         m_angleProfile.add(13.1, 46);
         m_angleProfile.add(13.45, 44);
-        */
+        
         
         /* OLD COMPETITION
         m_angleProfile.add(4.8, 63);
@@ -118,7 +118,7 @@ public class Shooter {
         */
         
         //COMPETITION
-        m_angleProfile.add(4.8, 68);
+       /* m_angleProfile.add(4.8, 68);
         m_angleProfile.add(6.08, 65);//
         m_angleProfile.add(6.83, 62.5);
         m_angleProfile.add(7.48, 60.75);
@@ -129,7 +129,7 @@ public class Shooter {
         m_angleProfile.add(10.91, 46);
         m_angleProfile.add(11.55, 45.75);
         m_angleProfile.add(12.14, 45.5);
-        m_angleProfile.add(12.82, 46);
+        m_angleProfile.add(12.82, 46);*/
         
        /* OLD NEW COMPETITION
         m_angleProfile.add(4.8, 68);
@@ -207,7 +207,7 @@ public class Shooter {
 
     public void MoveTurretPosition(ShooterPosition position){
     	m_turret.setPosition(position);
-    	m_lights.setLights(position == ShooterPosition.Aiming ? Relay.Value.kForward : Relay.Value.kReverse, SmartDashboard.getNumber("Cam Light Brightness", .5));
+    	m_lights.setLights(position == ShooterPosition.Aiming ? Relay.Value.kOn : Relay.Value.kOff, SmartDashboard.getNumber("Cam Light Brightness", .5));
     }
     
     public void resetRangeFinding(){

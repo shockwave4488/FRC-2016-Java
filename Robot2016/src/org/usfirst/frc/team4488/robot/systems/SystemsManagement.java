@@ -134,7 +134,7 @@ public class SystemsManagement
             case Charge:
                 ShooterCharge();
                 if(!m_shooter.readyToShoot()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
+                if (m_shoot && m_charge && m_shootTimer.get() > 0.25 && SmartDashboard.getBoolean("TargetFound", false))//&& m_shooter.readyToShoot())
                 {
                 	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
                 	m_leds.setLEDs(LEDState.Shoot);
