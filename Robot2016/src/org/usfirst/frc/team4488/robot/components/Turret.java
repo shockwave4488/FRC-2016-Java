@@ -142,4 +142,9 @@ public class Turret extends MotionControlledSystem{
 		return getAngle() > 50 ? 0.01 : 0;
 		//return 0;
 	}
+	/*
+	@Override
+	public boolean AtSetpoint(){
+		return base//(Sensor.pidGet() < Controller.getSetPoint()- 0.25 + SetpointTolerance) && (Sensor.pidGet() > Controller.getSetPoint() - 0.25 - SetpointTolerance);
+	}*/
 }

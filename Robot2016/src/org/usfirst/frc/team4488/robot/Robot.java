@@ -133,7 +133,7 @@ public class Robot extends IterativeRobot {
     	systems.setDefenseLowButton(controllers.getLowDefenseButton());
     	systems.setSemiManualPosition(controllers.getSemiManualPosition());
   	
-    	if (shooter.readyToShoot() && smartDrive.atCamera(0.5)){
+    	if (shooter.readyToShoot() && smartDrive.atCamera(0.75)){
     		controllers.vibratePrimary(0.7);
     		controllers.vibrateSecondary(0.7);
     	}

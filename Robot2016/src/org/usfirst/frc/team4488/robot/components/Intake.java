@@ -80,6 +80,6 @@ public class Intake
     }
     
     public void hold(){
-    	m_intakeMotor.set(m_waitTimer.get() > 0.10 ? 0 : 0.8);
+    	m_intakeMotor.set(m_waitTimer.get() > 0.2 ? 0 : 0.8);
     }
 }

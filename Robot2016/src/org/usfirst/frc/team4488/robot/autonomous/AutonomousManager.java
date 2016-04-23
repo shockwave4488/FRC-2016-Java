@@ -79,7 +79,9 @@ public class AutonomousManager {
 				 */
 			 //switch(
 			 //driveAutonomous();
-			 switch(m_decoder.getDefense()){
+			 AutonDefense defese = m_decoder.getDefense();
+			 
+			 switch(defese){
 			 case Portcullis:
 				 driveAutonomous();
 				 portcullis();
@@ -108,7 +110,7 @@ public class AutonomousManager {
 				 driveAutonomous();
 				 break;
 			 default:
-				 break;
+				 return;
 			 }
 			 
 			 /*
@@ -291,7 +293,7 @@ public class AutonomousManager {
 		 	case 2 : //2C, WORKING
 		 		args[0] = 60;
 		 		args[1] = 9.5;
-		 		args[2] = 15;
+		 		args[2] = 25;
 		 		break;
 		 	case 3 : //3C, WORKING
 		 		args[0] = 20;

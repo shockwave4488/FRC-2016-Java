@@ -162,7 +162,7 @@ public class ShooterWheel {
     private double feedForward(){
     	//6000 for practice
     	//6500 for competition
-    	final double maxRPM = 6400;
+    	final double maxRPM = 6775;
     	return getShooterSpeed() / maxRPM;
     	/*
     	double rate = 0;

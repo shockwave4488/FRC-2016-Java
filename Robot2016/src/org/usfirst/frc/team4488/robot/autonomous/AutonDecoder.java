@@ -30,11 +30,11 @@ public class AutonDecoder {
 	}
 
 	public AutonDefense getDefense(){
-		
-		if (!CDF.get()){return AutonDefense.ChevalDeFrise;}
-		else if (!Portcullis.get()){return AutonDefense.Portcullis;}
-		else if (!LowBar.get()){return AutonDefense.LowBar;}
-		else return AutonDefense.Challenge;
+		System.out.println();
+		if (!CDF.get()){ return AutonDefense.ChevalDeFrise;}
+		else if (!Portcullis.get()){ return AutonDefense.Portcullis;}
+		else if (!LowBar.get()){ return AutonDefense.LowBar;}
+		else { return AutonDefense.Challenge;}
 		
 	}
 	

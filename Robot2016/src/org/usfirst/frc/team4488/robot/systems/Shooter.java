@@ -72,6 +72,7 @@ public class Shooter {
         */
         
         //NEW COMPETITION
+        /*
         m_rpmProfile.add(4.8, 2000);
         m_rpmProfile.add(6.08, 2000);
         m_rpmProfile.add(6.83, 2100);
@@ -83,11 +84,21 @@ public class Shooter {
         m_rpmProfile.add(10.91, 2550);
         m_rpmProfile.add(12.14, 2600);
         m_rpmProfile.add(12.82, 2650);
+        */
+        
+        //AND AGAIN
+        m_rpmProfile.add(6.5,2200);
+        m_rpmProfile.add(7.1, 2200);
+        m_rpmProfile.add(8.39, 2300);
+        m_rpmProfile.add(9.1, 2400);
+        m_rpmProfile.add(9.7, 2400);
+        m_rpmProfile.add(10.3, 2600);
+        m_rpmProfile.add(10.7, 2650);
 
         
         m_angleProfile = new SetPointProfile();
         
-        //RACTICE
+       /* //PRACTICE
         m_angleProfile.add(5.15, 56);
         m_angleProfile.add(6.1, 56);
         m_angleProfile.add(7.53, 53);
@@ -99,7 +110,7 @@ public class Shooter {
         m_angleProfile.add(11.93,  47);
         m_angleProfile.add(12.5, 46);
         m_angleProfile.add(13.1, 46);
-        m_angleProfile.add(13.45, 44);
+        m_angleProfile.add(13.45, 44);*/
         
         
         /* OLD COMPETITION
@@ -131,7 +142,8 @@ public class Shooter {
         m_angleProfile.add(12.14, 45.5);
         m_angleProfile.add(12.82, 46);*/
         
-       /* OLD NEW COMPETITION
+        // OLD NEW COMPETITION
+        /*
         m_angleProfile.add(4.8, 68);
         m_angleProfile.add(6.08, 65);
         m_angleProfile.add(6.83, 63);
@@ -143,7 +155,17 @@ public class Shooter {
         m_angleProfile.add(10.91, 48.5);
         m_angleProfile.add(11.55, 48.5);
         m_angleProfile.add(12.14, 48);
-        m_angleProfile.add(12.82, 48);*/
+        m_angleProfile.add(12.82, 48);
+        */
+        
+        //AND AGAIN
+        m_angleProfile.add(6.5, 67);
+        m_angleProfile.add(7.1, 67);
+        m_angleProfile.add(8.39, 62);
+        m_angleProfile.add(9.1, 59);
+        m_angleProfile.add(9.7, 58);
+        m_angleProfile.add(10.3, 51);
+        m_angleProfile.add(10.7, 51);
         
     }
     
@@ -276,7 +298,7 @@ public class Shooter {
     		
     		m_rangeSnapshot = 1;
     		m_turret.setAimingAngle(angle);
-    		m_shooterWheels.setShooterRPM(rpm + m_ballSensor.getRPMAdjust());// * m_ballSensor.getScalar());
+    		m_shooterWheels.setShooterRPM(rpm);// + m_ballSensor.getRPMAdjust());// * m_ballSensor.getScalar());
     	//}
     	SmartDashboard.putNumber("target Angle", m_turret.getSetPoint());
     }
