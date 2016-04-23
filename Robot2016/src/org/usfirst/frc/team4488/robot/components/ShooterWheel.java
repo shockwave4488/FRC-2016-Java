@@ -163,7 +163,7 @@ public class ShooterWheel {
     	//6000 for practice
     	//6500 for competition
     	final double maxRPM = 6400;
-    	return getShooterSpeed() * voltageCompensation / maxRPM;
+    	return getShooterSpeed() / maxRPM;
     	/*
     	double rate = 0;
     	if(getShooterSpeed() > 4500)

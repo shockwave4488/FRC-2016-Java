@@ -52,9 +52,13 @@ public class SmartDrive {
 		m_turnController.setGains(SmartDashboard.getNumber("DriveP", 0.040), SmartDashboard.getNumber("DriveI",0), SmartDashboard.getNumber("DriveD", .175));
 		double offset = Math.asin(-(13.25 / 12.0) / SmartDashboard.getNumber("Range", 8)) * (180.0 / Math.PI) + SmartDashboard.getNumber("TurnToCam Constant", 1.5);
 		m_turnController.setSetPoint(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()) + offset);
-		accumulation += 0.02 * (m_turnController.getSetPoint() - m_drive.getAngle() + offset) * SmartDashboard.getNumber("DriveI",0);
+		//accumulation += 0.02 * (m_turnController.getSetPoint() - m_drive.getAngle() + offset) * SmartDashboard.getNumber("DriveI",0);
 		double power = m_turnController.get(m_drive.getAngle());
-		System.out.println(power);
+		if(Math.abs(m_turnController.getSetPoint() - m_drive.getAngle()) < 1) //stop if we are within 1 degree
+			power = 0;
+		//else if(Math.abs(power) < 0.025) //minimum power
+			//power = 0.025 * Math.signum(power);
+		//System.out.println(power);
 		m_drive.setPowers(linearPower + power, linearPower - power);
 	}
 	
