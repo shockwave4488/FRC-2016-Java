@@ -99,7 +99,7 @@ public class Manipulator
     
     public void batterCharge(){
     	m_intake.off();
-    	m_arm.setPosition(ArmPosition.BatterShoot);
+    	m_arm.setPosition(ArmPosition.High);//ArmPosition.BatterShoot);
     }
      
     public void setArmManual(boolean value){

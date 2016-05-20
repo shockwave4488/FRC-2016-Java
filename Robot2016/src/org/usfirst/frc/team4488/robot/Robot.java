@@ -152,7 +152,7 @@ public class Robot extends IterativeRobot {
     	
     	if(controllers.getShootAlignButton()){
     		drive.BreakModeAll();
-    		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 ? controllers.getSpeed() : 0);
+    		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 && !controllers.getShootButton() ? controllers.getSpeed() : 0);
     	}
     	else if(controllers.getBatterBrakeButton()){
     		drive.BreakModeAll();

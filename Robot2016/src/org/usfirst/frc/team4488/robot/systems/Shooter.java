@@ -198,7 +198,12 @@ public class Shooter {
     
     public void Spin(){
         m_shooterWheels.Spin();
-        m_indexer.spin();     
+        //m_indexer.spin();     
+    }
+    
+    public void Stir(){
+    	m_shooterWheels.Stop();
+    	m_indexer.spin();
     }
 
     public void Shoot(){

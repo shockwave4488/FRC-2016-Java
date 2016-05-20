@@ -39,7 +39,7 @@ public class AutonomousManager {
 		 while(!expression.get() && DriverStation.getInstance().isAutonomous()){
 			 periodic.run();
 			 try {
-				Thread.sleep(10);
+				Thread.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -79,15 +79,27 @@ public class AutonomousManager {
 				 */
 			 //switch(
 			 //driveAutonomous();
-			 AutonDefense defese = m_decoder.getDefense();
+			 AutonDefense defense = m_decoder.getDefense();
 			 
-			 switch(defese){
+//			 m_systems.setIntakeButton(true);
+//			 wait(m_shooter::hasBall, () -> {});
+			 
+//			 m_shooter.MoveTurretPosition(ShooterPosition.Load);
+//			 wait(m_shooter::hasBall, m_shooter::deJam);
+//			 wait(m_shooter::turretAtPosition, () -> m_shooter.MoveTurretPosition(ShooterPosition.Stored));
+//			 m_shooter.StopWheels();
+			 
+			 switch(/*Defense goes here -> */AutonDefense.Portcullis){
 			 case Portcullis:
+				 //m_shooter.Stir();
 				 driveAutonomous();
+				 //m_shooter.StopWheels();
 				 portcullis();
 				 break;
 			 case ChevalDeFrise:
+				 //m_shooter.Stir();
 				 driveAutonomous();
+				 //m_shooter.StopWheels();				 
 				 chevalDeFrise(); 
 				 break;
 			 /*case rockWall:
@@ -103,7 +115,9 @@ public class AutonomousManager {
 				 moat();
 				 break;*/
 			 case LowBar:
+				 //m_shooter.Stir();
 				 driveAutonomous();
+				 //m_shooter.StopWheels();
 				 lowBar();
 				 break;
 			 case Challenge:
@@ -128,12 +142,12 @@ public class AutonomousManager {
 			 m_manip.stopIntake();
 			 			 
 			 //driveToShoot((int)m_position.getSelected());
-			 driveToShoot(1);
+			 driveToShoot(/*Position number goes here -> */2);
 			 
-			 if((m_decoder.getDefense()!= AutonDefense.Challenge && m_decoder.getPosition()!=0))//((String)m_action.getSelected()).equals(shoot))
+			 if(true)//(m_decoder.getDefense()!= AutonDefense.Challenge && m_decoder.getPosition()!=0))//((String)m_action.getSelected()).equals(shoot))
 				 shoot();
 			 
-			 }); //To Add Later
+			 });
 		 m_drive.resetAll();
 		 Logger.addMessage("Starting Autonomous");
 		 m_thread.start();
@@ -282,18 +296,18 @@ public class AutonomousManager {
 		 */
 		 double[] args = new double[]{0, 0, 0};
 		 
-		 switch(m_decoder.getPosition()){
+		 switch(/*m_decoder.getPosition()     Position Number goes here ->*/position){
 		 	case 0: //DOES NOTHING, SHOULD NEVER RUN
 		 		break;
 		 	case 1: //LOW BAR, WORKING
 			 	args[0] = 20;
-			 	args[1] = 9.5;
-			 	args[2] = 79.9;
+			 	args[1] = 10;
+			 	args[2] = 85;
 			 	break;
 		 	case 2 : //2C, WORKING
 		 		args[0] = 60;
 		 		args[1] = 9.5;
-		 		args[2] = 25;
+		 		args[2] = 30;
 		 		break;
 		 	case 3 : //3C, WORKING
 		 		args[0] = 20;
@@ -303,7 +317,7 @@ public class AutonomousManager {
 		 	case 4: //4, WORKING
 		 		args[0] = 0;
 		 		args[1] = 3;
-		 		args[2] = 5;
+		 		args[2] = 0;
 		 		break;
 		 	case 5 : //5D, WORKING
 		 		args[0] = -50;
@@ -352,7 +366,7 @@ public class AutonomousManager {
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 wait(() -> driveAtAngle(args[2] + firstHeading[0], 2), () -> m_drive.turnToAngle(args[2] + firstHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
+		 wait(() -> driveAtAngle(args[2] + firstHeading[0], 5), () -> m_drive.turnToAngle(args[2] + firstHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
 		 m_drive.stop();		 
 	 }
 	 
@@ -362,7 +376,7 @@ public class AutonomousManager {
 		 wait(() -> m_shooter.readyToShoot(), m_systems::Update);
 		 Timer alignTimer = new Timer();
 		 alignTimer.start();
-		 wait(() -> alignTimer.get() > 2 && SmartDashboard.getBoolean("TargetFound", false)&& m_drive.atCamera(2), () -> {m_drive.turnToCamera(); m_systems.Update();});
+		 wait(() -> alignTimer.get() > 3 && SmartDashboard.getBoolean("TargetFound", false)&& m_drive.atCamera(2), () -> {m_drive.turnToCamera(); m_systems.Update();});
 		 m_drive.stop();
 		 /*
 		 m_systems.setChargeButton(false);

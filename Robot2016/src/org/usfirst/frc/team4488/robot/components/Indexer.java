@@ -61,8 +61,8 @@ public class Indexer {
     }
     
     public void spin(){
-    	//m_leftIndexWheel.set(-0.1);
-    	//m_rightIndexWheel.set(0.1);
+    	m_leftIndexWheel.set(-0.1);
+    	m_rightIndexWheel.set(0.1);
     }
 }
 
