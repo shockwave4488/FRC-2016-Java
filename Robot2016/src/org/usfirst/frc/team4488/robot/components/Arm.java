@@ -18,7 +18,9 @@ public class Arm extends MotionControlledSystem {
     private boolean m_limitFound;
     private Timer m_findLimitWatchdog;
     private ArmEncoder m_encoder;
-    
+    /**
+     * Constructor for the Arm class
+     */
     public Arm() {
         m_armMotor = new Talon(RobotMap.ArmMotor);
         m_encoder = new ArmEncoder(RobotMap.ArmEncoderB, RobotMap.ArmEncoderA);
@@ -44,8 +46,7 @@ public class Arm extends MotionControlledSystem {
         highLimit = SmartDashboard.getNumber("ArmOffset", 120);
         setPosition(ArmPosition.High);
         Logger.addMessage("Arm Initialized", 1);
-    }
-    		
+    }		
     /**
      * This moves the arm to the position requested as the input of the program.
      */
@@ -84,39 +85,59 @@ public class Arm extends MotionControlledSystem {
         	
         }
     }
-    
     /**
-     * Returns the current position of the arm
+     * Returns the position to which the arm was set to
      */
     public ArmPosition getPosition(){
     	return m_position;
     }
-    
+    /**
+     * Returns the present arm angle. Based on the encoder value
+     * 
+     * @return arm angle
+     */
     public double armAngle(){
     	return m_encoder.pidGet();
     }
-
+    /**
+    * Set a manual value to take the arm. For some reason was called semi manual...
+    * @param value
+    */
     public void setSemiManualPosition(double value){
     	m_semiManualPosition = value;
     }
-    
+    /**
+     * Set the value of the arm encoder to a given parameter. 
+     * @param offset
+     */
     public void resetEncoder(double offset){
     	m_encoder.reset(offset);
     }
-    
+    /**
+     * Check the Hal Effect sensor that detects the arm at the top of its position
+     * @return true when arm is close to the sensor
+     */
     public boolean atBackLimit(){
     	return !m_backLimit.get();
     }
-    
+    /**
+     * Read the variable that stores the limit sensor status. Once the sensor detected the arm, it is set to true.
+     * @return status of the sensor 'found' state
+     */
     public boolean getLimitFound(){
     	return m_limitFound;
     }
-    
+    /**
+     * This method is responsible for finding the limit switch when the arm class starts. 
+     */
     @Override
     public void Update(){
     	SmartDashboard.putBoolean("Limit", atBackLimit());
     	SmartDashboard.putBoolean("Arm Limit Found", m_limitFound);
-    	if(!m_limitFound){
+    	/* If the limit switch was not found yet, and the robot is enabled, the arm is 
+    	 * moved towards the upright position until it reaches the limit switch. 
+    	 */
+    	if (!m_limitFound){
     		if(!DriverStation.getInstance().isEnabled()){
     			m_findLimitWatchdog.reset();
     		}
@@ -143,7 +164,9 @@ public class Arm extends MotionControlledSystem {
     	    	
     	super.Update();
     }
-    
+    /**
+     * Reset all the arm parameters
+     */
     public void resetArm(){
     	Logger.addMessage("Arm Reset");
     	m_limitFound = false;

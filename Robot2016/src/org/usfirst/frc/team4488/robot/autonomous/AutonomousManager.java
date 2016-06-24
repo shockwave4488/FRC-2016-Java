@@ -14,6 +14,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * Class that is executed while in autonomous mode.
+ * 
+ * @author Programmers
+ *
+ */
 public class AutonomousManager {
 	
 	public final double[] firstHeading = new double[1];
@@ -26,6 +32,14 @@ public class AutonomousManager {
 	 private SmartDrive m_drive;
 	 private AutonDecoder m_decoder;
 	 
+	 /** 
+	  * Constructor for the class AutonomousManager 
+	  * 
+	  * @param drive Element of of class SmartDrive
+	  * @param shooter Object of class shooter
+	  * @param manip Object of class manipulator
+	  * @param systems Object of class systemsManagement
+	  */
 	 public AutonomousManager(SmartDrive drive, Shooter shooter, Manipulator manip, SystemsManagement systems){
 		 m_manip = manip;
 		 m_shooter = shooter;
@@ -35,6 +49,15 @@ public class AutonomousManager {
 		 
 	 }
 	 
+	 /**
+	  * This method evaluates the expression passed as a parameter and if it is autonomous mode
+	  * the given periodic function is run. The thread is put to sleep for 20ms before the control
+	  * is returned to the caller. Why is the Thread being stopped? Is this a hack to emulate the 
+	  * call period of the auto-mode thread?
+	  * 
+	  * @param expression
+	  * @param periodic
+	  */
 	 public void wait(Supplier<Boolean> expression, Runnable periodic) {
 		 while(!expression.get() && DriverStation.getInstance().isAutonomous()){
 			 periodic.run();
@@ -46,29 +69,53 @@ public class AutonomousManager {
 		 }
 	 }
 	 
+	 /**
+	  * This method checks the linear position of the robot, if it is inside a range centered at position passed as a parameter.
+	  * 
+	  * @param position
+	  * @param tolerance
+	  * @return true when the position is inside the range [position-tolerance,position+tolerance]
+	  */
 	 public boolean driveAtPosition(double position, double tolerance){
 		 //System.out.println("current position: " + m_drive.getDrive().getLinearDistance());
 		 return m_drive.getDrive().getLinearDistance() > position - tolerance && m_drive.getDrive().getLinearDistance() < position + tolerance;
 	 }
 	 
+	 /**
+	  * This method checks the angular position of the robot, to indicate if it is in a range centered at angle passed as a parameter
+	  * 
+	  * @param angle
+	  * @param tolerance
+	  * @return true when angle is inside the range [angle-tolerance,angle+tolerance]
+	  */
 	 public boolean driveAtAngle(double angle, double tolerance){
 		 return m_drive.getDrive().getAngle() > angle - tolerance && m_drive.getDrive().getAngle() < angle + tolerance;
 	 }
 	 
+	 /** 
+	  * Get the robot position at the start of autonomous (combined with movement after defense crossing)
+	  * 
+	  * @return position and movement combined - look at notes on the AutonDecoder class method documentation
+	  */
 	 public int getPosition(){
 		 return m_decoder.getPosition();
 	 }
 	 
+	 /**
+	  * Get the defense to be crossed during autonomous and pass a string that represents it.
+	  * 
+	  * @return string with the defense identification
+	  */
 	 public String getDefense(){
 		 return m_decoder.getDefense().toString();
 	 }
 	 
-	 /*
+	 /**
 	  * Begins the autonomous routine, during the autonomous period of the match
 	  * The routine is a melding of three parts:
-	  * The code called based on what defense is being breached
-	  * The code called based on position of the bot, spot 1, spot 2, spybot, etc.
-	  * The code called based on action to perform after the breach, high or low goal, or nothing.
+	  *  1. The code called based on what defense is being breached
+	  *  2. The code called based on position of the bot, spot 1, spot 2, spybot, etc.
+	  *  3. The code called based on action to perform after the breach, high or low goal, or nothing.
 	  */
 	 public void start(){
 		 m_thread = new Thread(() -> {
@@ -79,13 +126,16 @@ public class AutonomousManager {
 //			 m_systems.setIntakeButton(true);
 //			 wait(m_shooter::hasBall, () -> {});
 			 
+			 // Experimental code to avoid ball stall condition - It didn't work that well
 //			 m_shooter.MoveTurretPosition(ShooterPosition.Load);
 //			 wait(m_shooter::hasBall, m_shooter::deJam);
 //			 wait(m_shooter::turretAtPosition, () -> m_shooter.MoveTurretPosition(ShooterPosition.Stored));
 //			 m_shooter.StopWheels();
 			 
+			 // Perform autonomous initialization
 			 driveInit();
 			 
+ 			 // Based on the type of defense, perform movement to cross it
 			 switch(defense){
 			 case Portcullis:
 				 //m_shooter.Stir();
@@ -132,18 +182,26 @@ public class AutonomousManager {
 			 }); //m_thread end
 		 m_thread.start();
 	 }
-	 
+	 /**
+	  * This method is used during period autonomous tasks. It stops the thread when it is not in autonomous mode and the system is enabled.
+	  * 
+	  */
 	 public void check(){	 
 		 if(!(m_thread.isAlive() && DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled())){
 			m_thread.interrupt();
 		 }
 	 }
-	 
+	 /**
+	  * Kills the thread that is running the auto mode code
+	  */
 	 public void kill(){
 		 if(m_thread != null && m_thread.isAlive())
 			 m_thread.interrupt();
 	 }
 	 
+	/**
+	  * This routine is called at the beginning of every auto mode to move the robot forward by a small amount.
+	  */
 	 public void driveInit(){
 		 wait(m_manip::armReady, () -> {});
 		 m_drive.getDrive().resetAngle();
@@ -153,7 +211,12 @@ public class AutonomousManager {
 		 wait(() -> resetTimer.get() > .1, () -> {}); //wait for resets to take effect
 		 firstHeading[0] = m_drive.getDrive().getAngle();
 	 }
-	 
+	 /**
+	  * The following methods describe the movements for each of the defenses
+	  */
+	 /**
+	  * Low bar defense: this method takes the robot to the courtyard
+	  */
 	 public void lowBar(){
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
@@ -162,7 +225,10 @@ public class AutonomousManager {
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
 	 }
-	 
+	 /**
+	  * Cheval: takes the robot to the courtyard
+	  * 
+	  */
 	 public void chevalDeFrise(){
 		 wait(() -> driveAtPosition(3.9, 0.1), () -> m_drive.driveToDistance(4.25));
 		 m_drive.stop();
@@ -313,7 +379,7 @@ public class AutonomousManager {
 		 //Turn
 		 Logger.addMessage("Turning");
 		 wait(() -> driveAtAngle(secondTurnAngle + firstHeading[0], 5), () -> m_drive.turnToAngle(secondTurnAngle + firstHeading[0]));
-		 m_drive.stop();		 
+		 m_drive.stop();
 	 }
 	 
 	 public void shoot(){
