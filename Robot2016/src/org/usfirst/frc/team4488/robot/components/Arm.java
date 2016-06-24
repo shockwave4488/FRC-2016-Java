@@ -35,15 +35,14 @@ public class Arm extends MotionControlledSystem {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        
+        m_limitFound = false;
+        lowLimit = -20;
+        highLimit = SmartDashboard.getNumber("ArmOffset", 120);
         super.periodic = new Notifier(this::Update);
         super.Controller = m_armPID;
         super.Motor = m_armMotor;
         super.Sensor = m_encoder;
         super.SetpointTolerance = 2;
-        m_limitFound = false;
-        lowLimit = -20;
-        highLimit = SmartDashboard.getNumber("ArmOffset", 120);
         setPosition(ArmPosition.High);
         Logger.addMessage("Arm Initialized", 1);
     }		
