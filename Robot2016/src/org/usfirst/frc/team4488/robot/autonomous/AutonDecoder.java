@@ -30,15 +30,21 @@ public class AutonDecoder {
 	}
 
 	public AutonDefense getDefense(){
-		System.out.println();
-		if (!CDF.get()){ return AutonDefense.ChevalDeFrise;}
-		else if (!Portcullis.get()){ return AutonDefense.Portcullis;}
-		else if (!LowBar.get()){ return AutonDefense.LowBar;}
-		else { return AutonDefense.Challenge;}
+
+		if (!CDF.get()){
+			return AutonDefense.ChevalDeFrise;
+		} else if (!Portcullis.get()){
+			return AutonDefense.Portcullis;
+		} else if (!LowBar.get()){ 
+			return AutonDefense.LowBar;
+		} else { 
+			return AutonDefense.Challenge;
+		}
 		
 	}
 	
 	public int getPosition(){
+
 		if (!LowBar.get()){return 1;}
 		else if (!TwoCenter.get()){return 2;}
 		else if (!ThreeCenter.get()){return 3;}
@@ -48,7 +54,7 @@ public class AutonDecoder {
 		else if (!ThreeLeft.get()){return 8;}
 		else if (!Five.get()){return 9;}
 		else return 0;
-		
+
 	}
 	
 

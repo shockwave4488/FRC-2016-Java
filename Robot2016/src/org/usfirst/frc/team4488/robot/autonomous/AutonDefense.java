@@ -6,6 +6,10 @@ public enum AutonDefense {
 	LowBar,
 	ChevalDeFrise,
 	Portcullis,
-	Challenge,	
+	Challenge,
+	RockWall,
+	RoughTerrain,
+	Ramparts,
+	Moat,
 }
 

@@ -47,6 +47,7 @@ public class AutonomousManager {
 	 }
 	 
 	 public boolean driveAtPosition(double position, double tolerance){
+		 //System.out.println("current position: " + m_drive.getDrive().getLinearDistance());
 		 return m_drive.getDrive().getLinearDistance() > position - tolerance && m_drive.getDrive().getLinearDistance() < position + tolerance;
 	 }
 	 
@@ -71,16 +72,10 @@ public class AutonomousManager {
 	  */
 	 public void start(){
 		 m_thread = new Thread(() -> {
-			 /*
-			 if((int)m_position.getSelected() == 0)
-				 return;
-			 else
-				 driveAutonomous();
-				 */
-			 //switch(
-			 //driveAutonomous();
 			 AutonDefense defense = m_decoder.getDefense();
 			 
+			 Logger.addMessage("Selected defense: " + defense);
+			  
 //			 m_systems.setIntakeButton(true);
 //			 wait(m_shooter::hasBall, () -> {});
 			 
@@ -89,70 +84,53 @@ public class AutonomousManager {
 //			 wait(m_shooter::turretAtPosition, () -> m_shooter.MoveTurretPosition(ShooterPosition.Stored));
 //			 m_shooter.StopWheels();
 			 
-			 switch(/*Defense goes here -> */AutonDefense.Portcullis){
+			 driveInit();
+			 
+			 switch(defense){
 			 case Portcullis:
 				 //m_shooter.Stir();
-				 driveAutonomous();
 				 //m_shooter.StopWheels();
 				 portcullis();
 				 break;
 			 case ChevalDeFrise:
 				 //m_shooter.Stir();
-				 driveAutonomous();
 				 //m_shooter.StopWheels();				 
 				 chevalDeFrise(); 
 				 break;
-			 /*case rockWall:
+			 case RockWall:
 				 rockWall();
 				 break;
-			 case roughTerrain:
+			 case RoughTerrain:
 				 roughTerrain();
 				 break;
-			 case ramparts:
+			 case Ramparts:
 				 ramparts();
 				 break;
-			 case moat:
+			 case Moat:
 				 moat();
-				 break;*/
+				 break;
 			 case LowBar:
 				 //m_shooter.Stir();
-				 driveAutonomous();
 				 //m_shooter.StopWheels();
 				 lowBar();
 				 break;
 			 case Challenge:
-				 driveAutonomous();
+				 challenge();
 				 break;
 			 default:
 				 return;
 			 }
 			 
-			 /*
-			  * m_position.addDefault("Do Nothing", 0);
-		 m_position.addObject("Position 1", 1); //LOW BAR
-		 m_position.addObject("Position 2C", 2);
-		 m_position.addObject("Position 2L", 7);
-		 m_position.addObject("Position 3A", 3);
-		 m_position.addObject("Position 3B", 8);
-		 m_position.addObject("Position 4", 4);
-		 m_position.addObject("Position 5C", 9);
-		 m_position.addObject("Position 5D", 5);
-			  */
-			 
 			 m_manip.stopIntake();
 			 			 
-			 //driveToShoot((int)m_position.getSelected());
-			 driveToShoot(/*Position number goes here -> */2);
+			 int position = m_decoder.getPosition();
+			 driveToShoot(position);
 			 
-			 if(true)//(m_decoder.getDefense()!= AutonDefense.Challenge && m_decoder.getPosition()!=0))//((String)m_action.getSelected()).equals(shoot))
+			 if((defense != AutonDefense.Challenge) && (position != 0))
 				 shoot();
 			 
-			 });
-		 m_drive.resetAll();
-		 Logger.addMessage("Starting Autonomous");
+			 }); //m_thread end
 		 m_thread.start();
-		 
-		 Logger.addMessage("Ending Autonomous" + (DriverStation.getInstance().isAutonomous() ? " Early" : ""));
 	 }
 	 
 	 public void check(){	 
@@ -166,57 +144,46 @@ public class AutonomousManager {
 			 m_thread.interrupt();
 	 }
 	 
-	 public void driveAutonomous(){
+	 public void driveInit(){
 		 wait(m_manip::armReady, () -> {});
 		 m_drive.getDrive().resetAngle();
 		 m_drive.getDrive().resetEncoders();
-		 Timer t = new Timer();
-		 t.start();
-		 wait(() -> t.get() > 0.05, () -> {});
+		 Timer resetTimer = new Timer();
+		 resetTimer.start();
+		 wait(() -> resetTimer.get() > .1, () -> {}); //wait for resets to take effect
 		 firstHeading[0] = m_drive.getDrive().getAngle();
-		 wait(() -> driveAtPosition(2.8, 0.1), () -> m_drive.driveToDistance(3, firstHeading[0]));
-		 m_drive.stop();
 	 }
 	 
 	 public void lowBar(){
-		 System.out.println("1");
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
-		 System.out.println("2");
-		 wait(() -> driveAtPosition(12, 0.25), () -> m_drive.driveToDistance(12, firstHeading[0]));
-		 System.out.println("3");
+		 wait(() -> driveAtPosition(15, 0.25), () -> m_drive.driveToDistance(15, firstHeading[0]));
 		 m_drive.stop();
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
-		 
 	 }
 	 
 	 public void chevalDeFrise(){
-		 m_drive.resetAll();
-		 System.out.println("1");
-		 wait(() -> driveAtPosition(1.1, 0.05), () -> m_drive.driveToDistance(2));
+		 wait(() -> driveAtPosition(3.9, 0.1), () -> m_drive.driveToDistance(4.25));
 		 m_drive.stop();
 		 m_manip.lowDefense();
 		 
 		 wait(() -> m_manip.armAtPosition(7, 2) || m_manip.armAtPosition(), m_manip::lowDefense);
-		 System.out.println("2");
-		 wait(() -> driveAtPosition(2.0, 0.1), () -> m_drive.driveToDistance(5));
-		 System.out.println("3");
-		 wait(() -> driveAtPosition(8, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
+		 wait(() -> driveAtPosition(5.0, 0.1), () -> m_drive.driveToDistance(8));
+		 wait(() -> driveAtPosition(11, 0.1), () -> {m_drive.getDrive().setPowers(0.4, 0.4); m_manip.stopIntake();});
 		 m_drive.stop();
 	 }
 	 
 	 public void portcullis(){
 		 m_manip.setArmSemiManualPosition(-15);
 		 m_drive.getDrive().resetEncoders();
-		 wait(() -> driveAtPosition(2.5,  0.05), () -> {m_drive.getDrive().setPowers(0.3,  0.3); m_manip.semiManualDefense();});
-		 
+		 wait(() -> driveAtPosition(5.5,  0.1), () -> {m_drive.getDrive().setPowers(0.3,  0.3); m_manip.semiManualDefense();});
 		 m_drive.getDrive().setPowers(.05, .05);
 		 m_manip.setArmSemiManualPosition(40);
 		 m_drive.getDrive().resetEncoders();
 		 wait(() -> m_manip.armAtPosition(30, 1), () -> m_manip.semiManualDefense());
-		 wait(() -> driveAtPosition(5, .25), () -> {
-			 m_drive.driveToDistance(10, firstHeading[0]); 
+		 wait(() -> driveAtPosition(10, .25), () -> {
+			 m_drive.driveToDistance(15, firstHeading[0]); 
 			 m_manip.setArmSemiManualPosition(70);
 			 m_manip.semiManualDefense();
 		 });		
@@ -224,6 +191,8 @@ public class AutonomousManager {
 	 }
 	 
 	 public void rockWall(){
+		 wait(() -> driveAtPosition(3, 0.1), () -> m_drive.driveToDistance(4.25));
+		 m_drive.stop();
 		 Timer overTimer = new Timer();
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2.75, () -> m_drive.getDrive().setPowers(0.75, 0.75));
@@ -231,6 +200,8 @@ public class AutonomousManager {
 	 }
 	 
 	 public void roughTerrain(){
+		 wait(() -> driveAtPosition(3, 0.1), () -> m_drive.driveToDistance(4.25));
+		 m_drive.stop();
 		 Timer overTimer = new Timer();
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
@@ -238,6 +209,8 @@ public class AutonomousManager {
 	 }
 	 
 	 public void moat(){
+		 wait(() -> driveAtPosition(3, 0.1), () -> m_drive.driveToDistance(4.25));
+		 m_drive.stop();
 		 Timer overTimer = new Timer();
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
@@ -245,128 +218,101 @@ public class AutonomousManager {
 	 }
 	 
 	 public void ramparts(){
+		 wait(() -> driveAtPosition(3, 0.1), () -> m_drive.driveToDistance(4.25));
+		 m_drive.stop();
 		 Timer overTimer = new Timer();
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
 		 m_drive.stop();
 	 }
 	 
+	 public void challenge(){
+		 wait(() -> driveAtPosition(5, 0.1), () -> m_drive.driveToDistance(5));
+		 m_drive.stop();
+	 }
+	 
 	 public void driveToShoot(int position){
-		 /*
-		 double distance = m_drive.getDrive().getLinearDistance();
-		 wait(() -> driveAtPosition(2.8 + distance, 0.1), () -> m_drive.driveToDistance(3 + distance, 0));
-		 m_drive.stop();
+		 double firstTurnAngle;
+		 double driveDistance;
+		 double secondTurnAngle;
 		 
-		 m_shooter.resetRangeFinding();
-		 m_shooter.setDistance();
-		 Logger.addMessage("Raising Turret");
-		 m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
-		 wait(() -> m_shooter.turretAtPosition(), () -> {});
-		 Logger.addMessage("Done Raising Turret");
+		 Logger.addMessage("Selected position: " + position);
 		 
-		 Logger.addMessage("Looking for Target");
-		 double power = position > 3 ? 0.2 : -0.2;
-		 wait(() -> SmartDashboard.getBoolean("TargetFound", false), () -> {
-			 m_shooter.StopWheels();
-			 m_drive.getDrive().setPowers(power, -power);
-			 });
-		 m_drive.stop();
-		 m_shooter.resetRangeFinding();
-		 wait(() -> false, () -> m_shooter.setDistance());
- 
-		 /*
-		 Logger.addMessage("Turning to Target");
-		 wait(() -> m_drive.atCamera(0.05), m_drive::turnToCamera);
-		 
-		 m_drive.stop();
-		 Logger.addMessage("Closing in");
-		 Timer rangeTimer = new Timer();
-		 rangeTimer.start();
-		 wait(() -> m_shooter.readyToShoot(), () -> m_shooter.Spin());
-		 m_drive.stop();
-		 m_shooter.Shoot();
-		 
-		 Logger.addMessage("Ready to Shoot");
-		 double range = SmartDashboard.getNumber("Range", 8);
-		 if(range > 10){
-			 m_drive.getDrive().resetEncoders();
-			 wait(() -> driveAtPosition(10.0 - range, 1.0), () -> m_drive.driveToDistance(10 - range, 0));
-		 }
-		 m_drive.stop();
-		 */
-		 double[] args = new double[]{0, 0, 0};
-		 
-		 switch(/*m_decoder.getPosition()     Position Number goes here ->*/position){
-		 	case 0: //DOES NOTHING, SHOULD NEVER RUN
+		 switch(position){
+		 	case 0: //DOES NOTHING
+		 		firstTurnAngle = 0;
+			 	driveDistance = 0;
+			 	secondTurnAngle = 0;
 		 		break;
-		 	case 1: //LOW BAR, WORKING
-			 	args[0] = 20;
-			 	args[1] = 10;
-			 	args[2] = 85;
+		 	case 1: //LOW BAR
+		 		firstTurnAngle = 20;
+			 	driveDistance = 10;
+			 	secondTurnAngle = 85;
 			 	break;
-		 	case 2 : //2C, WORKING
-		 		args[0] = 60;
-		 		args[1] = 9.5;
-		 		args[2] = 30;
+		 	case 2 : //2C
+		 		firstTurnAngle = 60;
+		 		driveDistance = 9.5;
+		 		secondTurnAngle = 30;
 		 		break;
-		 	case 3 : //3C, WORKING
-		 		args[0] = 20;
-		 		args[1] = 5;
-		 		args[2] = 35; 
+		 	case 3 : //3C
+		 		firstTurnAngle = 20;
+		 		driveDistance = 5;
+		 		secondTurnAngle = 35; 
 		 		break;
-		 	case 4: //4, WORKING
-		 		args[0] = 0;
-		 		args[1] = 3;
-		 		args[2] = 0;
+		 	case 4: //4
+		 		firstTurnAngle = 0;
+		 		driveDistance = 3;
+		 		secondTurnAngle = 0;
 		 		break;
-		 	case 5 : //5D, WORKING
-		 		args[0] = -50;
-		 		args[1] = 5.5;
-		 		args[2] = -5;
+		 	case 5 : //5D
+		 		firstTurnAngle = -50;
+		 		driveDistance = 5.5;
+		 		secondTurnAngle = -5;
+		 		Timer delayTimer = new Timer();
+		 		delayTimer.start();
+				wait(() -> delayTimer.get() > 3.5, () -> {});
 		 		break;
 		 	case 6: //SPY BOT, ASSUMED
-		 		args[0] = 5;
-		 		args[1] = 5;
-		 		args[2] = -5;
+		 		firstTurnAngle = 5;
+		 		driveDistance = 5;
+		 		secondTurnAngle = -5;
 		 		break;
-		 	case 7: //2L, WORKING
-		 		args[0] = 0;
-		 		args[1] = 10;
-		 		args[2] = 65;
+		 	case 7: //2L
+		 		firstTurnAngle = 0;
+		 		driveDistance = 10;
+		 		secondTurnAngle = 65;
 		 		break;
-		 	case 8: //3L, WORKING
-		 		args[0] = 0;
-		 		args[1] = 5;
-		 		args[2] = 30;
+		 	case 8: //3L
+		 		firstTurnAngle = 0;
+		 		driveDistance = 5;
+		 		secondTurnAngle = 30;
 		 		break;
-		 	case 9: //5C, WORKING
-		 		args[0] = -50;
-		 		args[1] = 5.5;
-		 		args[2] = -5;
+		 	case 9: //5C
+		 		firstTurnAngle = -50;
+		 		driveDistance = 5.5;
+		 		secondTurnAngle = -5;
 		 		break;
-		 }
-		 
-		 if(position == 5){ //5 Delay
-			 Timer timer = new Timer();
-			 timer.start();
-			 wait(() -> timer.get() > 3.5, () -> {});
+		 	default:
+		 		firstTurnAngle = 0;
+			 	driveDistance = 0;
+			 	secondTurnAngle = 0;
 		 }
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 wait(() -> driveAtAngle(args[0] + firstHeading[0], 3), () -> m_drive.turnToAngle(args[0] + firstHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[0]), -0.4 * Math.signum(args[0])));
+		 wait(() -> driveAtAngle(firstTurnAngle + firstHeading[0], 3), () -> m_drive.turnToAngle(firstTurnAngle + firstHeading[0]));
 		 m_drive.stop();
 		 
 		 //Drive
 		 Logger.addMessage("Driving");
 		 double heading = m_drive.getDrive().getAngle();
 		 double dist = m_drive.getDrive().getLinearDistance();
-		 wait(() -> driveAtPosition(args[1] + dist, 0.1), () -> m_drive.driveToDistance(args[1] + dist, heading));
+		 wait(() -> driveAtPosition(driveDistance + dist, 0.1), () -> m_drive.driveToDistance(driveDistance + dist, heading));
 		 m_drive.stop();
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
-		 wait(() -> driveAtAngle(args[2] + firstHeading[0], 5), () -> m_drive.turnToAngle(args[2] + firstHeading[0]));//() -> m_drive.getDrive().setPowers(0.4 * Math.signum(args[2]), -0.4 * Math.signum(args[2])));
+		 wait(() -> driveAtAngle(secondTurnAngle + firstHeading[0], 5), () -> m_drive.turnToAngle(secondTurnAngle + firstHeading[0]));
 		 m_drive.stop();		 
 	 }
 	 
@@ -378,11 +324,6 @@ public class AutonomousManager {
 		 alignTimer.start();
 		 wait(() -> alignTimer.get() > 3 && SmartDashboard.getBoolean("TargetFound", false)&& m_drive.atCamera(2), () -> {m_drive.turnToCamera(); m_systems.Update();});
 		 m_drive.stop();
-		 /*
-		 m_systems.setChargeButton(false);
-		 wait(() -> m_systems.getShooterState() == ShooterState.Idle, () -> m_systems.Update());
-		 m_systems.setChargeButton(true);
-		 */
 		 wait(() -> m_systems.getShooterState() == ShooterState.Shoot, () -> {m_systems.Update(); m_systems.setShootButton(true);});
 		 m_systems.setShootButton(false);
 		 wait(() -> false, () -> m_systems.Update());

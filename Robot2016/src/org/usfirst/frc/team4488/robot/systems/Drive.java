@@ -100,8 +100,7 @@ public class Drive implements TankDrive{
 	}
 	
 	public double getRightDistance(){
-		return m_right.getPosition() * (7.8 / 12.0
-				) * Math.PI / 1024.0;
+		return m_right.getPosition() * (7.8 / 12.0) * Math.PI / 1024.0;
 	}
 	
 	public double getLeftSpeed(){
@@ -116,6 +115,15 @@ public class Drive implements TankDrive{
 	public double getTurnDistance() {return (getLeftDistance() - getRightDistance()) / 2;}
 	public double getLinearSpeed() {return (getLeftSpeed() + getRightSpeed()) / 2;}
 	public double getTurnSpeed() {return (getLeftSpeed() - getRightSpeed()) / 2;}
+	
+	public void printBrakeMode(){
+        System.out.println("m_left: " + m_left.getBrakeEnableDuringNeutral());
+        System.out.println("m_right: " + m_right.getBrakeEnableDuringNeutral());
+        System.out.println("leftSlave1: " + leftSlave1.getBrakeEnableDuringNeutral());
+        System.out.println("leftSlave2: " + leftSlave2.getBrakeEnableDuringNeutral());
+        System.out.println("rightSlave1: " + rightSlave1.getBrakeEnableDuringNeutral());
+        System.out.println("rightSlave2: " + rightSlave2.getBrakeEnableDuringNeutral());
+	}
 	
 	public void resetEncoders(){
 		m_left.setEncPosition(0);
