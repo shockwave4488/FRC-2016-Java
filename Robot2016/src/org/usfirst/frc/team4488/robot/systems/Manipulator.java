@@ -118,4 +118,12 @@ public class Manipulator
     public void resetArm(){
     	m_arm.resetArm();
     }
+    
+    public void setArmPositionHigh(){
+    	m_arm.setPosition(ArmPosition.High);
+    }
+    
+    public void setArmPositionLow(){
+    	m_arm.setPosition(ArmPosition.Low);
+    }
 }

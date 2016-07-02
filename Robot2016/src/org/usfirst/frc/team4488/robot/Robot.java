@@ -127,13 +127,13 @@ public class Robot extends IterativeRobot {
     	systems.setPurgeButton(controllers.getPurgeButton());
     	systems.setBatterChargeButton(controllers.getBatterChargeButton());
     	systems.setChargeButton(controllers.getChargeButton()); 
-    	systems.setShootButton(controllers.getShootButton()); //&& (controllers.getBatterChargeButton() || smartDrive.atCamera(1)));
+    	systems.setShootButton(controllers.getShootButton()); //&& (controllers.getBatterChargeButton() || smartDrive.isTurnDone()));
     	systems.setIntakeButton(controllers.getIntakeButton() || controllers.getLowGoalIntakeButton());
     	systems.setLowGoalIntake(controllers.getLowGoalIntakeButton());
     	systems.setDefenseLowButton(controllers.getLowDefenseButton());
     	systems.setSemiManualPosition(controllers.getSemiManualPosition());
   	
-    	if (shooter.readyToShoot() && smartDrive.atCamera(0.75)){
+    	if (shooter.readyToShoot() && smartDrive.isTurnDone()){
     		controllers.vibratePrimary(0.7);
     		controllers.vibrateSecondary(0.7);
     	}
@@ -163,8 +163,6 @@ public class Robot extends IterativeRobot {
     		driveHelper.Drive(controllers.getSpeed(), controllers.getTurn(), controllers.getQuickturn(), true);
     	}    	
     	
-    	if(controllers.getTurnResetButton())
-    		smartDrive.resetTurnIntegral();
     }
     
     /**

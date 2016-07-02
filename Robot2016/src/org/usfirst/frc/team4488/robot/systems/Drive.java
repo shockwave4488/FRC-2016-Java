@@ -96,11 +96,13 @@ public class Drive implements TankDrive{
 	}
 	
 	public double getLeftDistance(){
-		return -m_left.getPosition() * (7.8 / 12.0) * Math.PI / 1024.0;
+		// Wheel diameter = 7.8
+		// Encoder clicks per rotation = 1024
+		return -m_left.getPosition() * 7.8 * Math.PI / 1024.0; // In inches
 	}
 	
 	public double getRightDistance(){
-		return m_right.getPosition() * (7.8 / 12.0) * Math.PI / 1024.0;
+		return m_right.getPosition() * 7.8 * Math.PI / 1024.0; // In inches
 	}
 	
 	public double getLeftSpeed(){

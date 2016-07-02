@@ -1,29 +1,24 @@
 package org.usfirst.frc.team4488.robot.systems;
 
-import JavaRoboticsLib.ControlSystems.SimplePID;
+import JavaRoboticsLib.ControlSystems.SimPID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SmartDrive {
 	
 	private Drive m_drive;
-	private SimplePID m_turnController;
-	private SimplePID m_driveController;
-	private SimplePID m_straightController;
-	
-	private double accumulation;
+	private SimPID m_turnController;
+	private SimPID m_driveController;
+	private SimPID m_straightController;
 	
 	public SmartDrive(Drive drive){
 		m_drive = drive;
 		try {
-			m_turnController = new SimplePID(SmartDashboard.getNumber("DriveP", 0.045), SmartDashboard.getNumber("DriveI",0), SmartDashboard.getNumber("DriveD", 0), -0.5, 0.5);
-			m_turnController.setContinuous(true);
-			m_turnController.setMaxInput(360);
-			m_turnController.setMinInput(0);
-			m_turnController.setDt(1);
-			m_driveController = new SimplePID(0.225, 0, 0, -0.5, 0.5);
-			//m_straightController = new SimplePID(0.08, 0, 0, -0.1, 0.1); //PRACTICE
-			m_straightController = new SimplePID(0.03, 0, 0, -0.1, 0.1);
-			m_straightController.setContinuous(false);		
+			m_turnController = new SimPID(SmartDashboard.getNumber("DriveTurnP", 0.05), SmartDashboard.getNumber("DriveTurnI",0.005), SmartDashboard.getNumber("DriveTurnD", 0), 0.25);
+			m_turnController.setMaxOutput(0.6);
+			m_driveController = new SimPID(SmartDashboard.getNumber("DriveP", 0.25), SmartDashboard.getNumber("DriveI",0), SmartDashboard.getNumber("DriveD", 0), .5);
+			m_driveController.setMaxOutput(0.5);
+			m_straightController = new SimPID(0.08, 0, 0.001, 0.1);
+			m_straightController.setMaxOutput(0.25);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -41,20 +36,15 @@ public class SmartDrive {
 		turnToCamera(0);
 	}
 	
-	public void resetTurnIntegral(){
-		System.out.println("resetting");
-		m_turnController.resetIntegral();
-	}
-	
 	public void turnToCamera(double linearPower){
 		SmartDashboard.putNumber("Gyro", m_drive.getAngle());
 		//if(SmartDashboard.getBoolean("TargetFound",false)){
-		m_turnController.setGains(SmartDashboard.getNumber("DriveP", 0.040), SmartDashboard.getNumber("DriveI",0), SmartDashboard.getNumber("DriveD", .175));
+		m_turnController.setConstants(SmartDashboard.getNumber("DriveTurnP", 0.040), SmartDashboard.getNumber("DriveTurnI",0), SmartDashboard.getNumber("DriveTurnD", .175));
 		double offset = Math.asin(-(13.25 / 12.0) / SmartDashboard.getNumber("Range", 8)) * (180.0 / Math.PI) + SmartDashboard.getNumber("TurnToCam Constant", 1.5);
-		m_turnController.setSetPoint(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()) + offset);
+		m_turnController.setDesiredValue(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()) + offset);
 		//accumulation += 0.02 * (m_turnController.getSetPoint() - m_drive.getAngle() + offset) * SmartDashboard.getNumber("DriveI",0);
-		double power = m_turnController.get(m_drive.getAngle());
-		if(Math.abs(m_turnController.getSetPoint() - m_drive.getAngle()) < 1) //stop if we are within 1 degree
+		double power = m_turnController.calcPID(m_drive.getAngle());
+		if(Math.abs(m_turnController.getDesiredVal() - m_drive.getAngle()) < 1) //stop if we are within 1 degree
 			power = 0;
 		//else if(Math.abs(power) < 0.025) //minimum power
 			//power = 0.025 * Math.signum(power);
@@ -63,38 +53,29 @@ public class SmartDrive {
 	}
 	
 	public double getTurnSetpoint(){
-		return m_turnController.getSetPoint();
-	}
-		
-	public boolean atCamera(double tolerance){
-		//SmartDashboard.putNumber("Gyro", m_drive.getAngle());
-		double setpoint = m_turnController.getSetPoint();
-		return m_drive.getAngle() > (setpoint - tolerance) && m_drive.getAngle() < (setpoint + tolerance);
+		return m_turnController.getDesiredVal();
 	}
 	
 	public void driveToDistance(double distance){
-		m_driveController.setSetPoint(distance);
-		double power = m_driveController.get(m_drive.getLinearDistance());
+		m_driveController.setDesiredValue(distance);
+		double power = m_driveController.calcPID(m_drive.getLinearDistance());
 		m_drive.setPowers(power, power);
-		
 	}
 	
 	public void driveToDistance(double distance, double heading){
-		m_driveController.setSetPoint(distance);
-		m_straightController.setSetPoint(heading);
-		double power = m_driveController.get(m_drive.getLinearDistance());
-		double correction = m_straightController.get(m_drive.getAngle());
+		m_driveController.setDesiredValue(distance);
+		m_straightController.setDesiredValue(heading);
+		double power = m_driveController.calcPID(m_drive.getLinearDistance());
+		double correction = m_straightController.calcPID(m_drive.getAngle());
 		m_drive.setPowers(power + correction, power - correction);
-		
 	}
 	
 	public void turnToAngle(double angle){
-		if(m_turnController.getSetPoint() != angle)
-			m_turnController.resetIntegral();
-		m_turnController.setGains(SmartDashboard.getNumber("DriveP", 0.045), 0, SmartDashboard.getNumber("DriveD", 0));
-		m_turnController.setSetPoint(angle);
-		double power = m_turnController.get(m_drive.getAngle());
-		m_drive.setPowers(power,  -power);
+		m_turnController.setDesiredValue(angle);
+		double power = m_turnController.calcPID(m_drive.getAngle());
+		System.out.println("Current angle: " + m_drive.getAngle() + " Power: " + power);
+		double crawlForwardAssist = .1; // Used to break static friction and help PID converge on angle
+		m_drive.setPowers(power + crawlForwardAssist,  -power + crawlForwardAssist);
 	}
 	
 	public void stop(){
@@ -104,6 +85,30 @@ public class SmartDrive {
 	public void resetAll(){
 		m_drive.resetAngle();
 		m_drive.resetEncoders();
+	}
+	
+	public boolean isDriveDone(){
+		return m_driveController.isDone();
+	}
+	
+	public boolean isTurnDone(){
+		return m_turnController.isDone();
+	}
+	
+	public void setDriveMaxOutput(double max){
+		m_driveController.setMaxOutput(max);
+	}
+	
+	public double getDriveMaxOutput(){
+		return m_driveController.getMaxOutputVal();
+	}
+	
+	public void setTurnDoneRange(double range){
+		m_turnController.setDoneRange(range);
+	}
+	
+	public double getTurnDoneRange(){
+		return m_turnController.getDoneRangeVal();
 	}
 	
 }
