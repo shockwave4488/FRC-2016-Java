@@ -3,12 +3,15 @@ package org.usfirst.frc.team4488.robot.components;
 import org.usfirst.frc.team4488.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ShooterWheels {
 	
 	 private ShooterWheel m_right;
      private ShooterWheel m_left;
      private Notifier m_periodic;
+     private Preferences prefs;
 
      public double getShooterRPM() {
     	 return (m_left.getShooterSpeed() + m_right.getShooterSpeed()) / 2.0;
@@ -19,15 +22,33 @@ public class ShooterWheels {
          m_left.setShooterSpeed(RPM);
      }
      
-     public ShooterWheels(){
-          m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter);
-          m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter);
-         m_periodic = new Notifier(()-> { m_left.SpinWheel(); m_right.SpinWheel(); });
-         m_periodic.startPeriodic(.010);
+	public ShooterWheels() {
+		prefs = Preferences.getInstance();
+
+		m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter,
+				prefs.getDouble("ShooterP_Left", 0.001), prefs.getDouble("ShooterI_Left", 0.001),
+				prefs.getDouble("ShooterD_Left", 0.002), prefs.getDouble("ShooterEps_Left", 0),
+				prefs.getDouble("ShooterPIDDoneRange_Left", 20));
+		m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter,
+				prefs.getDouble("ShooterP_Right", 0.001), prefs.getDouble("ShooterI_Right", 0.001),
+				prefs.getDouble("ShooterD_Right", 0.002), prefs.getDouble("ShooterEps_Right", 0),
+				prefs.getDouble("ShooterPIDDoneRange_Right", 20));
+
+		m_periodic = new Notifier(() -> {
+			SpinWheels();
+		});
+		m_periodic.startPeriodic(.010);
+	}
+     
+     public void SpinWheels(){
+    	 m_left.SpinWheel();
+    	 m_right.SpinWheel();
+    	 SmartDashboard.putNumber("Current Rate Left", m_left.getSpeed());
+    	 SmartDashboard.putNumber("Current Rate Right", m_right.getSpeed());
      }
 
-     public boolean atRate(){
-    	return (m_left.atRate()&&m_right.atRate()); 
+     public boolean atSpeed(){
+    	return (m_left.atSpeed()&&m_right.atSpeed()); 
      }
 
      public void deJam(){

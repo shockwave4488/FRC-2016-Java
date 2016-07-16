@@ -54,10 +54,10 @@ public class Robot extends IterativeRobot {
     	drive = new Drive();
     	shooter = new Shooter();
     	manipulator = new Manipulator();
-    	systems = new SystemsManagement(shooter, manipulator);
+    	smartDrive = new SmartDrive(drive);
+    	systems = new SystemsManagement(shooter, manipulator, smartDrive);
     	driveHelper = new DriveHelper(drive, 0.2, 0.2, 0.6, 0.6, 0.75, 0.2); //Xbox 360
     	//driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
-    	smartDrive = new SmartDrive(drive);
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
@@ -69,7 +69,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Gyro", drive.getAngle());
     	SmartDashboard.putNumber("Pitch", drive.getGyroscope().getRoll());
     	SmartDashboard.putNumber("Roll", drive.getGyroscope().getPitch());
-    	SmartDashboard.putBoolean("At Rate?", shooter.AtRate());
+    	SmartDashboard.putBoolean("At Rate?", shooter.atSpeed());
     	SmartDashboard.putBoolean("Intake Has Ball?", manipulator.HasBall());
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
     	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
@@ -132,16 +132,17 @@ public class Robot extends IterativeRobot {
     	systems.setLowGoalIntake(controllers.getLowGoalIntakeButton());
     	systems.setDefenseLowButton(controllers.getLowDefenseButton());
     	systems.setSemiManualPosition(controllers.getSemiManualPosition());
-  	
+    	
+    	
     	if (shooter.readyToShoot() && smartDrive.isTurnDone()){
-    		controllers.vibratePrimary(0.7);
-    		controllers.vibrateSecondary(0.7);
+    		controllers.vibratePrimary(0.5);
+    		controllers.vibrateSecondary(0.5);
     	}
     	else{
     		controllers.vibratePrimary(0);
     		controllers.vibrateSecondary(0);
     	}
-    	
+    	   	
     	if(controllers.getArmReset())
     		manipulator.resetArm();
     	
@@ -150,13 +151,12 @@ public class Robot extends IterativeRobot {
     	
     	systems.Update();
     	
-    	if(controllers.getShootAlignButton()){
+    	if(controllers.getShootAlignButton() && controllers.getChargeButton()){
     		drive.BreakModeAll();
     		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 && !controllers.getShootButton() ? controllers.getSpeed() : 0);
     	}
     	else if(controllers.getBatterBrakeButton()){
     		drive.BreakModeAll();
-    		//smartDrive.batterBrake(controllers.getSpeed());
     	}
     	else{
     		drive.UnBreakModeAll();

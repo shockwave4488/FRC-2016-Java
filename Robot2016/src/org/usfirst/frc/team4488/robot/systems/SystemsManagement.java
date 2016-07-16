@@ -8,12 +8,15 @@ import JavaRoboticsLib.FlowControl.Toggle;
 import JavaRoboticsLib.Utility.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Relay;
 
 public class SystemsManagement
 {
     private Shooter m_shooter;
     private Manipulator m_manipulator;
+    private SmartDrive m_drive;
     private LEDController m_leds;
+    private CameraLights m_lights;
     
     private boolean m_charge = false;
     private boolean m_shoot = false;
@@ -65,7 +68,7 @@ public class SystemsManagement
     	m_lowGoalIntake = value || m_lowGoalIntake;
     }
     
-    public SystemsManagement(Shooter shooter, Manipulator manipulator)
+    public SystemsManagement(Shooter shooter, Manipulator manipulator, SmartDrive drive)
     {
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
@@ -76,7 +79,9 @@ public class SystemsManagement
     	m_manipTimer.start();
         m_manipulator = manipulator;
         m_intakeToggle = new Toggle();
+        m_drive = drive;
         m_leds = new LEDController();
+        m_lights = new CameraLights();
         try {
 			m_logFile = new PrintWriter("/home/lvuser/Shooting.txt");
 		} catch (FileNotFoundException e) {
@@ -108,6 +113,7 @@ public class SystemsManagement
         {
             case Idle:
                 ShooterIdle();
+                m_lights.setLights(Relay.Value.kOff, SmartDashboard.getNumber("Cam Light Brightness", .5));
                 if (!m_shooter.hasBall() && m_manipulatorState == ManipulatorState.Store && !m_lowGoalIntake)
                 {
                     m_shooterState = ShooterState.Load;
@@ -118,12 +124,12 @@ public class SystemsManagement
                 	m_shooter.resetRangeFinding();
                 	m_shooterState = m_batterCharge ? ShooterState.BatterCharge : ShooterState.Charge;
                 	Logger.addMessage("ShooterState set to " + (m_batterCharge ? "Batter" : "") + "Charge from Idle", 0);
-                	m_shootTimer.reset();
                 }
                 break;
 
             case Load:
                 ShooterLoad();
+                m_lights.setLights(Relay.Value.kOff, SmartDashboard.getNumber("Cam Light Brightness", .5));
                 if (m_shooter.hasBall())
                 {
                     m_shooterState = ShooterState.Idle;
@@ -133,13 +139,13 @@ public class SystemsManagement
                 
             case Charge:
                 ShooterCharge();
-                if(!m_shooter.readyToShoot()) m_shootTimer.reset();
-                if (m_shoot && m_charge && m_shootTimer.get() > 0.25 && SmartDashboard.getBoolean("TargetFound", false))//&& m_shooter.readyToShoot())
+                m_lights.setLights(Relay.Value.kOn, SmartDashboard.getNumber("Cam Light Brightness", .5));
+                if (m_shoot && m_charge && SmartDashboard.getBoolean("TargetFound", false) && m_shooter.readyToShoot() && m_drive.isTurnDone())
                 {
                 	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
                 	m_leds.setLEDs(LEDState.Shoot);
                     m_shooterState = ShooterState.Shoot;
-                	m_shootTimer.reset();
+                    m_shootTimer.reset();
                     Logger.addMessage("ShooterState set to Shoot from Charge",0);
                 }
                 if (!m_charge)
@@ -152,7 +158,7 @@ public class SystemsManagement
 
             case Shoot:
                 ShooterShoot();
-                if (/*!m_shoot &&*/ m_shootTimer.get() > 0.25)
+                if (m_shootTimer.get() > 0.25)
                 {
                 	m_leds.setLEDs(LEDState.Null);
                     m_shooterState = ShooterState.Idle;
@@ -161,8 +167,8 @@ public class SystemsManagement
                 break;
             case BatterCharge:
             	ShooterBatterCharge();
-                if(!m_shooter.readyToShoot()) m_shootTimer.reset();
-                if (m_shoot && m_batterCharge && m_shootTimer.get() > 0.25)//&& m_shooter.readyToShoot())
+            	m_lights.setLights(Relay.Value.kOn, SmartDashboard.getNumber("Cam Light Brightness", .5));
+                if (m_shoot && m_batterCharge && m_shooter.readyToShoot())
                 {
                 	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
                 	m_leds.setLEDs(LEDState.Shoot);
@@ -310,7 +316,7 @@ public class SystemsManagement
 
     private void ShooterIdle()
     {
-        m_shooter.StopWheels();
+    	m_shooter.StopWheels();
         m_shooter.MoveTurretPosition(ShooterPosition.Stored);
     }
 

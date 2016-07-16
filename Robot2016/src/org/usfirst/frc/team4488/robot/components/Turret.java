@@ -6,145 +6,152 @@ import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
 import JavaRoboticsLib.WPIExtensions.RampMotor;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Preferences;
 
-public class Turret extends MotionControlledSystem{
-	
-	private double m_aimingAngle;	
+public class Turret {
+
 	private ShooterPosition m_position;
 	private Timer m_oscillateTimer;
-	
-	private class feedForwardPID implements MotionController{
-		private SimplePID m_pid;
-		private Function<Double, Double> ffFunction;
-		
-		public feedForwardPID(double p, double i, double d, Function<Double, Double> f, double minvalue, double maxvalue){
-			try {
-				m_pid = new SimplePID(p, i, d, minvalue, maxvalue);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			ffFunction = f;
-		}
-		
-		public void setFunction(Function<Double, Double> function){
-			ffFunction = function;
-		}
-		
-		@Override
-		public double get(double input) {
-			m_pid.setGains(SmartDashboard.getNumber("TurretP", 0.05), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
-			return m_pid.get(input) + ffFunction.apply(input);
-		}
+	private SimPID m_pid;
+	private Preferences prefs;
 
-		@Override
-		public double getSetPoint() {
-			return m_pid.getSetPoint();
-		}
+	private SpeedController m_motor;
+	private AnalogPotentiometer m_sensor;
 
-		@Override
-		public void setSetPoint(double value) {
-			m_pid.setSetPoint(value);			
-		}
-		
-	}
-	
-	public Turret(){
+	private Notifier m_periodic;
+
+	private double m_aimingAngle;
+	private double m_angleOffset;
+	private double m_loadAngle;
+
+	private boolean m_manual;
+	private double m_manualPower;
+
+	private final int m_sensorSamplesLength = 5;
+	private double[] m_sensorSamples;
+	private int m_sensorSamplesIndex;
+
+	public Turret() {
 		try {
 			RampMotor temp = new RampMotor(Talon.class, RobotMap.TurretMotor);
 			temp.setMaxAccel(0.1);
 			temp.setMaxDecel(0.05);
-			super.Motor = temp;
+			m_motor = temp;
+			prefs = Preferences.getInstance();
+			m_pid = new SimPID(prefs.getDouble("TurretP", 0.001), prefs.getDouble("TurretI", 0.001),
+					prefs.getDouble("TurretD", 0.000), prefs.getDouble("TurretEps", 0));
+			m_pid.setMaxOutput(.5);
+			m_pid.setDoneRange(prefs.getDouble("TurretDoneRange", 0.5));
+			m_angleOffset = prefs.getDouble("TurretAngleOffset", 262.5);
+			m_loadAngle = prefs.getDouble("TurretLoadAngle", 40);
+
+			// create and initialize sensorSamples for moving average
+			m_sensorSamples = new double[m_sensorSamplesLength];
+			for (int i = 0; i < m_sensorSamplesLength; i++) {
+				m_sensorSamples[i] = 0;
+			}
+			m_sensorSamplesIndex = 0;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, SmartDashboard.getNumber("TurretOffset", 263.9));
-		SetpointTolerance = 1;
-		lowLimit = 10.0;
-		highLimit = 95.0;
-		try {
-			Controller = new feedForwardPID(
-					SmartDashboard.getNumber("TurretP", 0), 
-					SmartDashboard.getNumber("TurretI", 0), 
-					SmartDashboard.getNumber("TurretD", 0), 
-					this::feedForward, 
-					-0.5, 0.5
-					);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		Motor.setInverted(true);
+		m_sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, m_angleOffset);
+
+		m_motor.setInverted(true);
 		Logger.addMessage("Turret Initialized", 1);
-		
+
 		m_oscillateTimer = new Timer();
 		m_oscillateTimer.start();
 		m_aimingAngle = 60;
-				
-		super.periodic = new Notifier(this::Update);
-		super.Start(0.01);
+
+		m_periodic = new Notifier(() -> {
+			update();
+		});
+		m_periodic.startPeriodic(.010);
 	}
-	
-	public ShooterPosition getPosition(){
+
+	public ShooterPosition getPosition() {
 		return m_position;
 	}
+
 	/*
-	 * Sets the position of the shooter's turret based on the current ShooterState state being inputed.
-	 */ 
-	public void setPosition(ShooterPosition value){
+	 * Sets the position of the shooter's turret based on the current
+	 * ShooterState state being inputed.
+	 */
+	public void setPosition(ShooterPosition value) {
 		SmartDashboard.putString("Turret Positon", value.toString());
 		m_position = value;
-		switch(value){
+		switch (m_position) {
 		case Aiming:
-            setSetPoint(m_aimingAngle + SmartDashboard.getNumber("Angle Offset", 0)); 
-            break;
-        case Load:
-            setSetPoint(SmartDashboard.getNumber("Turret Load Angle", 35) + Math.sin(m_oscillateTimer.get() * Math.PI * 2) * 3);
-            break;
-        case Stored:
-        	setSetPoint(-2);
-            break;
+			m_pid.setDesiredValue(m_aimingAngle);
+			break;
+		case Load:
+			m_pid.setDesiredValue(m_loadAngle + Math.sin(m_oscillateTimer.get() * Math.PI * 2) * 3);
+			break;
+		case Stored:
+			m_pid.setDesiredValue(0);
+			break;
 		}
 	}
-	
-	public void setAimingAngle(double angle){
+
+	public void setAimingAngle(double angle) {
 		m_aimingAngle = angle;
 	}
-	
+
 	/*
-	 * Gets the value that the turret's potentiometer is reading.
+	 * Gets the value that the turret's potentiometer is reading and reports a running average.
 	 */
-	public double getAngle(){
-		return Sensor.pidGet();
-	} 
-	
-	@Override
-	public void Update(){
-		//((SimplePID)Controller).setGains(SmartDashboard.getNumber("TurretP", 0), SmartDashboard.getNumber("TurretI", 0), SmartDashboard.getNumber("TurretD", 0));
-		//if(getAngle() > 65)
-		//	((SimplePID)Controller).setP(SmartDashboard.getNumber("TurretP", 0) / 2.0);
-		if(getAngle() > 140){ //something went REALLY wrong
-			super.setManual(true);
-			super.setManualPower(0);
-			return;
+	public double getAngle() {
+		m_sensorSamples[m_sensorSamplesIndex] = m_sensor.get();
+		m_sensorSamplesIndex = (m_sensorSamplesIndex + 1) % m_sensorSamplesLength;
+		double m_tempSensorSum = 0;
+		for (int i = 0; i < m_sensorSamplesLength; i++) {
+			m_tempSensorSum += m_sensorSamples[i];
 		}
-		else{
-			super.setManual(false);
+
+		return m_tempSensorSum / m_sensorSamplesLength;
+	}
+
+	public boolean AtSetpoint() {
+		return m_pid.isDone();
+	}
+
+	public double getSetPoint() {
+		return m_pid.getDesiredVal();
+	}
+
+	public void setManual(boolean manual) {
+		m_manual = manual;
+	}
+
+	public void setManualPower(double power) {
+		m_manualPower = power;
+	}
+
+	public void update() {
+		double power = 0;
+		if (getAngle() > 120) { // upper limit protection
+			power = 0;
+		} else {
+			if (m_manual) {
+				power = m_manualPower;
+			} else {
+				power = m_pid.calcPID(getAngle());
+			}
 		}
-		super.Update();
+
+		// limit downward speed
+		if (power <= -0.2) {
+			power = -0.2;
+		}
+
+		m_motor.set(power);
+		SmartDashboard.putBoolean("TurretManualMode", m_manual);
+		SmartDashboard.putNumber("TurretPower", power);
 		SmartDashboard.putNumber("TurretPot", getAngle());
+		SmartDashboard.putNumber("TurretSetPoint", m_pid.getDesiredVal());
+		SmartDashboard.putBoolean("TurretAtSetPoint", AtSetpoint());
 	}
-	
-	private double feedForward(double setpoint){
-		//return 0.01; None
-		//return getAngle() * 0.00075; Surgical Tubing
-		//Practice return getAngle() > 50 ? 0.01 : 0; //Delrin Block
-		return getAngle() > 50 ? 0.01 : 0;
-		//return 0;
-	}
-	/*
-	@Override
-	public boolean AtSetpoint(){
-		return base//(Sensor.pidGet() < Controller.getSetPoint()- 0.25 + SetpointTolerance) && (Sensor.pidGet() > Controller.getSetPoint() - 0.25 - SetpointTolerance);
-	}*/
 }
