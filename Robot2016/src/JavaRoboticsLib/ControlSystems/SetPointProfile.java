@@ -1,36 +1,20 @@
 package JavaRoboticsLib.ControlSystems;
 
 import java.util.ArrayList;
-import JavaRoboticsLib.ControlSystems.MotionController;
 import JavaRoboticsLib.ControlSystems.Setpoint;
 
 /**
 * A custom profile for a control system. Can be used for any measurable quantity (speed, displacement, time, etc.)
 */
-public class SetPointProfile implements MotionController
+public class SetPointProfile
 {
     private ArrayList<Setpoint> m_profile;
-    private double m_setPoint;
-    
-    /**
-    * Point to approach
-    */
-    @Override
-	public double getSetPoint() {
-        return m_setPoint;
-    }
-
-    @Override
-	public void setSetPoint(double value) {
-        m_setPoint = value;
-    }
 
     /**
     * Constructs a new, empty {@link #SetPointProfile}
     */
     public SetPointProfile() {
         m_profile = new ArrayList<Setpoint>();
-        setSetPoint(0);
     }
 
     private Setpoint nearestLess(double currentPoint) {
@@ -58,38 +42,32 @@ public class SetPointProfile implements MotionController
     }
 
     /**
-    * Get the value of the path at the current point
+    * Get the value of the path at the current point with a linear interpolation
+    * between points above and below current point
     * 
     *  @param currentPoint point along the profile to measure
     *  @return value of the profile at that point
     */
-    @Override
-	public double get(double currentPoint){
-        //be warned: here be lots of math
-        Setpoint next = nearestGreater(currentPoint);
-        Setpoint prev = nearestLess(currentPoint);
-        double direction = Math.signum(getSetPoint() - currentPoint);
-        if (next.Point == prev.Point)
-        {
-            return next.Value * direction;
-        }
-         
-        //If they are the EXACT same point
-        double setpointSlope = (prev.Value - next.Value) / (prev.Point - next.Point);
-        setpointSlope = Double.isNaN(setpointSlope) ? 0 : setpointSlope;
-        //Handle division by zero
-        double ratioComplete = (currentPoint - prev.Point) / (next.Point - prev.Point);
-        ratioComplete = Double.isNaN(ratioComplete) ? 0 : ratioComplete;
-        //Handle division by zero
-        double delta = ratioComplete * setpointSlope;
-        return (delta + prev.Value) * direction;
-    }
+	public double get(double currentPoint) {
+		// grab point above
+		Setpoint next = nearestGreater(currentPoint);
+		// grab point below
+		Setpoint prev = nearestLess(currentPoint);
+		// calculate slope
+		double slope = (next.Value - prev.Value) / (next.Point - prev.Point);
+		// handle divide by zero in case where points are the same
+		slope = Double.isNaN(slope) ? 0 : slope;
+		// calculate value at given point based on linear interpolated slope
+		// between above and below point
+		double pointValue = slope * (currentPoint - prev.Point) + prev.Value;
+		return pointValue;
+	}
 
     /**
-    * Adds a setpoint to the path
+    * Adds a point to the path
     * 
-    *  @param point location of the setpoint
-    *  @param value value of the setpoint
+    *  @param point location
+    *  @param value of point
     */
     public void add(double point, double value){
         for (int i = 0;i < m_profile.size();i++)

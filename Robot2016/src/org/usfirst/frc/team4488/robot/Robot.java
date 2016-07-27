@@ -81,7 +81,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
     	SmartDashboard.putNumber("Compass", drive.getCompass());
-    	SmartDashboard.putNumber("AlignError", /*SmartDashboard.getNumber("AzimuthX", 0)*/smartDrive.getTurnSetpoint() - drive.getAngle());
+    	SmartDashboard.putNumber("AlignError", smartDrive.getTurnSetpoint() - drive.getAngle());
     	SmartDashboard.putNumber("Auton Position",autonManager.getPosition());
     	SmartDashboard.putString("Auton Defense", autonManager.getDefense());
     }
@@ -134,7 +134,7 @@ public class Robot extends IterativeRobot {
     	systems.setSemiManualPosition(controllers.getSemiManualPosition());
     	
     	
-    	if (shooter.readyToShoot() && smartDrive.isTurnDone()){
+    	if (shooter.readyToShoot() && smartDrive.isTurnDone() && controllers.getShootAlignButton() && shooter.getTargetFound()){
     		controllers.vibratePrimary(0.5);
     		controllers.vibrateSecondary(0.5);
     	}
@@ -151,7 +151,7 @@ public class Robot extends IterativeRobot {
     	
     	systems.Update();
     	
-    	if(controllers.getShootAlignButton() && controllers.getChargeButton()){
+    	if(controllers.getShootAlignButton() && controllers.getChargeButton() && shooter.getTargetFound()){
     		drive.BreakModeAll();
     		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 && !controllers.getShootButton() ? controllers.getSpeed() : 0);
     	}

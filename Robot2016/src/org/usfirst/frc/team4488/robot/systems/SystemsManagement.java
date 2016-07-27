@@ -9,9 +9,12 @@ import JavaRoboticsLib.Utility.*;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class SystemsManagement
 {
+	private Preferences prefs;
+	
     private Shooter m_shooter;
     private Manipulator m_manipulator;
     private SmartDrive m_drive;
@@ -70,6 +73,7 @@ public class SystemsManagement
     
     public SystemsManagement(Shooter shooter, Manipulator manipulator, SmartDrive drive)
     {
+    	prefs = Preferences.getInstance();
         m_shooterState = ShooterState.Idle;
         m_manipulatorState = ManipulatorState.Idle;
     	m_shooter = shooter;
@@ -113,7 +117,7 @@ public class SystemsManagement
         {
             case Idle:
                 ShooterIdle();
-                m_lights.setLights(Relay.Value.kOff, SmartDashboard.getNumber("Cam Light Brightness", .5));
+                m_lights.setLights(Relay.Value.kOff, prefs.getDouble("CamLightBrightness", 0));
                 if (!m_shooter.hasBall() && m_manipulatorState == ManipulatorState.Store && !m_lowGoalIntake)
                 {
                     m_shooterState = ShooterState.Load;
@@ -125,11 +129,12 @@ public class SystemsManagement
                 	m_shooterState = m_batterCharge ? ShooterState.BatterCharge : ShooterState.Charge;
                 	Logger.addMessage("ShooterState set to " + (m_batterCharge ? "Batter" : "") + "Charge from Idle", 0);
                 }
+                m_shooter.setTargetFound(false);
                 break;
 
             case Load:
                 ShooterLoad();
-                m_lights.setLights(Relay.Value.kOff, SmartDashboard.getNumber("Cam Light Brightness", .5));
+                m_lights.setLights(Relay.Value.kOff, prefs.getDouble("CamLightBrightness", 0));
                 if (m_shooter.hasBall())
                 {
                     m_shooterState = ShooterState.Idle;
@@ -139,7 +144,7 @@ public class SystemsManagement
                 
             case Charge:
                 ShooterCharge();
-                m_lights.setLights(Relay.Value.kOn, SmartDashboard.getNumber("Cam Light Brightness", .5));
+                m_lights.setLights(Relay.Value.kOn, prefs.getDouble("CamLightBrightness", 0));
                 if (m_shoot && m_charge && SmartDashboard.getBoolean("TargetFound", false) && m_shooter.readyToShoot() && m_drive.isTurnDone())
                 {
                 	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
@@ -154,6 +159,7 @@ public class SystemsManagement
                     m_shooterState = ShooterState.Idle;
                     Logger.addMessage("ShooterState set to Idle from Charge",0);
                 }
+                m_shooter.setTargetFound(SmartDashboard.getBoolean("TargetFound", false) || m_shooter.getTargetFound());
                 break;
 
             case Shoot:
@@ -167,7 +173,7 @@ public class SystemsManagement
                 break;
             case BatterCharge:
             	ShooterBatterCharge();
-            	m_lights.setLights(Relay.Value.kOn, SmartDashboard.getNumber("Cam Light Brightness", .5));
+            	m_lights.setLights(Relay.Value.kOn, prefs.getDouble("CamLightBrightness", 0));
                 if (m_shoot && m_batterCharge && m_shooter.readyToShoot())
                 {
                 	m_logFile.println(m_shooter.getInfo() + SmartDashboard.getNumber("Drive Speed Left", 0) + ":" + SmartDashboard.getNumber("Drive Speed Right", 0));
@@ -233,7 +239,7 @@ public class SystemsManagement
 
             case Store:
                 ManipulatorStore();
-                if (m_shooter.turretAtPosition() && m_shooter.TurretAngle() > 30 && !m_lowGoalIntake)
+                if (m_shooter.turretAtPosition() && m_shooter.TurretAngle() > 10 && !m_lowGoalIntake)
                 {
                     m_manipulatorState = ManipulatorState.Load;
                     Logger.addMessage("ManipulatorState set to Load from Store",0);

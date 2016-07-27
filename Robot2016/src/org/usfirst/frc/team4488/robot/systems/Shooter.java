@@ -29,6 +29,8 @@ public class Shooter {
     private SetPointProfile m_rpmProfile;
     private SetPointProfile m_angleProfile;
     
+    private boolean m_targetFound; // store if target has been found so aiming can occur
+    
     public Shooter()
     {
         m_shooterWheels = new ShooterWheels();
@@ -40,25 +42,27 @@ public class Shooter {
         m_rangeWait = new Timer();
         m_rangeWait.start();
         m_batterShot = false;
+        m_targetFound = false;
         
         m_rpmProfile = new SetPointProfile();
-        m_rpmProfile.add(6.5,2200);
-        m_rpmProfile.add(7.1, 2200);
-        m_rpmProfile.add(8.39, 2300);
-        m_rpmProfile.add(9.1, 2400);
-        m_rpmProfile.add(9.7, 2400);
-        m_rpmProfile.add(10.3, 2600);
-        m_rpmProfile.add(10.7, 2650);
+        m_rpmProfile.add(70,2500);
+        m_rpmProfile.add(180, 3500);
 
         m_angleProfile = new SetPointProfile();
-        m_angleProfile.add(6.5, 67);
-        m_angleProfile.add(7.1, 67);
-        m_angleProfile.add(8.39, 62);
-        m_angleProfile.add(9.1, 59);
-        m_angleProfile.add(9.7, 58);
-        m_angleProfile.add(10.3, 51);
-        m_angleProfile.add(10.7, 51);
+        m_angleProfile.add(70, 64);
+        m_angleProfile.add(79, 62);
+        m_angleProfile.add(108, 54);
+        m_angleProfile.add(159.6, 39);
+        m_angleProfile.add(180, 39);
         
+    }
+    
+    public void setTargetFound(boolean value){
+    	m_targetFound = value;
+    }
+    
+    public boolean getTargetFound(){
+    	return m_targetFound;
     }
     
     public void setBatterShot(boolean value){
@@ -135,15 +139,16 @@ public class Shooter {
     }
     
 	public void setDistance() {
-		double range = SmartDashboard.getNumber("Range", 8.2);
+		double range = SmartDashboard.getNumber("Range", 0);
 		double angle = Math.abs(m_angleProfile.get(range));
 		double rpm = Math.abs(m_rpmProfile.get(range));
+		SmartDashboard.putNumber("TargetRpm", rpm);
+		SmartDashboard.putNumber("TargetRange", range);
+		SmartDashboard.putNumber("TargetAngle", angle);
 
 		m_rangeSnapshot = 1;
 		m_turret.setAimingAngle(angle);
-		m_shooterWheels.setShooterRPM(rpm);// + m_ballSensor.getRPMAdjust());//
-											// * m_ballSensor.getScalar());
-		SmartDashboard.putNumber("target Angle", m_turret.getSetPoint());
+		m_shooterWheels.setShooterRPM(rpm);
 	}
     
     public void batterShot(){

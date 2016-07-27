@@ -12,19 +12,20 @@ public class SmartDrive {
 	private SimPID m_straightController;
 	private Preferences prefs;
 	
-	private final double crawlForwardAssist = .1; // Used to break static friction and help PID converge on angle
+	private double DriveTurnCrawlPower; // Used to break static friction and help PID converge on angle
 	
 	public SmartDrive(Drive drive){
 		m_drive = drive;
 		try {
 			prefs = Preferences.getInstance();
-			m_turnController = new SimPID(prefs.getDouble("DriveTurnP", 0.05), prefs.getDouble("DriveTurnI",0.005), prefs.getDouble("DriveTurnD", 0), prefs.getDouble("DriveTurnEps", 0.0));
+			m_turnController = new SimPID(prefs.getDouble("DriveTurnP", 0), prefs.getDouble("DriveTurnI",0), prefs.getDouble("DriveTurnD", 0), prefs.getDouble("DriveTurnEps", 0));
 			m_turnController.setMaxOutput(0.6);
-			m_turnController.setDoneRange(prefs.getDouble("DriveTurnDoneRange",0.25));
-			m_driveController = new SimPID(prefs.getDouble("DriveP", 0.25), prefs.getDouble("DriveI",0.002), prefs.getDouble("DriveD", 0.001), prefs.getDouble("DriveEps", 0.5));
-			m_driveController.setMaxOutput(0.5);
-			m_straightController = new SimPID(0.08, 0, 0.001, 0.1);
-			m_straightController.setMaxOutput(0.25);
+			m_turnController.setDoneRange(prefs.getDouble("DriveTurnDoneRange",0));
+			m_driveController = new SimPID(prefs.getDouble("DriveP", 0), prefs.getDouble("DriveI",0), prefs.getDouble("DriveD", 0), prefs.getDouble("DriveEps", 0));
+			m_driveController.setMaxOutput(.5);
+			m_straightController = new SimPID(0.04, 0.001, 0.001, 0);
+			m_straightController.setMaxOutput(0.10);
+			DriveTurnCrawlPower = prefs.getDouble("DriveTurnCrawlPower",0); //.1 on carpet
 		} catch (Exception e) {
 			System.out.println("Oops");
 			e.printStackTrace();
@@ -44,7 +45,7 @@ public class SmartDrive {
 	}
 	
 	public void turnToCamera(double linearPower){
-		double offset = Math.asin(-(13.25 / 12.0) / SmartDashboard.getNumber("Range", 8)) * (180.0 / Math.PI) + SmartDashboard.getNumber("TurnToCam Constant", 1.5); // correction for parallax
+		double offset = Math.asin(-(13.25) / SmartDashboard.getNumber("Range", 1)) * (180.0 / Math.PI) + prefs.getDouble("TurnToCamConstant", 0); // correction for parallax
 		m_turnController.setDesiredValue(SmartDashboard.getNumber("AzimuthX", m_drive.getAngle()) + offset);
 		
 		double power = m_turnController.calcPID(m_drive.getAngle());
@@ -54,8 +55,8 @@ public class SmartDrive {
 		}
 		
 		//maintain a minimum speed in either direction to aim
-		if(Math.abs(linearPower) < crawlForwardAssist && !m_turnController.isDone()){
-			linearPower = crawlForwardAssist;
+		if(Math.abs(linearPower) < DriveTurnCrawlPower && !m_turnController.isDone()){
+			linearPower = DriveTurnCrawlPower;
 		}
 				
 		m_drive.setPowers(linearPower + power, linearPower - power);
@@ -83,7 +84,7 @@ public class SmartDrive {
 		m_turnController.setDesiredValue(angle);
 		double power = m_turnController.calcPID(m_drive.getAngle());
 		System.out.println("Current angle: " + m_drive.getAngle() + " Power: " + power);
-		m_drive.setPowers(power + crawlForwardAssist,  -power + crawlForwardAssist);
+		m_drive.setPowers(power + DriveTurnCrawlPower,  -power + DriveTurnCrawlPower);
 	}
 	
 	public void stop(){
@@ -119,4 +120,27 @@ public class SmartDrive {
 		return m_turnController.getDoneRangeVal();
 	}
 	
+	public void setDriveDoneRange(double range){
+		m_driveController.setDoneRange(range);
+	}
+	
+	public double getDriveDoneRange(){
+		return m_driveController.getDoneRangeVal();
+	}
+	
+	public void setTurnMinDoneCycles(int cycles){
+		m_turnController.setMinDoneCycles(cycles);
+	}
+	
+	public int getTurnMinDoneCycles(){
+		return m_turnController.getMinDoneCycles();
+	}
+	
+	public void setDriveMinDoneCycles(int cycles){
+		m_driveController.setMinDoneCycles(cycles);
+	}
+	
+	public int getDriveMinDoneCycles(){
+		return m_driveController.getMinDoneCycles();
+	}
 }

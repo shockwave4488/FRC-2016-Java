@@ -40,12 +40,12 @@ public class Turret {
 			temp.setMaxDecel(0.05);
 			m_motor = temp;
 			prefs = Preferences.getInstance();
-			m_pid = new SimPID(prefs.getDouble("TurretP", 0.001), prefs.getDouble("TurretI", 0.001),
-					prefs.getDouble("TurretD", 0.000), prefs.getDouble("TurretEps", 0));
+			m_pid = new SimPID(prefs.getDouble("TurretP", 0), prefs.getDouble("TurretI", 0),
+					prefs.getDouble("TurretD", 0), prefs.getDouble("TurretEps", 0));
 			m_pid.setMaxOutput(.5);
-			m_pid.setDoneRange(prefs.getDouble("TurretDoneRange", 0.5));
-			m_angleOffset = prefs.getDouble("TurretAngleOffset", 262.5);
-			m_loadAngle = prefs.getDouble("TurretLoadAngle", 40);
+			m_pid.setDoneRange(prefs.getDouble("TurretDoneRange", 0));
+			m_angleOffset = prefs.getDouble("TurretAngleOffset", 0);
+			m_loadAngle = prefs.getDouble("TurretLoadAngle", 0);
 
 			// create and initialize sensorSamples for moving average
 			m_sensorSamples = new double[m_sensorSamplesLength];
@@ -82,18 +82,25 @@ public class Turret {
 	 */
 	public void setPosition(ShooterPosition value) {
 		SmartDashboard.putString("Turret Positon", value.toString());
+		double prevDoneRange = m_pid.getDoneRangeVal();
+		int prevDoneCycles = m_pid.getMinDoneCycles();
+		
 		m_position = value;
 		switch (m_position) {
 		case Aiming:
 			m_pid.setDesiredValue(m_aimingAngle);
 			break;
 		case Load:
+			m_pid.setDoneRange(3);
+			m_pid.setMinDoneCycles(1);
 			m_pid.setDesiredValue(m_loadAngle + Math.sin(m_oscillateTimer.get() * Math.PI * 2) * 3);
 			break;
 		case Stored:
 			m_pid.setDesiredValue(0);
 			break;
 		}
+		m_pid.setDoneRange(prevDoneRange);
+		m_pid.setMinDoneCycles(prevDoneCycles);
 	}
 
 	public void setAimingAngle(double angle) {

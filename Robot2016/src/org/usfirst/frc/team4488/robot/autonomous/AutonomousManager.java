@@ -222,33 +222,48 @@ public class AutonomousManager {
 	  * Low bar defense: this method takes the robot to the courtyard
 	  */
 	 public void lowBar(){
+		 double prevDoneRange = m_drive.getDriveDoneRange();
+		 int prevDoneCycles = m_drive.getDriveMinDoneCycles();
+		 
+		 m_drive.setDriveDoneRange(2);
+		 m_drive.setDriveMinDoneCycles(1);
+		 
 		 m_manip.lowDefense();
 		 wait(m_manip::armAtPosition, m_manip::lowDefense);
-		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(15, firstHeading[0]));
+		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(197, firstHeading[0]));
 		 m_drive.stop();
 		 m_manip.stopIntake();
 		 wait(m_manip::armAtPosition, m_manip::stopIntake);
+		 
+		 m_drive.setDriveDoneRange(prevDoneRange);
+		 m_drive.setDriveMinDoneCycles(prevDoneCycles);
 	 }
 	 /**
 	  * Cheval: takes the robot to the courtyard
 	  * 
 	  */
 	 public void chevalDeFrise(){
-		 double distanceToCheval = 48;
-		 double distanceChevalStart = 12;
-		 double distanceDriveOver = 72;
+		 double distanceToCheval = 40;
+		 double distanceChevalStart = 16;
+		 double distanceDriveOver = 40;
+		 double distanceClearCheval = 30;
 		 
-		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(distanceToCheval, firstHeading[0]));
-		 m_drive.stop();
-		 m_manip.lowDefense();
+		 double prevDoneRange = m_drive.getDriveDoneRange();
+		 int prevDoneCycles = m_drive.getDriveMinDoneCycles();
+		 double prevMaxOutput = m_drive.getDriveMaxOutput();
+		 m_drive.setDriveDoneRange(1);
+		 m_drive.setDriveMinDoneCycles(1);
 		 
-		 double previousMaxOutput = m_drive.getDriveMaxOutput();
-		 m_drive.setDriveMaxOutput(.4);
+		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(distanceToCheval, firstHeading[0]));		 
 		 wait(() -> m_manip.armAtPosition(7, 2) || m_manip.armAtPosition(), m_manip::lowDefense);
 		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(distanceToCheval + distanceChevalStart, firstHeading[0]));
 		 wait(() -> m_drive.isDriveDone(), () -> {m_drive.driveToDistance(distanceToCheval + distanceChevalStart + distanceDriveOver, firstHeading[0]); m_manip.stopIntake();});
+		 wait(() -> m_drive.isDriveDone(), () -> {m_drive.driveToDistance(distanceToCheval + distanceChevalStart + distanceDriveOver + distanceClearCheval, firstHeading[0]); m_manip.stopIntake();});
 		 m_drive.stop();
-		 m_drive.setDriveMaxOutput(previousMaxOutput);
+		 
+		 m_drive.setDriveMaxOutput(prevMaxOutput);
+		 m_drive.setDriveDoneRange(prevDoneRange);
+		 m_drive.setDriveMinDoneCycles(prevDoneCycles);
 	 }
 	 
 	 public void portcullis(){
@@ -262,12 +277,24 @@ public class AutonomousManager {
 	 }
 	 
 	 public void rockWall(){
-		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(36, firstHeading[0]));
+		 double prevDoneRange = m_drive.getDriveDoneRange();
+		 int prevDoneCycles = m_drive.getDriveMinDoneCycles();
+		 double prevMaxOutput = m_drive.getDriveMaxOutput();
+		 m_drive.setDriveDoneRange(1);
+		 m_drive.setDriveMinDoneCycles(1);
+		 m_drive.setDriveMaxOutput(.5);
+		 
+		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(150, firstHeading[0]));
 		 m_drive.stop();
+		 /*
 		 Timer overTimer = new Timer();
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2.75, () -> m_drive.getDrive().setPowers(0.75, 0.75));
-		 m_drive.stop();
+		 m_drive.stop();*/
+		 
+		 m_drive.setDriveMaxOutput(prevMaxOutput);
+		 m_drive.setDriveDoneRange(prevDoneRange);
+		 m_drive.setDriveMinDoneCycles(prevDoneCycles);
 	 }
 	 
 	 public void roughTerrain(){
@@ -280,12 +307,25 @@ public class AutonomousManager {
 	 }
 	 
 	 public void moat(){
-		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(36, firstHeading[0]));
+		 double prevDoneRange = m_drive.getDriveDoneRange();
+		 int prevDoneCycles = m_drive.getDriveMinDoneCycles();
+		 double prevMaxOutput = m_drive.getDriveMaxOutput();
+		 m_drive.setDriveDoneRange(1);
+		 m_drive.setDriveMinDoneCycles(1);
+		 m_drive.setDriveMaxOutput(.6);
+		 
+		 wait(() -> m_drive.isDriveDone(), () -> m_drive.driveToDistance(140, firstHeading[0]));
 		 m_drive.stop();
+		 /*
 		 Timer overTimer = new Timer();
 		 overTimer.start();
 		 wait(() -> overTimer.get() > 2, () -> m_drive.getDrive().setPowers(0.75, 0.75));
 		 m_drive.stop();
+		 */
+		 
+		 m_drive.setDriveMaxOutput(prevMaxOutput);
+		 m_drive.setDriveDoneRange(prevDoneRange);
+		 m_drive.setDriveMinDoneCycles(prevDoneCycles);
 	 }
 	 
 	 public void ramparts(){
@@ -316,14 +356,14 @@ public class AutonomousManager {
 			 	secondTurnAngle = 0;
 		 		break;
 		 	case 1: //LOW BAR
-		 		firstTurnAngle = 20;
-			 	driveDistance = 120;
-			 	secondTurnAngle = 85;
+		 		firstTurnAngle = 70;
+			 	driveDistance = 0;
+			 	secondTurnAngle = 70;
 			 	break;
 		 	case 2 : //2C
-		 		firstTurnAngle = 60;
-		 		driveDistance = 120;
-		 		secondTurnAngle = 30;
+		 		firstTurnAngle = 45;
+		 		driveDistance = 60;
+		 		secondTurnAngle = 25;
 		 		break;
 		 	case 3 : //3C
 		 		firstTurnAngle = 20;
@@ -372,8 +412,10 @@ public class AutonomousManager {
 		 Logger.addMessage("firstHeading: " + firstHeading[0]);
 		 
 		 //Lower turning tolerance for auto
-		 double previousDoneRange = m_drive.getTurnDoneRange();
-		 m_drive.setTurnDoneRange(1);
+		 double prevDoneRange = m_drive.getTurnDoneRange();
+		 int prevMinDoneCycles = m_drive.getTurnMinDoneCycles();
+		 m_drive.setTurnDoneRange(5);
+		 m_drive.setTurnMinDoneCycles(1);
 		 
 		 //Turn
 		 Logger.addMessage("Turning");
@@ -393,7 +435,8 @@ public class AutonomousManager {
 		 m_drive.stop();
 		 
 		 //Return turning tolerance to previous value
-		 m_drive.setTurnDoneRange(previousDoneRange);
+		 m_drive.setTurnDoneRange(prevDoneRange);
+		 m_drive.setTurnMinDoneCycles(prevMinDoneCycles);
 	 }
 	 
 	 public void shoot(){
