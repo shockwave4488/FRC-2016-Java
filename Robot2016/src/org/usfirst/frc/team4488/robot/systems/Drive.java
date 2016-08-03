@@ -20,6 +20,8 @@ public class Drive implements TankDrive{
 	private CANTalon rightSlave2;
 	private CANTalon leftSlave1;
 	private CANTalon leftSlave2;
+	
+	private double wheelDiameter = 7.8;
  
 	
 	private AHRS m_navx;
@@ -96,26 +98,30 @@ public class Drive implements TankDrive{
 	}
 	
 	public double getLeftDistance(){
-		// Wheel diameter = 7.8
 		// Encoder clicks per rotation = 1024
-		return -m_left.getPosition() * 7.8 * Math.PI / 1024.0; // In inches
+		return -m_left.getPosition() * wheelDiameter * Math.PI / 1024.0; // In inches
 	}
 	
 	public double getRightDistance(){
-		return m_right.getPosition() * 7.8 * Math.PI / 1024.0; // In inches
+		return m_right.getPosition() * wheelDiameter * Math.PI / 1024.0; // In inches
 	}
 	
 	public double getLeftSpeed(){
-		return m_left.getSpeed() * 8.0 * Math.PI;
+		return m_left.getSpeed() * wheelDiameter * Math.PI / 100; // Gives approximate inches per second
 	}
 	
 	public double getRightSpeed(){
-		return m_right.getSpeed() * 8.0 * Math.PI;
+		return m_right.getSpeed() * wheelDiameter * Math.PI / 100; // Gives approximate inches per second
 	}
 	
 	public double getLinearDistance() {return (getLeftDistance() + getRightDistance()) / 2;}
 	public double getTurnDistance() {return (getLeftDistance() - getRightDistance()) / 2;}
-	public double getLinearSpeed() {return (getLeftSpeed() + getRightSpeed()) / 2;}
+	public double getLinearSpeed() {
+		double leftSpeed = getLeftSpeed();
+		double rightSpeed = getRightSpeed();
+		double linearSpeed = (leftSpeed + rightSpeed)/2;		
+		return linearSpeed;
+		}
 	public double getTurnSpeed() {return (getLeftSpeed() - getRightSpeed()) / 2;}
 	
 	public void printBrakeMode(){
