@@ -52,7 +52,7 @@ public class Shooter {
         m_angleProfile.add(70, 64);
         m_angleProfile.add(79, 62);
         m_angleProfile.add(108, 54);
-        m_angleProfile.add(159.6, 39);
+        m_angleProfile.add(159.6, 43);
         m_angleProfile.add(180, 39);
         
     }
