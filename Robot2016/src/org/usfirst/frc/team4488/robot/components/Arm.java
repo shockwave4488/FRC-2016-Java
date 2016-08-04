@@ -33,8 +33,7 @@ public class Arm {
 	public Arm() {
 		prefs = Preferences.getInstance();
 		armFailure = false;
-		m_armMotor = new Talon(RobotMap.ArmMotor); // JEAN THIS IS DIFFERENT
-													// FROM TURRET?!?!
+		m_armMotor = new Talon(RobotMap.ArmMotor);
 		m_encoder = new ArmEncoder(RobotMap.ArmEncoderB, RobotMap.ArmEncoderA);
 		double reduction = 2;
 		m_encoder.setDistancePerPulse(1.0 / (1024 * reduction / 360));
