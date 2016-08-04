@@ -18,9 +18,9 @@ public class Manipulator
     public Manipulator(){       
         try {
 			m_arm = new Arm();
-	        m_arm.Start(0.02);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			System.out.println("Manipulator Initialization Failure");
 			e.printStackTrace();
 		}
         m_intake = new Intake();
@@ -43,7 +43,7 @@ public class Manipulator
     public boolean armAtPosition(double position, double tolerance){
     	if(!m_arm.getLimitFound())
     		return false;
-    	return m_arm.armAngle() > position - tolerance && m_arm.armAngle() < position + tolerance;
+    	return m_arm.AtSetpoint();
     }
     
     public boolean armReady() {
