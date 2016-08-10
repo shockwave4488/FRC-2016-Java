@@ -30,7 +30,8 @@ public class AutonomousManager {
 	private Shooter m_shooter;
 	private SystemsManagement m_systems;
 	private SmartDrive m_drive;
-	private AutonDecoder m_decoder;
+	private SendableChooser m_position, m_defense, m_action;
+	// private AutonDecoder m_decoder;
 
 	/**
 	 * Constructor for the class AutonomousManager
@@ -49,8 +50,37 @@ public class AutonomousManager {
 		m_shooter = shooter;
 		m_drive = drive;
 		m_systems = systems;
-		m_decoder = new AutonDecoder();
+		// m_decoder = new AutonDecoder();
 
+		// Create autonomous selectors for dashboard
+		m_position = new SendableChooser();
+		m_position.addDefault("Do Nothing", 0);
+		m_position.addObject("Position 1", 1); // LOW BAR
+		m_position.addObject("Position 2C", 2);
+		m_position.addObject("Position 2L", 7);
+		m_position.addObject("Position 3A", 3);
+		m_position.addObject("Position 3B", 8);
+		m_position.addObject("Position 4", 4);
+		m_position.addObject("Position 5C", 9);
+		m_position.addObject("Position 5D", 5);
+		m_position.addObject("Spy Bot", 6);
+		m_defense = new SendableChooser();
+		m_defense.addDefault("Challenge", AutonDefense.Challenge);
+		m_defense.addObject("Low Bar", AutonDefense.LowBar);
+		m_defense.addObject("Moat", AutonDefense.Moat);
+		m_defense.addObject("Rough Terrain", AutonDefense.RoughTerrain);
+		m_defense.addObject("Ramparts", AutonDefense.Ramparts);
+		m_defense.addObject("Rock Wall", AutonDefense.RockWall);
+		m_defense.addObject("Cheval De Frise", AutonDefense.ChevalDeFrise);
+		m_defense.addObject("Portcullis", AutonDefense.Portcullis);
+		m_action = new SendableChooser();
+		m_action.addDefault("No Action", 0);
+		m_action.addObject("Delay", 1);
+		
+		// Put selector on dashboard
+		SmartDashboard.putData("Autonomous Position", m_position);
+		SmartDashboard.putData("Autonomous Defense", m_defense);
+		SmartDashboard.putData("Autonomous Action", m_action);
 	}
 
 	/**
@@ -115,7 +145,7 @@ public class AutonomousManager {
 	 *         AutonDecoder class method documentation
 	 */
 	public int getPosition() {
-		return m_decoder.getPosition();
+		return (int) m_position.getSelected();
 	}
 
 	/**
@@ -125,7 +155,8 @@ public class AutonomousManager {
 	 * @return string with the defense identification
 	 */
 	public String getDefense() {
-		return m_decoder.getDefense().toString();
+		AutonDefense selectedDefense = (AutonDefense) m_defense.getSelected(); 
+		return selectedDefense.toString();
 	}
 
 	/**
@@ -137,7 +168,7 @@ public class AutonomousManager {
 	 */
 	public void start() {
 		m_thread = new Thread(() -> {
-			AutonDefense defense = m_decoder.getDefense();
+			AutonDefense defense = (AutonDefense) m_defense.getSelected();//m_decoder.getDefense();
 
 			Logger.addMessage("Selected defense: " + defense);
 
@@ -193,9 +224,9 @@ public class AutonomousManager {
 
 			m_manip.stopIntake();
 
-			int position = m_decoder.getPosition();
+			int position = (int) m_position.getSelected();//m_decoder.getPosition();
 			driveToShoot(position);
-			
+
 			double goBack = 0;
 			if (goBack == 1) {
 				double preAimDistance = m_drive.getDrive().getLinearDistance();
@@ -217,9 +248,9 @@ public class AutonomousManager {
 					m_drive.setTurnDoneRange(prevDoneRange);
 					m_drive.setTurnMinDoneCycles(prevMinDoneCycles);
 				} else {
-					
+
 				}
-				//wait(() -> false, () -> m_systems.Update());
+				// wait(() -> false, () -> m_systems.Update());
 			}
 		}); // m_thread end
 		m_thread.start();
@@ -438,7 +469,8 @@ public class AutonomousManager {
 			secondTurnAngle = -5;
 			Timer delayTimer = new Timer();
 			delayTimer.start();
-			wait(() -> delayTimer.get() > 3.5, () -> {});
+			wait(() -> delayTimer.get() > 3.5, () -> {
+			});
 			break;
 		case 6: // SPY BOT, ASSUMED
 			firstTurnAngle = 5;
@@ -503,9 +535,11 @@ public class AutonomousManager {
 		double alignTimeMin = 0;
 		Timer alignTimer = new Timer();
 		alignTimer.start();
-		wait(() -> alignTimer.get() > alignTimeMin && SmartDashboard.getBoolean("TargetFound", false) && m_systems.getShooterState() == ShooterState.Idle,
-				() -> {
-					m_drive.turnToCamera();
+		wait(() -> alignTimer.get() > alignTimeMin && SmartDashboard.getBoolean("TargetFound", false)
+				&& m_systems.getShooterState() == ShooterState.Idle, () -> {
+					if (SmartDashboard.getBoolean("TargetFound", false)) {
+						m_drive.turnToCamera();
+					}
 					m_systems.Update();
 				});
 		m_drive.stop();
