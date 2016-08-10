@@ -106,7 +106,7 @@ public class Logger
             System.out.print(toAdd);
          
         _messages.add(toAdd);
-        updateSmartDashboard();
+        //updateSmartDashboard();
     	
     }
 
