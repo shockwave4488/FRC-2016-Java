@@ -41,7 +41,6 @@ public class Robot extends IterativeRobot {
 	private Manipulator manipulator;
 	private SystemsManagement systems;
 		
-	private SendableChooser m_position, m_defense, m_action;
      /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -56,12 +55,11 @@ public class Robot extends IterativeRobot {
     	manipulator = new Manipulator();
     	smartDrive = new SmartDrive(drive);
     	systems = new SystemsManagement(shooter, manipulator, smartDrive);
-    	driveHelper = new DriveHelper(drive, 0.2, 0.2, 0.6, 0.6, 0.75, 0.2); //Xbox 360
+    	driveHelper = new DriveHelper(drive, 0.25, 0.1, 0.6, 0.6, 0.75, 0.2); //Xbox 360
     	//driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
-
     }
     
     private void allPeriodic(){
@@ -74,12 +72,12 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
     	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
     	SmartDashboard.putNumber("ArmPot", manipulator.getArmAngle());
-    	SmartDashboard.putNumber("Drive Distance", drive.getLinearDistance());
+    	//SmartDashboard.putNumber("Drive Distance", drive.getLinearDistance());
     	SmartDashboard.putNumber("Left Encoder", drive.getLeftDistance());
     	SmartDashboard.putNumber("Right Encoder", drive.getRightDistance());
-    	SmartDashboard.putNumber("Turn Distance", drive.getTurnDistance());
-    	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
-    	SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
+    	//SmartDashboard.putNumber("Turn Distance", drive.getTurnDistance());
+    	//SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
+    	//SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
     	SmartDashboard.putNumber("Compass", drive.getCompass());
     	SmartDashboard.putNumber("AlignError", smartDrive.getTurnSetpoint() - drive.getAngle());
     	SmartDashboard.putNumber("Auton Position",autonManager.getPosition());
@@ -153,7 +151,7 @@ public class Robot extends IterativeRobot {
     	
     	if(controllers.getShootAlignButton() && controllers.getChargeButton() && shooter.getTargetFound()){
     		drive.BreakModeAll();
-    		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 && !controllers.getShootButton() ? controllers.getSpeed() : 0);
+    		smartDrive.turnToCamera(Math.abs(controllers.getSpeed()) > 0.2 && !controllers.getShootButton() ? controllers.getSpeed() : 0); // This will send the drive powers until the shooter button is pressed
     	}
     	else if(controllers.getBatterBrakeButton()){
     		drive.BreakModeAll();
@@ -161,7 +159,7 @@ public class Robot extends IterativeRobot {
     	else{
     		drive.UnBreakModeAll();
     		driveHelper.Drive(controllers.getSpeed(), controllers.getTurn(), controllers.getQuickturn(), true);
-    	}    	
+    	}
     	
     }
     
