@@ -55,8 +55,8 @@ public class Robot extends IterativeRobot {
     	manipulator = new Manipulator();
     	smartDrive = new SmartDrive(drive);
     	systems = new SystemsManagement(shooter, manipulator, smartDrive);
-    	driveHelper = new DriveHelper(drive, 0.25, 0.1, 0.6, 0.6, 0.75, 0.2); //Xbox 360
-    	//driveHelper = new DriveHelper(drive, 0.125, 0.075, 0.6, 0.6, 0.75, 0.2); //Xbox One
+    	driveHelper = new DriveHelper(drive, 0.25, 0.1); //Xbox 360
+    	//driveHelper = new DriveHelper(drive, 0.125, 0.075); //Xbox One
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
@@ -158,7 +158,7 @@ public class Robot extends IterativeRobot {
     	}
     	else{
     		drive.UnBreakModeAll();
-    		driveHelper.Drive(controllers.getSpeed(), controllers.getTurn(), controllers.getQuickturn(), true);
+    		driveHelper.Drive(controllers.getSpeed(), controllers.getTurn());
     	}
     	
     }
