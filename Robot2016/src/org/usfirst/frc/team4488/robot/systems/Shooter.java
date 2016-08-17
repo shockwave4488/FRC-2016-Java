@@ -12,6 +12,7 @@ import org.usfirst.frc.team4488.robot.components.Turret;
 import JavaRoboticsLib.ControlSystems.SetPointProfile;
 import JavaRoboticsLib.Utility.InputFilter;
 import JavaRoboticsLib.Utility.Logger;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -29,10 +30,16 @@ public class Shooter {
     private SetPointProfile m_rpmProfile;
     private SetPointProfile m_angleProfile;
     
+    private Preferences prefs;
+    private double m_turretBatterAngle;
+    private double m_turretBatterRPM;
+    
     private boolean m_targetFound; // store if target has been found so aiming can occur
     
     public Shooter()
     {
+    	prefs = Preferences.getInstance();
+    	
         m_shooterWheels = new ShooterWheels();
         m_indexer = new Indexer();
         m_turret = new Turret();
@@ -54,6 +61,9 @@ public class Shooter {
         m_angleProfile.add(108, 54);
         m_angleProfile.add(159.6, 43);
         m_angleProfile.add(180, 39);
+        
+        m_turretBatterAngle = prefs.getDouble("TurretBatterAngle", 0);
+        m_turretBatterRPM = prefs.getDouble("TurretBatterRPM", 0);
         
     }
     
@@ -153,8 +163,8 @@ public class Shooter {
     
     public void batterShot(){
 		m_rangeSnapshot = 1;
-    	m_turret.setAimingAngle(SmartDashboard.getNumber("Angle Setpoint", 69));
-    	m_shooterWheels.setShooterRPM(SmartDashboard.getNumber("Shooting Scalar", 1812));// + m_ballSensor.getRPMAdjust());
+		m_turret.setAimingAngle(m_turretBatterAngle);
+		m_shooterWheels.setShooterRPM(m_turretBatterRPM);
     }
     
     public void startShootTest(){

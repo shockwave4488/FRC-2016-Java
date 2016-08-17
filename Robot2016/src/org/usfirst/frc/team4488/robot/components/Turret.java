@@ -17,6 +17,8 @@ public class Turret {
 	private SimPID m_pid;
 	private Preferences prefs;
 
+	private double m_turretDoneRange;
+
 	private SpeedController m_motor;
 	private AnalogPotentiometer m_sensor;
 
@@ -43,7 +45,8 @@ public class Turret {
 			m_pid = new SimPID(prefs.getDouble("TurretP", 0), prefs.getDouble("TurretI", 0),
 					prefs.getDouble("TurretD", 0), prefs.getDouble("TurretEps", 0));
 			m_pid.setMaxOutput(.5);
-			m_pid.setDoneRange(prefs.getDouble("TurretDoneRange", 0));
+			m_turretDoneRange = prefs.getDouble("TurretDoneRange", 0);
+			m_pid.setDoneRange(m_turretDoneRange);
 			m_angleOffset = prefs.getDouble("TurretAngleOffset", 0);
 			m_loadAngle = prefs.getDouble("TurretLoadAngle", 0);
 
@@ -82,25 +85,23 @@ public class Turret {
 	 */
 	public void setPosition(ShooterPosition value) {
 		SmartDashboard.putString("Turret Positon", value.toString());
-		double prevDoneRange = m_pid.getDoneRangeVal();
-		int prevDoneCycles = m_pid.getMinDoneCycles();
-		
+
 		m_position = value;
 		switch (m_position) {
 		case Aiming:
 			m_pid.setDesiredValue(m_aimingAngle);
+			m_pid.setDoneRange(m_turretDoneRange);
+			m_pid.setMinDoneCycles(5);
 			break;
 		case Load:
+			m_pid.setDesiredValue(m_loadAngle + Math.sin(m_oscillateTimer.get() * Math.PI * 2) * 3);
 			m_pid.setDoneRange(3);
 			m_pid.setMinDoneCycles(1);
-			m_pid.setDesiredValue(m_loadAngle + Math.sin(m_oscillateTimer.get() * Math.PI * 2) * 3);
 			break;
 		case Stored:
 			m_pid.setDesiredValue(0);
 			break;
 		}
-		m_pid.setDoneRange(prevDoneRange);
-		m_pid.setMinDoneCycles(prevDoneCycles);
 	}
 
 	public void setAimingAngle(double angle) {
@@ -108,7 +109,8 @@ public class Turret {
 	}
 
 	/*
-	 * Gets the value that the turret's potentiometer is reading and reports a running average.
+	 * Gets the value that the turret's potentiometer is reading and reports a
+	 * running average.
 	 */
 	public double getAngle() {
 		m_sensorSamples[m_sensorSamplesIndex] = m_sensor.get();
@@ -150,8 +152,12 @@ public class Turret {
 		}
 
 		// limit downward speed
-		if (power <= -0.2) {
-			power = -0.2;
+		if (power <= -0.2 && m_pid.getDesiredVal() == 0) {
+			if (getAngle() > 20) {
+				power = -0.5;
+			} else {
+				power = -0.2;
+			}
 		}
 
 		m_motor.set(power);
