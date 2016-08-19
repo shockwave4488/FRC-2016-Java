@@ -75,10 +75,10 @@ public class Drive implements TankDrive{
 	public void setPowers(double leftPower, double rightPower) {
 		m_left.set(leftPower);
 		m_right.set(rightPower);
-		SmartDashboard.putNumber("Drive Speed Left", m_left.getSpeed());
-		SmartDashboard.putNumber("Drive Power Left", leftPower);
-		SmartDashboard.putNumber("Drive Speed Right", m_right.getSpeed());
-		SmartDashboard.putNumber("Drive Power Right", rightPower);
+		//SmartDashboard.putNumber("Drive Speed Left", m_left.getSpeed());
+		//SmartDashboard.putNumber("Drive Power Left", leftPower);
+		//SmartDashboard.putNumber("Drive Speed Right", m_right.getSpeed());
+		//SmartDashboard.putNumber("Drive Power Right", rightPower);
 	}
 	
 	public double getAngle(){
