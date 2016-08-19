@@ -35,9 +35,9 @@ public class PressureSensor {
 		
 		if(m_snapshotTimer.get() > 3 && m_snapshot == 0){
 			m_snapshot = m_sensor.getVoltage();// - m_normal;
-			SmartDashboard.putBoolean("Ball Shot?", m_snapshot > 3.25);
-			SmartDashboard.putNumber("Pressure Sensor Normal", m_normal);
-			SmartDashboard.putNumber("Pressure Sensor", m_snapshot);
+			//SmartDashboard.putBoolean("Ball Shot?", m_snapshot > 3.25);
+			//SmartDashboard.putNumber("Pressure Sensor Normal", m_normal);
+			//SmartDashboard.putNumber("Pressure Sensor", m_snapshot);
 		}
 		
 		/*
