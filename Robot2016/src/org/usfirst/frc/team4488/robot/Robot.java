@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -40,6 +41,9 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private SystemsManagement systems;
+	
+	private Timer m_endgameTimer;
+	private boolean m_endgameState;
 		
      /**
      * This function is run when the robot is first started up and should be
@@ -60,6 +64,9 @@ public class Robot extends IterativeRobot {
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
+    	m_endgameTimer = new Timer();
+    	m_endgameState = true;
+    	SmartDashboard.putBoolean("EndgameWarning", m_endgameState);
     }
     
     private void allPeriodic(){
@@ -113,14 +120,19 @@ public class Robot extends IterativeRobot {
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
         drive.UnBreakModeAll();
+    	m_endgameTimer.start();
     }
     
     /**
      * This function is called periodically during operator control
      */
     @Override
-	public void teleopPeriodic() {  	
+	public void teleopPeriodic() {  
     	allPeriodic();
+    	if (m_endgameTimer.get() > 105) {
+    		m_endgameState = !m_endgameState;
+    		SmartDashboard.putBoolean("EndgameWarning", m_endgameState);
+    	}
     	
     	systems.setPurgeButton(controllers.getPurgeButton());
     	systems.setBatterChargeButton(controllers.getBatterChargeButton());
