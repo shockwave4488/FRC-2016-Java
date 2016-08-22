@@ -45,7 +45,7 @@ public class Controllers {
 	}
 	
 	public boolean getShootAlignButton(){
-		return m_primary.getRawButton(10);
+		return m_primary.getRawButton(5);
 	}
 	
 	public boolean getQuickturn() {

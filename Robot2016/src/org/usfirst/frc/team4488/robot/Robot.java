@@ -67,6 +67,8 @@ public class Robot extends IterativeRobot {
     	m_endgameTimer = new Timer();
     	m_endgameState = true;
     	SmartDashboard.putBoolean("EndgameWarning", m_endgameState);
+    	SmartDashboard.putNumber("HSVLow",0);//, [50.0, 44.0, 193.0]);
+    	SmartDashboard.putNumber("HSVHigh",0);//HSVHigh  [90.0, 255.0, 255.0]
     }
     
     private void allPeriodic(){
