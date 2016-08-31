@@ -40,12 +40,6 @@ public class Manipulator
     	return m_arm.AtSetpoint();
     }
     
-    public boolean armAtPosition(double position, double tolerance){
-    	if(!m_arm.getLimitFound())
-    		return false;
-    	return m_arm.AtSetpoint();
-    }
-    
     public boolean armReady() {
     	return m_arm.getLimitFound();
     }
@@ -126,4 +120,20 @@ public class Manipulator
     public void setArmPositionLow(){
     	m_arm.setPosition(ArmPosition.Low);
     }
+    
+    public void setDoneRange(double range) {
+    	m_arm.setDoneRange(range);
+	}
+	
+	public double getDoneRange() {
+		return m_arm.getDoneRange();
+	}
+
+	public void setMinDoneCycles(int cycles) {
+		m_arm.setMinDoneCycles(cycles);
+	}
+
+	public int getMinDoneCycles() {
+		return m_arm.getMinDoneCycles();
+	}
 }

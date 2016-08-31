@@ -182,4 +182,20 @@ public class Arm {
 	public boolean getLimitFound() {
 		return m_limitFound;
 	}
+	
+	public void setDoneRange(double range) {
+		m_pid.setDoneRange(range);
+	}
+	
+	public double getDoneRange() {
+		return m_pid.getDoneRangeVal();
+	}
+
+	public void setMinDoneCycles(int cycles) {
+		m_pid.setMinDoneCycles(cycles);
+	}
+
+	public int getMinDoneCycles() {
+		return m_pid.getMinDoneCycles();
+	}
 }
