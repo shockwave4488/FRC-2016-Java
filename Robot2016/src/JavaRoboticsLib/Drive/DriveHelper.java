@@ -35,7 +35,7 @@ public class DriveHelper {
     double linearPower;
 
     linearPower = throttle;
-    angularPower = turn;
+    angularPower = Math.signum(turn) * (1 - Math.cos(turn*Math.PI/2));
     rightPwm = leftPwm = linearPower;
     leftPwm += angularPower;
     rightPwm -= angularPower;
