@@ -30,7 +30,7 @@ public class AutonomousManager {
 	private Shooter m_shooter;
 	private SystemsManagement m_systems;
 	private SmartDrive m_drive;
-	private SendableChooser m_position, m_defense, m_action;
+	private SendableChooser m_position, m_defense;
 	// private AutonDecoder m_decoder;
 
 	/**
@@ -58,11 +58,9 @@ public class AutonomousManager {
 		m_position.addObject("Position 1", 1); // LOW BAR
 		m_position.addObject("Position 2C", 2);
 		m_position.addObject("Position 2L", 7);
-		m_position.addObject("Position 3A", 3);
-		m_position.addObject("Position 3B", 8);
+		m_position.addObject("Position 3", 3);
 		m_position.addObject("Position 4", 4);
-		m_position.addObject("Position 5C", 9);
-		m_position.addObject("Position 5D", 5);
+		m_position.addObject("Position 5", 5);
 		m_position.addObject("Spy Bot", 6);
 		m_defense = new SendableChooser();
 		m_defense.addDefault("Challenge", AutonDefense.Challenge);
@@ -73,14 +71,10 @@ public class AutonomousManager {
 		m_defense.addObject("Rock Wall", AutonDefense.RockWall);
 		m_defense.addObject("Cheval De Frise", AutonDefense.ChevalDeFrise);
 		m_defense.addObject("Portcullis", AutonDefense.Portcullis);
-		m_action = new SendableChooser();
-		m_action.addDefault("No Action", 0);
-		m_action.addObject("Delay", 1);
 		
 		// Put selector on dashboard
 		SmartDashboard.putData("Autonomous Position", m_position);
 		SmartDashboard.putData("Autonomous Defense", m_defense);
-		SmartDashboard.putData("Autonomous Action", m_action);
 	}
 
 	/**
@@ -168,20 +162,26 @@ public class AutonomousManager {
 	 */
 	public void start() {
 		m_thread = new Thread(() -> {
-			AutonDefense defense = (AutonDefense) m_defense.getSelected();//m_decoder.getDefense();
+			AutonDefense defense = (AutonDefense) m_defense.getSelected();
+			int position = (int) m_position.getSelected();
+			
+			if (defense == AutonDefense.LowBar) {
+				position = 1;
+			}
 
-			Logger.addMessage("Selected defense: " + defense);
+			Logger.addMessage("Selected defense and position: " + defense + ", " + position);
 
 			// m_systems.setIntakeButton(true);
 			// wait(m_shooter::hasBall, () -> {});
 
 			// Experimental code to avoid ball stall condition - It didn't work
 			// that well
-			// m_shooter.MoveTurretPosition(ShooterPosition.Load);
-			// wait(m_shooter::hasBall, m_shooter::deJam);
-			// wait(m_shooter::turretAtPosition, () ->
-			// m_shooter.MoveTurretPosition(ShooterPosition.Stored));
-			// m_shooter.StopWheels();
+			m_shooter.MoveTurretPosition(ShooterPosition.Load);
+			wait(m_shooter::hasBall, m_shooter::deJam);
+			m_shooter.StopWheels();
+			wait(m_shooter::turretAtPosition, () ->
+			m_shooter.MoveTurretPosition(ShooterPosition.Stored));
+			
 
 			// Perform autonomous initialization
 			driveInit();
@@ -223,8 +223,7 @@ public class AutonomousManager {
 			}
 
 			m_manip.stopIntake();
-
-			int position = (int) m_position.getSelected();//m_decoder.getPosition();
+			
 			driveToShoot(position);
 
 			double goBack = 0;
@@ -307,7 +306,7 @@ public class AutonomousManager {
 
 		m_manip.lowDefense();
 		wait(m_manip::armAtPosition, m_manip::lowDefense);
-		wait(() -> m_drive.isDriveDistanceDone(), () -> m_drive.driveToDistance(197, firstHeading[0]));
+		wait(() -> m_drive.isDriveDistanceDone(), () -> m_drive.driveToDistance(170, firstHeading[0]));
 		m_drive.stop();
 		m_manip.stopIntake();
 		wait(m_manip::armAtPosition, m_manip::stopIntake);
@@ -321,21 +320,31 @@ public class AutonomousManager {
 	 * 
 	 */
 	public void chevalDeFrise() {
-		double distanceToCheval = 40;
-		double distanceChevalStart = 16;
+		double distanceToCheval = 46;
+		double distanceChevalStart = 18;
 		double distanceDriveOver = 40;
 		double distanceClearCheval = 30;
 
+		// Change PID values for drive for auto
 		double prevDoneRange = m_drive.getDriveDoneRange();
 		int prevDoneCycles = m_drive.getDriveMinDoneCycles();
 		double prevMaxOutput = m_drive.getDriveMaxOutput();
 		m_drive.setDriveDoneRange(1);
-		m_drive.setDriveMinDoneCycles(1);
+		m_drive.setDriveMinDoneCycles(5);
+		
+		// Change PID values for arm for auto
+		double prevArmDoneRange = m_drive.getDriveDoneRange();
+		int prevArmDoneCycles = m_drive.getDriveMinDoneCycles();
+		m_manip.setDoneRange(18);
+		m_manip.setMinDoneCycles(5);
 
 		wait(() -> m_drive.isDriveDistanceDone(), () -> m_drive.driveToDistance(distanceToCheval, firstHeading[0]));
-		wait(() -> m_manip.armAtPosition(7, 2) || m_manip.armAtPosition(), m_manip::lowDefense);
+		wait(() -> m_manip.armAtPosition(), m_manip::lowDefense);
+		m_drive.setDriveDoneRange(2);
+		m_drive.setDriveMinDoneCycles(1);
 		wait(() -> m_drive.isDriveDistanceDone(),
 				() -> m_drive.driveToDistance(distanceToCheval + distanceChevalStart, firstHeading[0]));
+		m_drive.setDriveDoneRange(1);
 		wait(() -> m_drive.isDriveDistanceDone(), () -> {
 			m_drive.driveToDistance(distanceToCheval + distanceChevalStart + distanceDriveOver, firstHeading[0]);
 			m_manip.stopIntake();
@@ -347,9 +356,14 @@ public class AutonomousManager {
 		});
 		m_drive.stop();
 
+		// Restore drive PID values
 		m_drive.setDriveMaxOutput(prevMaxOutput);
 		m_drive.setDriveDoneRange(prevDoneRange);
 		m_drive.setDriveMinDoneCycles(prevDoneCycles);
+		
+		// Restore arm PID values
+		m_manip.setDoneRange(prevArmDoneRange);
+		m_manip.setMinDoneCycles(prevArmDoneCycles);
 	}
 
 	public void portcullis() {
@@ -388,7 +402,7 @@ public class AutonomousManager {
 		m_drive.setDriveMinDoneCycles(1);
 		m_drive.setDriveMaxOutput(.6);
 
-		wait(() -> m_drive.getDrive().getLinearDistance() > 130, () -> m_drive.driveToSpeed(15, firstHeading[0]));
+		wait(() -> m_drive.getDrive().getLinearDistance() > 116, () -> m_drive.driveToSpeed(15, firstHeading[0]));
 		m_drive.stop();
 		m_drive.setDriveMaxOutput(prevMaxOutput);
 		m_drive.setDriveDoneRange(prevDoneRange);
@@ -403,7 +417,7 @@ public class AutonomousManager {
 		m_drive.setDriveMinDoneCycles(1);
 		m_drive.setDriveMaxOutput(.6);
 
-		wait(() -> m_drive.getDrive().getLinearDistance() > 130, () -> m_drive.driveToSpeed(17, firstHeading[0]));
+		wait(() -> m_drive.getDrive().getLinearDistance() > 130, () -> m_drive.driveToSpeed(14.5, firstHeading[0]));
 		m_drive.stop();
 		m_drive.setDriveMaxOutput(prevMaxOutput);
 		m_drive.setDriveDoneRange(prevDoneRange);
@@ -418,7 +432,7 @@ public class AutonomousManager {
 		m_drive.setDriveMinDoneCycles(1);
 		m_drive.setDriveMaxOutput(.6);
 
-		wait(() -> m_drive.getDrive().getLinearDistance() > 130, () -> m_drive.driveToSpeed(18, firstHeading[0]));
+		wait(() -> m_drive.getDrive().getLinearDistance() > 135, () -> m_drive.driveToSpeed(17, firstHeading[0]));
 		m_drive.stop();
 		m_drive.setDriveMaxOutput(prevMaxOutput);
 		m_drive.setDriveDoneRange(prevDoneRange);
@@ -444,33 +458,29 @@ public class AutonomousManager {
 			secondTurnAngle = 0;
 			break;
 		case 1: // LOW BAR
-			firstTurnAngle = 70;
+			firstTurnAngle = 60;
 			driveDistance = 0;
-			secondTurnAngle = 70;
+			secondTurnAngle = 60;
 			break;
 		case 2: // 2C
-			firstTurnAngle = 45;
-			driveDistance = 60;
+			firstTurnAngle = 60;
+			driveDistance = 44;
 			secondTurnAngle = 25;
 			break;
-		case 3: // 3C
-			firstTurnAngle = 20;
-			driveDistance = 60;
-			secondTurnAngle = 35;
+		case 3: // 3
+			firstTurnAngle = 0;
+			driveDistance = 0;
+			secondTurnAngle = 25;
 			break;
 		case 4: // 4
 			firstTurnAngle = 0;
-			driveDistance = 36;
+			driveDistance = 12;
 			secondTurnAngle = 0;
 			break;
-		case 5: // 5D
-			firstTurnAngle = -50;
-			driveDistance = 66;
-			secondTurnAngle = -5;
-			Timer delayTimer = new Timer();
-			delayTimer.start();
-			wait(() -> delayTimer.get() > 3.5, () -> {
-			});
+		case 5: // 5
+			firstTurnAngle = -60;
+			driveDistance = 44;
+			secondTurnAngle = 0;
 			break;
 		case 6: // SPY BOT, ASSUMED
 			firstTurnAngle = 5;
@@ -479,18 +489,8 @@ public class AutonomousManager {
 			break;
 		case 7: // 2L
 			firstTurnAngle = 0;
-			driveDistance = 120;
-			secondTurnAngle = 65;
-			break;
-		case 8: // 3L
-			firstTurnAngle = 0;
-			driveDistance = 60;
-			secondTurnAngle = 30;
-			break;
-		case 9: // 5C
-			firstTurnAngle = -50;
-			driveDistance = 66;
-			secondTurnAngle = -5;
+			driveDistance = 50;
+			secondTurnAngle = 35;
 			break;
 		default:
 			firstTurnAngle = 0;
@@ -517,6 +517,8 @@ public class AutonomousManager {
 		double dist = m_drive.getDrive().getLinearDistance();
 		wait(() -> m_drive.isDriveDistanceDone(), () -> m_drive.driveToDistance(driveDistance + dist, heading));
 		m_drive.stop();
+		
+		m_drive.setTurnMinDoneCycles(5);
 
 		// Turn
 		Logger.addMessage("Turning 2");
