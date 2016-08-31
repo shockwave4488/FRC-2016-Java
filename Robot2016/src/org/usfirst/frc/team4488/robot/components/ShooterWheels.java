@@ -28,7 +28,7 @@ public class ShooterWheels {
 		m_left = new ShooterWheel(RobotMap.ShooterMotorLeft, RobotMap.ShooterLeftCounter,
 				prefs.getDouble("ShooterP_Left", 0), prefs.getDouble("ShooterI_Left", 0),
 				prefs.getDouble("ShooterD_Left", 0), prefs.getDouble("ShooterEps_Left", 0),
-				prefs.getDouble("ShooterPIDDoneRange_Left", 20));
+				prefs.getDouble("ShooterPIDDoneRange_Left", 0));
 		m_right = new ShooterWheel(RobotMap.ShooterMotorRight, RobotMap.ShooterRightCounter,
 				prefs.getDouble("ShooterP_Right", 0), prefs.getDouble("ShooterI_Right", 0),
 				prefs.getDouble("ShooterD_Right", 0), prefs.getDouble("ShooterEps_Right", 0),
