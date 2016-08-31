@@ -110,7 +110,7 @@ public class ShooterWheel {
         m_power = 0.5; //starting power value for shooter wheel
         cycleCount = 0; //amount of debounce cycles
         minCycleCount = 20; //minimum amount of debounce cycles
-        m_tolerance = 50; //+- RPM tolerance
+        m_tolerance = ShooterPIDDoneRange; //+- RPM tolerance
         try {
         	m_pid = new SimPID(ShooterP, ShooterI, ShooterD, ShooterEps);
 			m_pid.setDoneRange(ShooterPIDDoneRange);
