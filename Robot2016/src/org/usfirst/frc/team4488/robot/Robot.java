@@ -59,7 +59,7 @@ public class Robot extends IterativeRobot {
     	manipulator = new Manipulator();
     	smartDrive = new SmartDrive(drive);
     	systems = new SystemsManagement(shooter, manipulator, smartDrive);
-    	driveHelper = new DriveHelper(drive, 0.25, 0.1); //Xbox 360
+    	driveHelper = new DriveHelper(drive, 0.25, 0.15); //Xbox 360
     	//driveHelper = new DriveHelper(drive, 0.125, 0.075); //Xbox One
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	shooter.setTurretManual(false);
@@ -67,8 +67,8 @@ public class Robot extends IterativeRobot {
     	m_endgameTimer = new Timer();
     	m_endgameState = true;
     	SmartDashboard.putBoolean("EndgameWarning", m_endgameState);
-    	SmartDashboard.putNumber("HSVLow",0);//, [50.0, 44.0, 193.0]);
-    	SmartDashboard.putNumber("HSVHigh",0);//HSVHigh  [90.0, 255.0, 255.0]
+    	//SmartDashboard.putNumber("HSVLow",0);//, [50.0, 44.0, 193.0]);
+    	//SmartDashboard.putNumber("HSVHigh",0);//HSVHigh  [90.0, 255.0, 255.0]
     }
     
     private void allPeriodic(){
