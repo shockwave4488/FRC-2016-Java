@@ -53,14 +53,14 @@ public class Shooter {
         
         m_rpmProfile = new SetPointProfile();
         m_rpmProfile.add(70,2500);
-        m_rpmProfile.add(180, 3500);
+        m_rpmProfile.add(200, 4000);
 
         m_angleProfile = new SetPointProfile();
         m_angleProfile.add(70, 64);
         m_angleProfile.add(79, 62);
         m_angleProfile.add(108, 54);
-        m_angleProfile.add(159.6, 43);
-        m_angleProfile.add(180, 39.5);
+        m_angleProfile.add(159.6, 41);
+        m_angleProfile.add(200, 37);
         
         m_turretBatterAngle = prefs.getDouble("TurretBatterAngle", 0);
         m_turretBatterRPM = prefs.getDouble("TurretBatterRPM", 0);
