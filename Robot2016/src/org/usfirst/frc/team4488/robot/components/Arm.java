@@ -93,7 +93,7 @@ public class Arm {
 			break;
 
 		case Low:
-			m_pid.setDesiredValue(-10);
+			m_pid.setDesiredValue(0);
 			break;
 
 		}
