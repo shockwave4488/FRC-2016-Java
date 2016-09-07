@@ -303,7 +303,10 @@ public class AutonomousManager {
 
 		m_drive.setDriveDoneRange(2);
 		m_drive.setDriveMinDoneCycles(1);
-
+		
+		double prevArmDoneRange = m_drive.getDriveDoneRange();
+		m_manip.setDoneRange(10);
+		
 		m_manip.lowDefense();
 		wait(m_manip::armAtPosition, m_manip::lowDefense);
 		wait(() -> m_drive.isDriveDistanceDone(), () -> m_drive.driveToDistance(170, firstHeading[0]));
@@ -313,6 +316,8 @@ public class AutonomousManager {
 
 		m_drive.setDriveDoneRange(prevDoneRange);
 		m_drive.setDriveMinDoneCycles(prevDoneCycles);
+		
+		m_manip.setDoneRange(prevArmDoneRange);
 	}
 
 	/**
