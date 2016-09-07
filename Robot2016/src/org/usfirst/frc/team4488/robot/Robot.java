@@ -74,8 +74,8 @@ public class Robot extends IterativeRobot {
     private void allPeriodic(){
     	SmartDashboard.putNumber("Target RPM", shooter.getShooterRPM());
     	SmartDashboard.putNumber("Gyro", drive.getAngle());
-    	SmartDashboard.putNumber("Pitch", drive.getGyroscope().getRoll());
-    	SmartDashboard.putNumber("Roll", drive.getGyroscope().getPitch());
+    	SmartDashboard.putNumber("Pitch", drive.getGyroscope().getPitch());
+    	//SmartDashboard.putNumber("Roll", drive.getGyroscope().getRoll());
     	SmartDashboard.putBoolean("At Rate?", shooter.atSpeed());
     	SmartDashboard.putBoolean("Intake Has Ball?", manipulator.HasBall());
     	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
@@ -87,7 +87,7 @@ public class Robot extends IterativeRobot {
     	//SmartDashboard.putNumber("Turn Distance", drive.getTurnDistance());
     	//SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     	//SmartDashboard.putNumber("Turn Speed", drive.getTurnSpeed()); 	
-    	SmartDashboard.putNumber("Compass", drive.getCompass());
+    	//SmartDashboard.putNumber("Compass", drive.getCompass());
     	SmartDashboard.putNumber("AlignError", smartDrive.getTurnSetpoint() - drive.getAngle());
     	SmartDashboard.putNumber("Auton Position",autonManager.getPosition());
     	SmartDashboard.putString("Auton Defense", autonManager.getDefense());
