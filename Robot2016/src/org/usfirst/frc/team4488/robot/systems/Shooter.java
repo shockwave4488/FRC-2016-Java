@@ -33,6 +33,7 @@ public class Shooter {
     private Preferences prefs;
     private double m_turretBatterAngle;
     private double m_turretBatterRPM;
+    private double m_turretBatterRampOffset;
     
     private boolean m_targetFound; // store if target has been found so aiming can occur
     
@@ -64,7 +65,7 @@ public class Shooter {
         
         m_turretBatterAngle = prefs.getDouble("TurretBatterAngle", 0);
         m_turretBatterRPM = prefs.getDouble("TurretBatterRPM", 0);
-        
+        m_turretBatterRampOffset = prefs.getDouble("TurretBatterRampOffset", 0);
     }
     
     public void setTargetFound(boolean value){
@@ -161,9 +162,9 @@ public class Shooter {
 		m_shooterWheels.setShooterRPM(rpm);
 	}
     
-    public void batterShot(){
+    public void batterShot(double pitch){
 		m_rangeSnapshot = 1;
-		m_turret.setAimingAngle(m_turretBatterAngle);
+		m_turret.setAimingAngle(m_turretBatterAngle - (pitch - m_turretBatterRampOffset));
 		m_shooterWheels.setShooterRPM(m_turretBatterRPM);
     }
     

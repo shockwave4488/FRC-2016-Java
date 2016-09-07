@@ -391,7 +391,7 @@ public class SystemsManagement
     }
         
     private void ShooterBatterCharge(){
-    	m_shooter.batterShot();        
+    	m_shooter.batterShot(m_drive.getDrive().getGyroscope().getPitch());        
     	m_shooter.Spin();
         m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
     }
