@@ -31,7 +31,6 @@ public class AutonomousManager {
 	private SystemsManagement m_systems;
 	private SmartDrive m_drive;
 	private SendableChooser m_position, m_defense;
-	// private AutonDecoder m_decoder;
 
 	/**
 	 * Constructor for the class AutonomousManager
