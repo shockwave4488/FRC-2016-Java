@@ -28,6 +28,7 @@ public class SystemsManagement
     private boolean m_defenseLow = false;
     private boolean m_batterCharge = false;
     private boolean m_purge = false;
+    private boolean m_pitchAngleShoot = true;
     
     private double m_armSemiManualPosition = 0;
     private Toggle m_intakeToggle;
@@ -86,6 +87,7 @@ public class SystemsManagement
         m_drive = drive;
         m_leds = new LEDController();
         m_lights = new CameraLights();
+        m_pitchAngleShoot = true;
         try {
 			m_logFile = new PrintWriter("/home/lvuser/Shooting.txt");
 		} catch (FileNotFoundException e) {
@@ -335,6 +337,13 @@ public class SystemsManagement
     	m_shooter.setDistance();
         m_shooter.Spin();
         m_shooter.MoveTurretPosition(ShooterPosition.Aiming);
+        
+        if (m_drive.getDrive().getGyroscope().getPitch() < -1.5){
+        	m_pitchAngleShoot = !m_pitchAngleShoot;
+        } else {
+        	m_pitchAngleShoot = true;
+        }
+        SmartDashboard.putBoolean("Shoot Pitch", m_pitchAngleShoot);
     }
 
     private void ShooterShoot(){
