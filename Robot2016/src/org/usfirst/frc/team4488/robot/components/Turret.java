@@ -6,9 +6,7 @@ import JavaRoboticsLib.Utility.Logger;
 import JavaRoboticsLib.ControlSystems.*;
 import JavaRoboticsLib.WPIExtensions.RampMotor;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Preferences;
 
 public class Turret {
 
@@ -34,6 +32,10 @@ public class Turret {
 	private final int m_sensorSamplesLength = 5;
 	private double[] m_sensorSamples;
 	private int m_sensorSamplesIndex;
+	
+	private DigitalInput m_bottomLimit;
+	private boolean m_bottomLimitCal;
+	private double m_angleOffsetCal;
 
 	public Turret() {
 		try {
@@ -41,6 +43,7 @@ public class Turret {
 			temp.setMaxAccel(0.1);
 			temp.setMaxDecel(0.05);
 			m_motor = temp;
+			m_bottomLimit = new DigitalInput(RobotMap.TurretBottomLimit);
 			prefs = Preferences.getInstance();
 			m_pid = new SimPID(prefs.getDouble("TurretP", 0), prefs.getDouble("TurretI", 0),
 					prefs.getDouble("TurretD", 0), prefs.getDouble("TurretEps", 0));
@@ -61,7 +64,9 @@ public class Turret {
 			e.printStackTrace();
 		}
 		m_sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, m_angleOffset);
-
+		m_bottomLimitCal = true;
+		m_angleOffsetCal = 0;
+		
 		m_motor.setInverted(true);
 		Logger.addMessage("Turret Initialized", 1);
 
@@ -107,13 +112,13 @@ public class Turret {
 	public void setAimingAngle(double angle) {
 		m_aimingAngle = angle;
 	}
-
+ 
 	/*
 	 * Gets the value that the turret's potentiometer is reading and reports a
 	 * running average.
 	 */
 	public double getAngle() {
-		m_sensorSamples[m_sensorSamplesIndex] = m_sensor.get();
+		m_sensorSamples[m_sensorSamplesIndex] = m_sensor.get() + m_angleOffsetCal;
 		m_sensorSamplesIndex = (m_sensorSamplesIndex + 1) % m_sensorSamplesLength;
 		double m_tempSensorSum = 0;
 		for (int i = 0; i < m_sensorSamplesLength; i++) {
@@ -138,8 +143,22 @@ public class Turret {
 	public void setManualPower(double power) {
 		m_manualPower = power;
 	}
+	
+	public boolean atBottomLimit() {
+		return !m_bottomLimit.get();
+	}
 
 	public void update() {
+		if (atBottomLimit() && m_bottomLimitCal){
+			m_bottomLimitCal = false;
+			m_angleOffsetCal = -m_sensor.get(); 
+			System.out.println("Found Turret Bottom Limit");
+			System.out.println("Current Angle Cal Value = " + m_angleOffsetCal);
+		} else if(!atBottomLimit()){
+			m_bottomLimitCal = true;
+		}
+		
+				
 		double power = 0;
 		if (getAngle() > 120) { // upper limit protection
 			power = 0;
@@ -166,5 +185,6 @@ public class Turret {
 		SmartDashboard.putNumber("TurretPot", getAngle());
 		SmartDashboard.putNumber("TurretSetPoint", m_pid.getDesiredVal());
 		SmartDashboard.putBoolean("TurretAtSetPoint", AtSetpoint());
+		SmartDashboard.putBoolean("TurretBottomLimit", atBottomLimit());
 	}
 }
