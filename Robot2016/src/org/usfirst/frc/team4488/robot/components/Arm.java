@@ -100,7 +100,7 @@ public class Arm {
 	}
 
 	public void update() {
-		SmartDashboard.putBoolean("Limit", atBackLimit());
+		SmartDashboard.putBoolean("ArmLimit", atBackLimit());
 		SmartDashboard.putBoolean("Arm Limit Found", m_limitFound);
 		if (!m_limitFound && !armFailure) {
 			if (!DriverStation.getInstance().isEnabled()) {
