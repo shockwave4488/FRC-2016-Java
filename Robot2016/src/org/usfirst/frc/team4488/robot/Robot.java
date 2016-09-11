@@ -59,7 +59,7 @@ public class Robot extends IterativeRobot {
     	manipulator = new Manipulator();
     	smartDrive = new SmartDrive(drive);
     	systems = new SystemsManagement(shooter, manipulator, smartDrive);
-    	driveHelper = new DriveHelper(drive, 0.25, 0.15); //Xbox 360
+    	driveHelper = new DriveHelper(drive, 0.3, 0.15); //Xbox 360
     	//driveHelper = new DriveHelper(drive, 0.125, 0.075); //Xbox One
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
     	shooter.setTurretManual(false);
