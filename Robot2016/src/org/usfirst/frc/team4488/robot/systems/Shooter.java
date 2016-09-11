@@ -59,7 +59,8 @@ public class Shooter {
         m_angleProfile = new SetPointProfile();
         m_angleProfile.add(70, 64);
         m_angleProfile.add(79, 62);
-        m_angleProfile.add(108, 54);
+        m_angleProfile.add(108, 52);
+        m_angleProfile.add(130, 46.5);
         m_angleProfile.add(159.6, 41);
         m_angleProfile.add(200, 37);
         
