@@ -207,6 +207,7 @@ public class Robot extends IterativeRobot {
      */
     @Override
 	public void testPeriodic() {
+    	allPeriodic();
     	testValues();
     	
     	//IS THIS CALLED EVEN IF DISABLED?

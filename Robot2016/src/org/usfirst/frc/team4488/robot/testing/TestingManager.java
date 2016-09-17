@@ -75,9 +75,10 @@ public class TestingManager {
 					// loop through and try again - no button pressed
 					break;
 				case 1:
+					
 					// Pressed A - Proceed to test
 					System.out.println("Pressed A - advance to next test.");
-					if (runTestPractice(testCounter))
+					if (runTestComp(testCounter))
 						System.out.println("SUCCESS");
 					else
 						System.out.println("Failure");
@@ -92,7 +93,7 @@ public class TestingManager {
 					testCounter--;
 					System.out.println("Pressed X - repeat of previous test.");
 					// System.out.println("running Test seven");
-					if (runTestPractice(testCounter))
+					if (runTestComp(testCounter))
 						System.out.println("SUCCESS");
 					else
 						System.out.println("Failure");
@@ -479,7 +480,7 @@ public class TestingManager {
 		}
 
 		System.out.println("SUCCESS");
-
+		m_manip.resetArm();
 		System.out.println("Please move the arm all the way to resting position.");
 		// wait until button pressed - to ensure we didn't over or undershoot.
 		wait(() -> m_manip.armReady(), () -> {
@@ -512,10 +513,9 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
+
 		m_manip.setArmPositionLow();
-		wait(() -> m_manip.armAtPosition(), () -> {
-			m_manip.setArmPositionLow();
-		});
+		wait(m_manip::armAtPosition, m_manip::lowDefense);
 		double result1 = m_manip.getArmAngle();
 
 		// if within tolerance, report success
@@ -532,12 +532,14 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
-		
-		wait(() -> m_manip.getArmAngle() == 0, () -> {
-			m_manip.resetArm();;
-		});
-		System.out.println("SUCCESS. TEST COMPLETE.");
-		return true;
+		m_manip.setArmPositionHigh();
+		wait(m_manip::armAtPosition, m_manip::lowDefense);
+		if(m_manip.armReady()){
+			System.out.println("SUCCESS. TEST COMPLETE.");
+			return true;
+		}
+		else
+			return false;
 	}
 
 	// Beam Break test - check both
@@ -613,18 +615,22 @@ public class TestingManager {
 	 * set else find more simplistic functionality to pretend to fire.
 	 */
 	private boolean testTwentyOne() {
+		System.out.println("In 21");
+		System.out.println(m_shooter.TurretAngle());
 		m_shooter.MoveTurretPosition(ShooterPosition.Load);
+		wait(()->m_shooter.turretAtPosition(),()->m_shooter.MoveTurretPosition(ShooterPosition.Load));
 		System.out.println("Turret Raised");
 		// while(true)
 		// m_shooter.update();
-		m_shooter.setShooterRPM(100);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		Timer wheelTimer = new Timer();
+		wheelTimer.start();
+		wait(() -> wheelTimer.get() > 3, () -> 		m_shooter.setShooterRPM(100));
+
+
 		m_shooter.setShooterRPM(0);
+		m_shooter.MoveTurretPosition(ShooterPosition.Stored);
+		wait(()->m_shooter.turretAtPosition(),()->m_shooter.MoveTurretPosition(ShooterPosition.Stored));
 
 		return true;
 	}
