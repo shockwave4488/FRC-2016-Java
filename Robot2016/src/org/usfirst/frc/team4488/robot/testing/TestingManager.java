@@ -75,7 +75,9 @@ public class TestingManager {
 					// loop through and try again - no button pressed
 					break;
 				case 1:
-					
+					testEighteen(0);
+					if(true)
+					return;
 					// Pressed A - Proceed to test
 					System.out.println("Pressed A - advance to next test.");
 					if (runTestComp(testCounter))
@@ -457,7 +459,8 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
-		if (!m_manip.armReady()) {
+
+		if (!m_manip.armLimit()) {
 			System.out.println("Arm not at resting position. please reset and try again");
 			return false;
 		}
@@ -483,7 +486,7 @@ public class TestingManager {
 		m_manip.resetArm();
 		System.out.println("Please move the arm all the way to resting position.");
 		// wait until button pressed - to ensure we didn't over or undershoot.
-		wait(() -> m_manip.armReady(), () -> {
+		wait(() -> m_manip.armLimit(), () -> {
 		});
 		System.out.println("SUCCESS. TEST COMPLETE.");
 		return true;
@@ -501,7 +504,7 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
-		if (!m_manip.armReady()) {
+		if (!m_manip.armLimit()) {
 			System.out.println("Arm not at resting position. please reset and try again");
 			return false;
 		}
@@ -513,9 +516,9 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
-
-		m_manip.setArmPositionLow();
-		wait(m_manip::armAtPosition, m_manip::lowDefense);
+		System.out.println("Moving down");
+		m_manip.setDoneRange(7);
+		wait(()->m_manip.armAtPosition(),()->m_manip.lowDefense());
 		double result1 = m_manip.getArmAngle();
 
 		// if within tolerance, report success
@@ -532,14 +535,10 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
-		m_manip.setArmPositionHigh();
-		wait(m_manip::armAtPosition, m_manip::lowDefense);
-		if(m_manip.armReady()){
-			System.out.println("SUCCESS. TEST COMPLETE.");
-			return true;
-		}
-		else
-			return false;
+		
+		wait(()->m_manip.armAtPosition(), ()->m_manip.setArmPositionHigh());
+		//put button x break incase stuck forever
+		return true;
 	}
 
 	// Beam Break test - check both
