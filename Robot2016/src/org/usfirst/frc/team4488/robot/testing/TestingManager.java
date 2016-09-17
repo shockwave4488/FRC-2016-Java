@@ -63,6 +63,9 @@ public class TestingManager {
 		logger = new TestLogger();
 
 		m_thread = new Thread(() -> {
+			System.out.println("---------------------------------------------------------");
+			System.out.println("---------Please unplug the turret and arm motors---------");
+			System.out.println("---------------------------------------------------------");
 			int testCounter = 0;
 			boolean test = true;
 
@@ -75,9 +78,6 @@ public class TestingManager {
 					// loop through and try again - no button pressed
 					break;
 				case 1:
-					testEighteen(0);
-					if(true)
-					return;
 					// Pressed A - Proceed to test
 					System.out.println("Pressed A - advance to next test.");
 					if (runTestComp(testCounter))
@@ -114,9 +114,10 @@ public class TestingManager {
 					break;
 				}
 			}
-
 			System.out.println("Testing complete");
-
+			System.out.println("---------------------------------------------------------");
+			System.out.println("----------------Please restart the robot-----------------");
+			System.out.println("---------------------------------------------------------");
 		});
 		m_thread.start();
 	}
@@ -179,102 +180,102 @@ public class TestingManager {
 
 		switch (testCase) {
 		case 0:
+			System.out.println("Running test fourteen.");
+			returnFlag = testFourteen(0, 90);
+			break;
+		case 1:
+			System.out.println("Running test seventeen.");
+			returnFlag = testSeventeen(0);
+			break;
+		case 2:
+			System.out.println("Running test nineteen.");
+			returnFlag = testNineteen();
+			break;
+		case 3:
+			System.out.println("---------------------------------------------------------");
+			System.out.println("--------Please plug in the turret and arm motors---------");
+			System.out.println("---------------------------------------------------------");
 			System.out.println("Running test ten.");
 			returnFlag = testTen(55);
 			break;
-		case 1:
-			// System.out.println("Running test eleven.");
-			// returnFlag = testEleven();
-			break;
-		case 2:
-			System.out.println("Running test twelve.");
-			returnFlag = testTwelve();
-			break;
-		case 3:
+		case 4:
 			System.out.println("Running test thirteen.");
 			returnFlag = testThirteen();
 			break;
-		case 4:
-			System.out.println("Running test fourteen.");
-			returnFlag = testFourteen(0,90);
-			break;
 		case 5:
-			System.out.println("Running test sixteen.");
-			returnFlag = testSixteen();
+			System.out.println("Running test twenty.");
+			returnFlag = testTwenty();
 			break;
 		case 6:
-			System.out.println("Running test seventeen.");
-			returnFlag = testSeventeen(0);
+			System.out.println("Running test twelve.");
+			returnFlag = testTwelve();
 			break;
 		case 7:
 			System.out.println("Running test eighteen.");
 			returnFlag = testEighteen(0);
 			break;
 		case 8:
-			System.out.println("Running test nineteen.");
-			returnFlag = testNineteen();
+			System.out.println("Running test sixteen.");
+			returnFlag = testSixteen();
 			break;
 		case 9:
-			System.out.println("Running test twenty.");
-			returnFlag = testTwenty();
+			System.out.println("Running test twentyone.");
+			testTwentyOne();
 			break;
 		case 10:
-			// System.out.println("Running test twentyone.");
-			// testTwentyOne();
+			
 			break;
-
 		}
 		return (returnFlag);
 	}
-	
+
 	private boolean runTestPractice(int testCase) {
 
 		boolean returnFlag = true;
 
 		switch (testCase) {
 		case 0:
+			System.out.println("Running test fourteen.");
+			returnFlag = testFourteen(90, 180);
+			break;
+		case 1:
+			System.out.println("Running test seventeen.");
+			returnFlag = testSeventeen(0);
+			break;
+		case 2:
+			System.out.println("Running test nineteen.");
+			returnFlag = testNineteen();
+			break;
+		case 3:
 			System.out.println("Running test ten.");
 			returnFlag = testTen(55);
 			break;
-		case 1:
-			// System.out.println("Running test eleven.");
-			// returnFlag = testEleven();
-			break;
-		case 2:
-			System.out.println("Running test twelve.");
-			returnFlag = testTwelve();
-			break;
-		case 3:
+		case 4:
 			System.out.println("Running test thirteen.");
 			returnFlag = testThirteen();
 			break;
-		case 4:
-			System.out.println("Running test fourteen.");
-			returnFlag = testFourteen(90,180);
-			break;
 		case 5:
-			System.out.println("Running test sixteen.");
-			returnFlag = testSixteen();
+			System.out.println("Running test twenty.");
+			returnFlag = testTwenty();
 			break;
 		case 6:
-			System.out.println("Running test seventeen.");
-			returnFlag = testSeventeen(0);
+			System.out.println("Running test twelve.");
+			returnFlag = testTwelve();
 			break;
 		case 7:
 			System.out.println("Running test eighteen.");
 			returnFlag = testEighteen(0);
 			break;
 		case 8:
-			System.out.println("Running test nineteen.");
-			returnFlag = testNineteen();
+			System.out.println("Running test sixteen.");
+			returnFlag = testSixteen();
 			break;
 		case 9:
-			System.out.println("Running test twenty.");
-			returnFlag = testTwenty();
+			System.out.println("Running test twentyone.");
+			testTwentyOne();
 			break;
 		case 10:
-			// System.out.println("Running test twentyone.");
-			// testTwentyOne();
+			
 			break;
 
 		}
@@ -287,6 +288,11 @@ public class TestingManager {
 	private boolean testTen(double Target) {
 		// Run drive for 3 seconds. Check encoder - Auto
 		// Given power and time.
+		System.out.println("Drive Test -Press A to continue");
+		wait(() -> controllers.getTestSuccess_NextButton(), () -> {
+		});
+		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
+		});
 		m_drive.getDrive().resetEncoders();
 		Timer resetTimer = new Timer();
 		resetTimer.start();
@@ -321,6 +327,10 @@ public class TestingManager {
 	private boolean testTwelve() {
 		System.out.println(
 				"This next test will lower the arm to the intake position and spin the intake until you trip the beam break");
+		wait(() -> controllers.getTestSuccess_NextButton(), () -> {
+		});
+		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
+		});
 		if (m_manip.IntakeHasBall()) {
 			// Cannot run the test, the beam break was tripped?
 			System.out.println("Error - please reset the beam break before proceeding");
@@ -334,7 +344,8 @@ public class TestingManager {
 				return true;
 			}
 			if (controllers.getTestFail_ReplayButton()) {
-				wait(()->!controllers.getTestFail_ReplayButton(),()->{});
+				wait(() -> !controllers.getTestFail_ReplayButton(), () -> {
+				});
 				return false;
 			}
 		}
@@ -370,11 +381,13 @@ public class TestingManager {
 
 		while (true) {
 			if (controllers.getTestSuccess_NextButton()) {
-				wait(()->!controllers.getTestSuccess_NextButton(),()->{});
+				wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
+				});
 				return true;
 			}
 			if (controllers.getTestFail_ReplayButton()) {
-				wait(()-> !controllers.getTestFail_ReplayButton(),()->{});
+				wait(() -> !controllers.getTestFail_ReplayButton(), () -> {
+				});
 				return false;
 			}
 		}
@@ -382,8 +395,7 @@ public class TestingManager {
 
 	/*
 	 * Manual Turret test - Moving turret from resting to upright positions and
-	 * checking for correct encoder values. 
-	 * Practice Target = 180 resting = 90
+	 * checking for correct encoder values. Practice Target = 180 resting = 90
 	 * Comp Target = 90 resting = 0
 	 */
 	private boolean testFourteen(double resting, double Target) {
@@ -391,7 +403,7 @@ public class TestingManager {
 		resetTimer.start();
 		wait(() -> resetTimer.get() > .25, () -> {
 		});
-		//TODO Need to check hall effect sensor
+		// TODO Need to check hall effect sensor
 		System.out.println("Beginning Shooter Test");
 		System.out.println("Beginning Angle" + m_shooter.TurretAngle());
 		if (!(m_shooter.TurretAngle() > (resting - 5) && m_shooter.TurretAngle() < (resting + 5))) {
@@ -406,7 +418,8 @@ public class TestingManager {
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
 		double result = m_shooter.TurretAngle();
-		System.out.println("Ending Angle" + result);
+		System.out.println("Upright Angle" + result);
+		System.out.println("Please move the turret down.");
 		if (result > (Target - 10) && result < (Target + 10)) {
 			return true;
 		} else {
@@ -436,12 +449,14 @@ public class TestingManager {
 
 		while (true) {
 			if (controllers.getTestSuccess_NextButton()) {
-				wait(()->!controllers.getTestSuccess_NextButton(),()->{});
-					return true;
+				wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
+				});
+				return true;
 			}
 			if (controllers.getTestFail_ReplayButton()) {
-				wait(()->!controllers.getTestFail_ReplayButton(),()->{});
-					return false;
+				wait(() -> !controllers.getTestFail_ReplayButton(), () -> {
+				});
+				return false;
 			}
 		}
 	}
@@ -518,7 +533,7 @@ public class TestingManager {
 		});
 		System.out.println("Moving down");
 		m_manip.setDoneRange(7);
-		wait(()->m_manip.armAtPosition(),()->m_manip.lowDefense());
+		wait(() -> m_manip.armAtPosition(), () -> m_manip.lowDefense());
 		double result1 = m_manip.getArmAngle();
 
 		// if within tolerance, report success
@@ -535,10 +550,25 @@ public class TestingManager {
 		// Also check to make sure it gets depressed.
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
-		
-		wait(()->m_manip.armAtPosition(), ()->m_manip.setArmPositionHigh());
-		//put button x break incase stuck forever
-		return true;
+
+		// wait(()->m_manip.armAtPosition(), ()->m_manip.setArmPositionHigh());
+		// put button x break incase stuck forever
+		m_manip.setArmPositionHigh();
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		while (true) {
+			if (controllers.getTestFail_ReplayButton()) {
+				wait(() -> !controllers.getTestFail_ReplayButton(), () -> {
+				});
+				return false;
+			}
+			if (m_manip.armLimit())
+				return true;
+		}
 	}
 
 	// Beam Break test - check both
@@ -571,18 +601,23 @@ public class TestingManager {
 		return true;
 	}
 
-	// Another drive test - running wheels to perform a 360 on the ground
+	// Another drive test - running wheels to perform a 180 on the ground
 	private boolean testTwenty() {
+		System.out.println("Turn Drive Test -Press A to continue.");
+		wait(() -> controllers.getTestSuccess_NextButton(), () -> {
+		});
+		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
+		});
 		System.out.println("Resetting encoders");
 		m_drive.resetAll(); // set both encoders to zero
-		
+
 		Timer resetTimer = new Timer();
 		resetTimer.start();
 		wait(() -> resetTimer.get() > .25, () -> {
 		});
 		// Have the robot do a 180, and ensure one encoder is positive while the
 		// other is negative.
-		
+
 		System.out.println("Beginning Turn");
 		m_drive.getDrive().setPowers(20, -20);
 		double Lresult = m_drive.getDrive().getLeftDistance();
@@ -616,20 +651,17 @@ public class TestingManager {
 	private boolean testTwentyOne() {
 		System.out.println("In 21");
 		System.out.println(m_shooter.TurretAngle());
-		m_shooter.MoveTurretPosition(ShooterPosition.Load);
-		wait(()->m_shooter.turretAtPosition(),()->m_shooter.MoveTurretPosition(ShooterPosition.Load));
+		wait(() -> m_shooter.turretAtPosition(), () -> m_shooter.MoveTurretPosition(ShooterPosition.Load));
 		System.out.println("Turret Raised");
 		// while(true)
 		// m_shooter.update();
-		
+
 		Timer wheelTimer = new Timer();
 		wheelTimer.start();
-		wait(() -> wheelTimer.get() > 3, () -> 		m_shooter.setShooterRPM(100));
-
+		wait(() -> wheelTimer.get() > 3, () -> m_shooter.setShooterRPM(100));
 
 		m_shooter.setShooterRPM(0);
-		m_shooter.MoveTurretPosition(ShooterPosition.Stored);
-		wait(()->m_shooter.turretAtPosition(),()->m_shooter.MoveTurretPosition(ShooterPosition.Stored));
+		wait(() -> m_shooter.turretAtPosition(), () -> m_shooter.MoveTurretPosition(ShooterPosition.Stored));
 
 		return true;
 	}
