@@ -91,7 +91,16 @@ public class Controllers {
 	public boolean getTurnResetButton(){
 		return m_turnResetTrigger.getRisingUpdate(m_primary.getRawButton(10));
 	}
-	
+	public boolean getTestSuccess_NextButton(){
+		return m_primary.getRawButton(1);
+	}
+	public boolean getTestFail_ReplayButton(){
+		return m_primary.getRawButton(3);
+	}
+	public boolean getTestAbortButton(){
+		return m_primary.getRawButton(4);
+	}
+
 	/**
 	 * This function vibrates the primary controller
 	 */
