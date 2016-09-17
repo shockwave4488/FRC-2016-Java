@@ -656,11 +656,13 @@ public class TestingManager {
 		// while(true)
 		// m_shooter.update();
 
+		m_shooter.Spin();
+		
 		Timer wheelTimer = new Timer();
 		wheelTimer.start();
-		wait(() -> wheelTimer.get() > 3, () -> m_shooter.setShooterRPM(100));
+		wait(() -> wheelTimer.get() > 3, () -> {});
 
-		m_shooter.setShooterRPM(0);
+		m_shooter.StopWheels();
 		wait(() -> m_shooter.turretAtPosition(), () -> m_shooter.MoveTurretPosition(ShooterPosition.Stored));
 
 		return true;
