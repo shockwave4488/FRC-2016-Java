@@ -34,11 +34,6 @@ public class Turret {
 	private int m_sensorSamplesIndex;
 
 	private DigitalInput m_bottomLimit;
-	private boolean m_bottomLimitCal;
-	private double m_angleOffsetCal;
-	private int m_angleOffsetCalCounter;
-	private int m_angleOffsetCalMaxCount;
-	private double[] m_angleOffsetCalAvg;
 
 	public Turret() {
 		try {
@@ -67,8 +62,6 @@ public class Turret {
 			e.printStackTrace();
 		}
 		m_sensor = new AnalogPotentiometer(RobotMap.TurretPotentiometer, -360, m_angleOffset);
-		m_bottomLimitCal = true;
-		m_angleOffsetCal = 0;
 
 		m_motor.setInverted(true);
 		Logger.addMessage("Turret Initialized", 1);
@@ -152,20 +145,6 @@ public class Turret {
 	}
 
 	public void update() {
-		/********************************************************************
-		 * This code was used to zero out the pot. It was removed because the
-		 * problem was found to be with the pot wire. Keeping in case we need to
-		 * apply a calibrated offset if (atBottomLimit() && m_bottomLimitCal){
-		 * m_angleOffsetCalAvg[m_angleOffsetCalCount] = -m_sensor.get();
-		 ********************************************************************
-		 * m_angleOffsetCal = -m_sensor.get(); m_angleOffsetCalCounter += 1;
-		 * System.out.println("Found Turret Bottom Limit"); System.out.println(
-		 * "Current Angle Cal Value = " + m_angleOffsetCal); } else
-		 * if(!atBottomLimit()){ m_bottomLimitCal = true; m_angleOffsetCalCount
-		 * = 0; }
-		 * 
-		 * m_bottomLimitCal = false;
-		 */
 		double power = 0;
 		if (getAngle() > 120) { // upper limit protection
 			power = 0;
