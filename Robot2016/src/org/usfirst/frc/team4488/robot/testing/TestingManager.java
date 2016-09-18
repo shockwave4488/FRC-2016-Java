@@ -79,6 +79,7 @@ public class TestingManager {
 					break;
 				case 1:
 					// Pressed A - Proceed to test
+					
 					System.out.println("Pressed A - advance to next test.");
 					if (runTestComp(testCounter))
 						System.out.println("SUCCESS");
@@ -215,8 +216,8 @@ public class TestingManager {
 			returnFlag = testEighteen(0);
 			break;
 		case 8:
-			System.out.println("Running test sixteen.");
-			returnFlag = testSixteen();
+			//System.out.println("Running test sixteen.");
+			//returnFlag = testSixteen();
 			break;
 		case 9:
 			System.out.println("Running test twentyone.");
@@ -263,8 +264,8 @@ public class TestingManager {
 			returnFlag = testTwelve();
 			break;
 		case 7:
-			System.out.println("Running test eighteen.");
-			returnFlag = testEighteen(0);
+			//System.out.println("Running test eighteen.");
+			//returnFlag = testEighteen(0);
 			break;
 		case 8:
 			System.out.println("Running test sixteen.");
@@ -512,6 +513,7 @@ public class TestingManager {
 	 * and back again while checking limit switch and encoder values. Target = 0
 	 */
 	private boolean testEighteen(double Target) {
+		
 		System.out.println("Please put arm in the resting position, Press A when completed.");
 		// wait until button pressed - to ensure we didn't over or undershoot.
 		wait(() -> controllers.getTestSuccess_NextButton(), () -> {
@@ -532,10 +534,10 @@ public class TestingManager {
 		wait(() -> !controllers.getTestSuccess_NextButton(), () -> {
 		});
 		System.out.println("Moving down");
-		m_manip.setDoneRange(7);
-		wait(() -> m_manip.armAtPosition(), () -> m_manip.lowDefense());
+		m_manip.setDoneRange(10);
+		wait(()-> m_manip.armAtPosition(), ()-> m_manip.lowDefense());
 		double result1 = m_manip.getArmAngle();
-
+		System.out.println("YARP");
 		// if within tolerance, report success
 		if (!(result1 > (Target - 10) && result1 < (Target + 10))) {
 			System.out.println("FAILURE");
@@ -553,22 +555,10 @@ public class TestingManager {
 
 		// wait(()->m_manip.armAtPosition(), ()->m_manip.setArmPositionHigh());
 		// put button x break incase stuck forever
-		m_manip.setArmPositionHigh();
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		while (true) {
-			if (controllers.getTestFail_ReplayButton()) {
-				wait(() -> !controllers.getTestFail_ReplayButton(), () -> {
-				});
-				return false;
-			}
-			if (m_manip.armLimit())
-				return true;
-		}
+		wait(()-> m_manip.armAtPosition(), ()-> m_manip.setArmPositionHigh());
+		return true;
+
+		
 	}
 
 	// Beam Break test - check both
