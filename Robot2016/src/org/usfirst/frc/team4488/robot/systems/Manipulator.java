@@ -39,11 +39,13 @@ public class Manipulator
     		return false;
     	return m_arm.AtSetpoint();
     }
-    
+    public boolean armLimit(){
+    	return m_arm.atBackLimit();
+    }
     public boolean armReady() {
     	return m_arm.getLimitFound();
     }
-
+    
     public void spinIntake(){
         m_intake.intakeBall();
         m_arm.setPosition(ArmPosition.Intake);

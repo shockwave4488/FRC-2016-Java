@@ -8,6 +8,8 @@ import org.usfirst.frc.team4488.robot.autonomous.AutonomousManager;
 import org.usfirst.frc.team4488.robot.components.CameraLights;
 import org.usfirst.frc.team4488.robot.operator.*;
 import org.usfirst.frc.team4488.robot.systems.*;
+import org.usfirst.frc.team4488.robot.testing.TestingManager;
+
 import com.kauailabs.navx.frc.AHRS;
 import JavaRoboticsLib.Drive.*;
 import JavaRoboticsLib.Utility.Logger;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -41,6 +44,8 @@ public class Robot extends IterativeRobot {
 	private Shooter shooter;
 	private Manipulator manipulator;
 	private SystemsManagement systems;
+	private TestingManager testManager;
+
 	
 	private Timer m_endgameTimer;
 	private boolean m_endgameState;
@@ -62,6 +67,7 @@ public class Robot extends IterativeRobot {
     	driveHelper = new DriveHelper(drive, 0.3, 0.15); //Xbox 360
     	//driveHelper = new DriveHelper(drive, 0.125, 0.075); //Xbox One
     	autonManager = new AutonomousManager(smartDrive, shooter, manipulator, systems);
+    	testManager = new TestingManager(smartDrive, shooter, manipulator, systems, controllers);
     	shooter.setTurretManual(false);
     	manipulator.setArmManual(false);
     	m_endgameTimer = new Timer();
@@ -91,6 +97,16 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("AlignError", smartDrive.getTurnSetpoint() - drive.getAngle());
     	SmartDashboard.putNumber("Auton Position",autonManager.getPosition());
     	SmartDashboard.putString("Auton Defense", autonManager.getDefense());
+    }
+    
+    private void testValues(){
+    	SmartDashboard.putBoolean("Intake Has Ball?", manipulator.HasBall());
+    	SmartDashboard.putBoolean("Has Ball?", shooter.hasBall());
+    	SmartDashboard.putNumber("TurretPot", shooter.TurretAngle());
+    	SmartDashboard.putNumber("ArmPot", manipulator.getArmAngle());
+     	SmartDashboard.putNumber("Left Encoder", drive.getLeftDistance());
+    	SmartDashboard.putNumber("Right Encoder", drive.getRightDistance());
+       	SmartDashboard.putNumber("Drive Speed", drive.getLinearSpeed());
     }
     
     @Override
@@ -178,15 +194,36 @@ public class Robot extends IterativeRobot {
     }
     
     /**
+     * This function is called at the beginning of test mode.
+     */
+    @Override
+    public void testInit(){
+    	LiveWindow.setEnabled(false);
+    	//Create new instance of testing class and let the init thread do the rest.
+    	testManager.start();
+    }
+    /**
      * This function is called periodically during test mode
      */
     @Override
 	public void testPeriodic() {
     	allPeriodic();
-    	if(controllers.getShooterLightButton())
-    		shooter.startShootTest();
-    	else
-    		shooter.stopShootTest();
+    	testValues();
+    	
+    	//IS THIS CALLED EVEN IF DISABLED?
+    	//Check for things like brownout
+    	
+    	//Check for y button -- abort
+    	//wait(controllers.getTestAbortButton(), ()->{});
+    	
+    	if(controllers.getTestAbortButton()){
+    		//Disable the robot
+    		smartDrive.stop();
+    		shooter.StopWheels(); // doesn't stop turret
+    		manipulator.stopIntake();//doesn't stop arm moving
+    		//SmartDashboard.disable...
+    	}
+    	
     }
     
     @Override
