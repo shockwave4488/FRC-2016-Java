@@ -1,6 +1,5 @@
 package org.usfirst.frc.team4488.robot.operator;
 
-import JavaRoboticsLib.FlowControl.EdgeTrigger;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
 
@@ -8,97 +7,155 @@ public class Controllers {
 	private Joystick m_primary;
 	private Joystick m_secondary;
 	
-	private EdgeTrigger m_turnResetTrigger;
 	
 	public Controllers(){
 		m_primary = new Joystick(0);
 		m_secondary = new Joystick(1);
-		m_turnResetTrigger = new EdgeTrigger();
 	}
 	
+	//----------------------------------------
+	//-----------GENERAL FUNCTIONS------------
+	//----------------------------------------
+	
+	public boolean getA(Joystick controller){
+		return controller.getRawButton(1);
+	}
+	
+	public boolean getB(Joystick controller){
+		return controller.getRawButton(2);
+	}
+	
+	public boolean getX(Joystick controller){
+		return controller.getRawButton(3);
+	}
+
+	public boolean getY(Joystick controller){
+		return controller.getRawButton(4);
+	}
+	
+	public boolean getLeftBumper(Joystick controller){
+		return controller.getRawButton(5);
+	}
+	
+	public boolean getRightBumper(Joystick controller){
+		return controller.getRawButton(6);
+	}
+	
+	public boolean getSelect(Joystick controller){
+		return controller.getRawButton(7);
+	}
+	
+	public boolean getStart(Joystick controller){
+		return controller.getRawButton(8);
+	}
+	
+	public boolean getLeftStickPress(Joystick controller){
+		return controller.getRawButton(9);
+	}
+	
+	public boolean getRightStickPress(Joystick controller){
+		return controller.getRawButton(10);
+	}
+	
+	public boolean getLeftTrigger(Joystick controller){
+		return controller.getRawAxis(2) > 0.75;
+	}
+	
+	public boolean getRightTrigger(Joystick controller){
+		return controller.getRawAxis(3) > 0.75;
+	}
+	
+	public double getRightStickX(Joystick controller){
+		return controller.getRawAxis(0);
+	}
+	
+	public double getRightStickY(Joystick controller){
+		return controller.getRawAxis(1) * -1.0;
+	}
+	
+	public double getLeftStickX(Joystick controller){
+		return controller.getRawAxis(4);
+	}
+	
+	public double getLeftStickY(Joystick controller){
+		return controller.getRawAxis(5) * -1.0;
+	}
+	
+	public double getDPad(Joystick controller){
+		return controller.getPOV(0);
+	}
+	
+	//----------------------------------------
+	//--------ROBOT SPECIFIC FUNTIONS---------
+	//----------------------------------------
+		
+	
 	public double getSpeed(){
-		return m_primary.getRawAxis(1) * -1.0;
+		return getRightStickY(m_primary);
 	}
 	
 	public double getTurn(){
-		return m_primary.getRawAxis(4);
+		return getLeftStickY(m_primary);
 	}
 	
 	public boolean getChargeButton(){
-		return m_secondary.getRawButton(5);
+		return getLeftBumper(m_secondary);
 	}
 	
 	public boolean getBatterChargeButton(){
-		return m_secondary.getRawAxis(2) > 0.75;
+		return getLeftTrigger(m_secondary);
 	}
 	
 	public boolean getShootButton(){
-		return m_secondary.getRawButton(6) || m_primary.getRawButton(6);
+		return getRightBumper(m_primary) || getRightBumper(m_secondary);
 	}
 	
 	public boolean getIntakeButton(){
-		return m_secondary.getRawButton(1);
+		return getA(m_secondary);
 	}
 	
 	public boolean getBatterBrakeButton(){
-		return m_primary.getRawButton(9);
+		return getRightStickPress(m_primary);
 	}
 	
 	public boolean getShootAlignButton(){
-		return m_primary.getRawButton(5);
-	}
-	
-	public boolean getQuickturn() {
-		return m_primary.getRawButton(5);
+		return getLeftBumper(m_primary);
 	}
 	
 	public boolean getReset(){
-		return m_secondary.getRawButton(8);
+		return getStart(m_secondary);
 	}
 	
 	public boolean getArmReset(){
-		return m_secondary.getRawButton(7);
-	}
-	
-	public boolean getPortculisDefenseButton(){
-		return m_secondary.getRawButton(2);
+		return getSelect(m_secondary);
 	}
 	
 	public boolean getLowDefenseButton(){
-		return m_secondary.getRawButton(4);
+		return getY(m_secondary);
 	}
 	
 	public double getSemiManualPosition(){
+		//Uses raw value of Right Trigger, 
+		//rather than reading it like a button.
 		return m_secondary.getRawAxis(3);
 	}
 	
-	public boolean getShooterLightButton(){
-		return m_primary.getRawButton(1);
-	}
-	
-	public boolean getShooterManualButton(){
-		return m_primary.getRawButton(2);
-	}
-	
 	public boolean getLowGoalIntakeButton(){
-		return m_secondary.getRawButton(2);
+		return getB(m_secondary);
 	}
 	
 	public boolean getPurgeButton(){
-		return m_secondary.getRawButton(7);
+		return getSelect(m_secondary);
 	}
 	
-	public boolean getTurnResetButton(){
-		return m_turnResetTrigger.getRisingUpdate(m_primary.getRawButton(10));
-	}
 	public boolean getTestSuccess_NextButton(){
-		return m_primary.getRawButton(1);
+		return getA(m_primary);
 	}
 	public boolean getTestFail_ReplayButton(){
-		return m_primary.getRawButton(3);
+		return getX(m_primary);
 	}
 	public boolean getTestAbortButton(){
-		return m_primary.getRawButton(4);
+		return getY(m_primary);
 	}
 
 	/**
